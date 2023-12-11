@@ -7,11 +7,17 @@ from .moosvgd import MOOSVGDSolver
 from .gradhv import GradHVSolver
 from .pmtl import PMTLSolver
 
-from .core_solver import CoreAgg
+from .core_solver import CoreAgg, CoreMGDA, CoreEPO
 
 
-def get_core_solver(mtd):
+
+
+def get_core_solver(mtd, agg_mtd='mtche', pref=None):
     if mtd == 'agg':
-        return CoreAgg(agg_mtd='ls')
+        return CoreAgg(pref=pref, agg_mtd=agg_mtd)
+    elif mtd == 'mgda':
+        return CoreMGDA()
+    elif mtd == 'epo':
+        return CoreEPO(pref=pref)
     else:
         assert False, 'not implemented'

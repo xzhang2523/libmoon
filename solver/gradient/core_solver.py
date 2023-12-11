@@ -1,37 +1,56 @@
+import numpy as np
+from solver.gradient.grad_core import solve_mgda
+
+from solver.gradient.epo_solver import EPO_LP
+import torch
+
 
 
 class CoreMGDA:
     def __init__(self):
         pass
 
-
-
-
-
-
-
+    def get_alpha(self, G, losses=None, pref=None):
+        _, alpha = solve_mgda(G, return_coeff=True)
+        return alpha
 
 class CoreGrad:
     def __init__(self):
         pass
 
-    def get_gw(self, G, losses, pref):
-        pass
+
 
 class CoreEPO(CoreGrad):
-    def __init__(self):
-        pass
+    def __init__(self, pref):
+        self.pref = pref
+        self.epo_lp = EPO_LP(m=len(pref), n=1, r=1/np.array(pref))
 
-    def get_gw(self, G, losses, pref):
-        pass
+
+    def get_alpha(self, G, losses):
+        if type(G) == torch.Tensor:
+            G = G.detach().cpu().numpy().copy()
+        GG = G @ G.T
+
+        alpha = self.epo_lp.get_alpha(losses, G=GG, C=True)
+        return alpha
+
+
 
 
 class CoreAgg(CoreGrad):
-    def __init__(self, agg_mtd='ls'):
+    def __init__(self, pref, agg_mtd='ls'):
         self.agg_mtd = agg_mtd
+        self.pref = pref
 
-    def get_alpha(self, losses, pref):
+    def get_alpha(self, G, losses):
         if self.agg_mtd == 'ls':
-            return pref
+            alpha = self.pref
+        elif self.agg_mtd == 'mtche':
+            idx = np.argmax(losses)
+            alpha = np.zeros_like(self.pref )
+            alpha[idx] = 1.0
         else:
             assert False
+        return alpha
+
+

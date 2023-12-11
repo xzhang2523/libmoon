@@ -8,7 +8,6 @@ from torch.autograd import Variable
 
 from tqdm import tqdm
 import torch
-
 from torch.optim import SGD
 
 
@@ -58,7 +57,9 @@ class EPO_LP(object):
 
         r = self.r if r is None else r
         assert len(l) == len(G) == len(r) == self.m, "length != m"
+
         rl, self.mu_rl, self.a.value = adjustments(l, r)
+
         self.C.value = G if C else G @ G.T
         self.Ca.value = self.C.value @ self.a.value
 

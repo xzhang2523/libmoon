@@ -41,7 +41,8 @@ def solve_mgda(G, return_coeff=False):
         comments: This function is used to solve the dual MGDA problem. It can handle m>2.
     '''
     if type(G) == torch.Tensor:
-        G = G.detach().numpy().copy()
+        G = G.detach().cpu().numpy().copy()
+
 
     m = G.shape[0]
     if m == 2:

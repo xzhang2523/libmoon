@@ -48,7 +48,6 @@ class MGDASolver(GradBaseSolver):
                     x.grad.zero_()
                 grad_arr[prob_idx] = torch.stack(grad_arr[prob_idx])
 
-
             grad_arr = torch.stack(grad_arr)
             gw_arr = [solve_mgda(G, return_coeff=True) for G in grad_arr]
 
@@ -60,7 +59,6 @@ class MGDASolver(GradBaseSolver):
 
             if 'lb' in dir(problem):
                 x.data = torch.clamp(x.data, problem.lb + solution_eps, problem.ub-solution_eps )
-
 
         res = {}
         res['x'] = x.detach().numpy()

@@ -29,7 +29,9 @@ hv_ref_dict = {
     'vlmop1': array([1.0, 1.0]),
     'vlmop2': array([4.0, 4.0]),
     'maf1': array([2.0, 2.0, 2.0]),
+    'mnist': array([3.0, 3.0])
 }
+
 
 def get_hv_ref_dict(problem_name):
     if problem_name.startswith('zdt'):
@@ -38,9 +40,9 @@ def get_hv_ref_dict(problem_name):
         ref = hv_ref_dict[problem_name]
     return ref + 0.5
 
+
+
 root_name = os.path.dirname(os.path.dirname(__file__))
-
-
 def is_pref_based(mtd):
     if mtd in ['epo', 'mgda', 'agg', 'pmgda']:
         return True

@@ -25,11 +25,10 @@ from util.constant import solution_eps
 
 class HvMaximization(object):
     """
-    Mo optimizer for calculating dynamic weights using higamo style hv maximization
-    based on Hao Wang et al.'s HIGA-MO
-    uses non-dominated sorting to create multiple fronts, and maximize hypervolume of each
+        Mo optimizer for calculating dynamic weights using higamo style hv maximization
+        based on Hao Wang et al.'s HIGA-MO
+        uses non-dominated sorting to create multiple fronts, and maximize hypervolume of each
     """
-
     def __init__(self, n_prob, n_obj, ref_point, obj_space_normalize=True):
         super(HvMaximization, self).__init__()
         self.name = 'hv_maximization'
@@ -45,12 +44,13 @@ class HvMaximization(object):
         :param mo_obj_val.shape: (n_obj, n_prob)
         :return: weight.shape: (n_obj, n_prob)
         '''
+        mo_obj_val_T = mo_obj_val.T
         n_obj = self.n_obj
         n_prob = self.n_prob
 
         # non-dom sorting to create multiple fronts
-        hv_subfront_indices = fastNonDominatedSort(mo_obj_val)
-        dyn_ref_point = 1.1 * np.max(mo_obj_val, axis=1)
+        hv_subfront_indices = fastNonDominatedSort(mo_obj_val_T)
+        dyn_ref_point = 1.1 * np.max(mo_obj_val_T, axis=1)
         for i_obj in range(0, n_obj):
             dyn_ref_point[i_obj] = np.maximum(self.ref_point[i_obj], dyn_ref_point[i_obj])
         number_of_fronts = np.max(hv_subfront_indices) + 1  # +1 because of 0 indexing
@@ -58,7 +58,7 @@ class HvMaximization(object):
         obj_space_multifront_hv_gradient = np.zeros((n_obj, n_prob))
         for i_fronts in range(0, number_of_fronts):
             # compute HV gradients for current front
-            temp_grad_array = grad_multi_sweep_with_duplicate_handling(mo_obj_val[:, (hv_subfront_indices == i_fronts)],
+            temp_grad_array = grad_multi_sweep_with_duplicate_handling(mo_obj_val_T[:, (hv_subfront_indices == i_fronts)],
                                                                        dyn_ref_point)
             obj_space_multifront_hv_gradient[:, (hv_subfront_indices == i_fronts)] = temp_grad_array
 

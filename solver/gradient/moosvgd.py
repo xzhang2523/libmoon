@@ -1,16 +1,12 @@
-from solver.gradient.grad_core import solve_mgda
+from solver.gradient.mgda_core import solve_mgda
 from solver.gradient.base_solver import GradBaseSolver
 
 import torch
 import math
 from torch.autograd import Variable
 from torch.optim import SGD
-
 from util.constant import solution_eps
 from tqdm import tqdm
-
-
-
 
 def kernel_functional_rbf(losses):
     '''
@@ -26,9 +22,6 @@ def kernel_functional_rbf(losses):
     kernel_matrix = torch.exp(-pairwise_distance / A*h)  # 5e-6 for zdt1,2,3, zxy, Dec 5, 2023
     return kernel_matrix
 
-
-
-
 def median(tensor):
     """
         torch.median() acts differently from np.median(). We want to simulate numpy implementation.
@@ -37,13 +30,11 @@ def median(tensor):
     tensor_max = tensor.max()[None]
     return (torch.cat((tensor, tensor_max)).median() + tensor.median()) / 2.
 
-
 def get_svgd_gradient(G, inputs, losses):
     '''
-
-    :param G: (n_prob, n_obj, n_var)
-    :param inputs: (n_prob, n_var)
-    :param losses: (n_prob, n_obj)
+    :param G.shape: (n_prob, n_obj, n_var)
+    :param inputs.shape: (n_prob, n_var)
+    :param losses.shape: (n_prob, n_obj)
     :return:
     '''
     n_prob = inputs.size(0)
@@ -71,8 +62,6 @@ class MOOSVGDSolver(GradBaseSolver):
     def solve(self, problem, x, prefs, args):
         x = Variable(x, requires_grad=True)
         optimizer = SGD([x], lr=self.step_size)
-
-
         for i in tqdm(range(self.max_iter)):
             y = problem.evaluate(x)
             grad_arr = [0] * args.n_prob
@@ -85,7 +74,6 @@ class MOOSVGDSolver(GradBaseSolver):
                 grad_arr[prob_idx] = torch.stack(grad_arr[prob_idx])
 
             grad_arr = torch.stack(grad_arr).detach()
-
             gw = get_svgd_gradient(grad_arr, x, y)
             optimizer.zero_grad()
             x.grad = gw
@@ -102,17 +90,9 @@ class MOOSVGDSolver(GradBaseSolver):
 
 
 
-
-
-
-
-
-
 if __name__ == '__main__':
-    # losses = torch.tensor([1,2,3,4,5,6,7,8,9,10])
     losses = torch.rand(10, 3)
     kernel = kernel_functional_rbf(losses)
-    # print()
 
 
 

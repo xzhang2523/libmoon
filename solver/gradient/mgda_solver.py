@@ -1,6 +1,6 @@
 import torch.autograd
 
-from .grad_core import solve_mgda_analy, solve_mgda
+from .mgda_core import solve_mgda_analy, solve_mgda
 
 from .base_solver import GradBaseSolver
 from torch.autograd import Variable
@@ -12,7 +12,6 @@ from numpy import array
 from util.constant import solution_eps
 from pymoo.indicators.hv import HV
 from util.constant import get_hv_ref_dict
-
 
 '''
     MGDA solver, published in: 

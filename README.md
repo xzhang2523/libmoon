@@ -3,7 +3,7 @@
 
 '''
     I raise my cup to invite the moon.
-    With my shadow we become three from single.
+    With my shadow we become three from one.
 '''
 -- Li Bai.
 
@@ -72,6 +72,10 @@ For
     
     Current support:
         GradAggSolver, MGDASolver, EPOSolver, MOOSVGDSolver, GradHVSolver, PMTLSolver.
+
+    
+    Important things to notice:
+        The original code MOO-SVGD does not offer a MTL implement. Our code is the first open source code for MTL MOO-SVGD.
 
 
 

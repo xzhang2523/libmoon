@@ -17,9 +17,8 @@ from numpy import array
 import os
 from solver.gradient import get_core_solver
 from solver.gradient.util import get_grads_from_model, numel_params
-
 from util.constant import is_pref_based
-
+from solver.gradient.moosvgd import get_svgd_gradient
 
 class MultiMnistProblem:
 
@@ -50,11 +49,9 @@ class MultiMnistProblem:
         self.is_pref_flag = is_pref_based(args.mtd)
 
         if self.is_pref_flag:
-            self.core_solver_arr = [get_core_solver(args.mtd, args.agg_mtd, pref) for pref in prefs]
+            self.core_solver_arr = [get_core_solver(args, pref) for pref in prefs]
         else:
-            self.set_core_solver = get_core_solver(args.mtd)
-
-
+            self.set_core_solver = get_core_solver(args)
 
     def optimize(self):
         loss_all = []
@@ -87,17 +84,27 @@ class MultiMnistProblem:
                         l2_np = np.array(l2.cpu().detach().numpy(), copy=True)
                         loss_hostory[pref_idx].append([l1_np, l2_np])
                 else:
-                    
+                    # set based method is more complicated.
+                    losses = [0,] * self.n_prob
+                    for model_idx, model in enumerate(self.model_arr):
+                        logits_dict = self.model_arr[model_idx](data_)
+                        logits_dict['labels_l'] = data_['labels_l']
+                        logits_dict['labels_r'] = data_['labels_r']
+                        l1 = loss_1(**logits_dict)
+                        l2 = loss_2(**logits_dict)
 
-                # set based method
+                        l1_np, l2_np = np.array(l1.cpu().detach().numpy(), copy=True), np.array(l2.cpu().detach().numpy(), copy=True)
+                        losses[model_idx] = [l1_np, l2_np]
+
+                    losses = np.array(losses)
+                    alpha = self.set_core_solver.get_alpha(losses)
+                    print()
 
 
             loss_hostory = np.array(loss_hostory)
             loss_history_mean = np.mean(loss_hostory, axis=1)
             loss_all.append(loss_history_mean)
         return loss_all
-
-
 
 
 if __name__ == '__main__':
@@ -111,8 +118,10 @@ if __name__ == '__main__':
     parser.add_argument('--num_epoch', default=10, type=int)
     parser.add_argument('--use-cuda', default=True, type=bool)
 
-    parser.add_argument('--mtd', default='moosvgd', type=str)
+    parser.add_argument('--mtd', default='hvgrad', type=str)
     parser.add_argument('--agg-mtd', default='ls', type=str)   # This att is only valid when args.mtd=agg.
+    parser.add_argument('--n-obj', default=2, type=int)   # This att is only valid when args.mtd=agg.
+
 
 
     args = parser.parse_args()
@@ -125,8 +134,11 @@ if __name__ == '__main__':
 
     args.device = device
     prefs = uniform_pref(n_partition=3, n_obj=2, clip_eps=0.1)
+    args.n_prob = len(prefs)
 
     problem = MultiMnistProblem(args, prefs)
+    # args.n_obj = problem.n_obj
+
     loss_history = problem.optimize()
     loss_history = np.array(loss_history)
 

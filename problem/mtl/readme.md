@@ -16,3 +16,5 @@ MTL steps.
 
     Step 2:
         get alpha_arr / gw_arr and then backward propogation.
+
+    It is noted that, the original code moo-svgd does not offer a MTL implement. 

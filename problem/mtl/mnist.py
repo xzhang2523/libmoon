@@ -47,7 +47,9 @@ class MultiMnistProblem:
         self.optimizer_arr = [torch.optim.Adam(self.model_arr[idx].parameters(), lr=self.lr) for idx in
                               range(self.n_prob)]
 
-        if is_pref_based(args.mtd):
+        self.is_pref_flag = is_pref_based(args.mtd)
+
+        if self.is_pref_flag:
             self.core_solver_arr = [get_core_solver(args.mtd, args.agg_mtd, pref) for pref in prefs]
         else:
             self.set_core_solver = get_core_solver(args.mtd)
@@ -60,27 +62,36 @@ class MultiMnistProblem:
             loss_hostory = [[] for i in range(self.n_prob)]
             for data in self.loader:
                 data_ = {k: v.to(self.args.device) for k, v in data.items()}
-                for pref_idx, (pref, model, optimizer) in enumerate(
-                        zip(self.prefs, self.model_arr, self.optimizer_arr)):
-                    logits_dict = self.model_arr[pref_idx](data_)
-                    logits_dict['labels_l'] = data_['labels_l']
-                    logits_dict['labels_r'] = data_['labels_r']
-                    l1 = loss_1(**logits_dict)
-                    l2 = loss_2(**logits_dict)
 
-                    l_contains_grad = [l1, l2]
-                    G = get_grads_from_model(l_contains_grad, model)
+                # pref based mtd
+                if self.is_pref_flag:
+                    for pref_idx, (pref, model, optimizer) in enumerate(
+                            zip(self.prefs, self.model_arr, self.optimizer_arr)):
+                        logits_dict = self.model_arr[pref_idx](data_)
+                        logits_dict['labels_l'] = data_['labels_l']
+                        logits_dict['labels_r'] = data_['labels_r']
+                        l1 = loss_1(**logits_dict)
+                        l2 = loss_2(**logits_dict)
 
-                    l1_np = np.array(l1.cpu().detach().numpy(), copy=True)
-                    l2_np = np.array(l2.cpu().detach().numpy(), copy=True)
-                    losses = array([l1_np, l2_np])
-                    alpha = self.core_solver_arr[pref_idx].get_alpha(G = G, losses=losses)
-                    self.optimizer_arr[pref_idx].zero_grad()
-                    (alpha[0] * l1 + alpha[1] * l2).backward()
-                    self.optimizer_arr[pref_idx].step()
-                    l1_np = np.array(l1.cpu().detach().numpy(), copy=True)
-                    l2_np = np.array(l2.cpu().detach().numpy(), copy=True)
-                    loss_hostory[pref_idx].append([l1_np, l2_np])
+                        l_contains_grad = [l1, l2]
+                        G = get_grads_from_model(l_contains_grad, model)
+
+                        l1_np = np.array(l1.cpu().detach().numpy(), copy=True)
+                        l2_np = np.array(l2.cpu().detach().numpy(), copy=True)
+                        losses = array([l1_np, l2_np])
+                        alpha = self.core_solver_arr[pref_idx].get_alpha(G = G, losses=losses)
+                        self.optimizer_arr[pref_idx].zero_grad()
+                        (alpha[0] * l1 + alpha[1] * l2).backward()
+                        self.optimizer_arr[pref_idx].step()
+                        l1_np = np.array(l1.cpu().detach().numpy(), copy=True)
+                        l2_np = np.array(l2.cpu().detach().numpy(), copy=True)
+                        loss_hostory[pref_idx].append([l1_np, l2_np])
+                else:
+                    
+
+                # set based method
+
+
             loss_hostory = np.array(loss_hostory)
             loss_history_mean = np.mean(loss_hostory, axis=1)
             loss_all.append(loss_history_mean)
@@ -100,8 +111,9 @@ if __name__ == '__main__':
     parser.add_argument('--num_epoch', default=10, type=int)
     parser.add_argument('--use-cuda', default=True, type=bool)
 
-    parser.add_argument('--mtd', default='epo', type=str)
+    parser.add_argument('--mtd', default='moosvgd', type=str)
     parser.add_argument('--agg-mtd', default='ls', type=str)   # This att is only valid when args.mtd=agg.
+
 
     args = parser.parse_args()
     if torch.cuda.is_available() and args.use_cuda:

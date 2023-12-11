@@ -6,6 +6,14 @@ import torch
 
 
 
+class CoreMOOSVGD:
+    def __init__(self):
+        pass
+
+    def get_alpha(self):
+        return 0
+
+
 class CoreMGDA:
     def __init__(self):
         pass
@@ -13,6 +21,7 @@ class CoreMGDA:
     def get_alpha(self, G, losses=None, pref=None):
         _, alpha = solve_mgda(G, return_coeff=True)
         return alpha
+
 
 class CoreGrad:
     def __init__(self):

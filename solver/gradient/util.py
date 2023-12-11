@@ -11,7 +11,6 @@ def get_grads_from_model(loss, model):
         G[idx] = get_flatten_grad(model)
     return torch.stack(G)
 
-
 def get_flatten_grad(model):
     grad = []
     for param in model.parameters():
@@ -21,6 +20,7 @@ def get_flatten_grad(model):
             grad.append(torch.zeros_like(param.view(-1)))
     grad = torch.cat(grad)
     return grad
+
 
 def numel_params(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)

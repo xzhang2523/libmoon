@@ -19,5 +19,6 @@ def get_core_solver(mtd, agg_mtd='mtche', pref=None):
         return CoreMGDA()
     elif mtd == 'epo':
         return CoreEPO(pref=pref)
+
     else:
         assert False, 'not implemented'

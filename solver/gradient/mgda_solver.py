@@ -50,7 +50,6 @@ class MGDASolver(GradBaseSolver):
 
             grad_arr = torch.stack(grad_arr)
             gw_arr = [solve_mgda(G, return_coeff=True) for G in grad_arr]
-
             optimizer.zero_grad()
             weights = Tensor( np.array([gw[1] for gw in gw_arr]) )
             # weights = Tensor( np.array([1.0, 0.0]) )

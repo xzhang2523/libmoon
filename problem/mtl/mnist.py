@@ -15,9 +15,11 @@ from tqdm import tqdm
 import numpy as np
 from numpy import array
 import os
-
 from solver.gradient import get_core_solver
 from solver.gradient.util import get_grads_from_model, numel_params
+
+from util.constant import is_pref_based
+
 
 class MultiMnistProblem:
 
@@ -45,7 +47,11 @@ class MultiMnistProblem:
         self.optimizer_arr = [torch.optim.Adam(self.model_arr[idx].parameters(), lr=self.lr) for idx in
                               range(self.n_prob)]
 
-        self.core_solver_arr = [get_core_solver(args.mtd, args.agg_mtd, pref) for pref in prefs]
+        if is_pref_based(args.mtd):
+            self.core_solver_arr = [get_core_solver(args.mtd, args.agg_mtd, pref) for pref in prefs]
+        else:
+            self.set_core_solver = get_core_solver(args.mtd)
+
 
 
     def optimize(self):

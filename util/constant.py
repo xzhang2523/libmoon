@@ -4,10 +4,6 @@ from problem.synthetic import MAF1
 import os
 from numpy import array
 
-
-
-
-
 FONT_SIZE = 20
 solution_eps = 1e-5
 scalar_dict = {
@@ -42,5 +38,11 @@ def get_hv_ref_dict(problem_name):
         ref = hv_ref_dict[problem_name]
     return ref + 0.5
 
-
 root_name = os.path.dirname(os.path.dirname(__file__))
+
+
+def is_pref_based(mtd):
+    if mtd in ['epo', 'mgda', 'agg', 'pmgda']:
+        return True
+    else:
+        return False

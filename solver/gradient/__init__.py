@@ -6,3 +6,12 @@ from .epo_solver import EPOSolver
 from .moosvgd import MOOSVGDSolver
 from .gradhv import GradHVSolver
 from .pmtl import PMTLSolver
+
+from .core_solver import CoreAgg
+
+
+def get_core_solver(mtd):
+    if mtd == 'agg':
+        return CoreAgg(agg_mtd='ls')
+    else:
+        assert False, 'not implemented'

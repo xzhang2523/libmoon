@@ -36,7 +36,7 @@ For synthetic problems,
 | Problem            | Paper | Project/Code |
 |--------------------|------|--------------|
 | MO-MNIST           | [PMTL](https://proceedings.neurips.cc/paper_files/paper/2019/file/685bfde03eb646c27ed565881917c71c-Paper.pdf)     | [COSMOS](https://github.com/ruchtem/cosmos)     |
-| Fairness           | | |
+| Fairness           |[COSMOS](https://arxiv.org/pdf/2103.13392.pdf) |[COSMOS](https://github.com/ruchtem/cosmos) |
 | Federated Learning | | |
 
 For 

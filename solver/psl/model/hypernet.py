@@ -18,5 +18,9 @@ class HyperNetPSLModel(nn.Module):
 
 
 
-class ConditionalNet():
-    
+class ConditionalNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, pref):
+        pass

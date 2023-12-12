@@ -1,10 +1,10 @@
 ### Moon: A Standardized/Flexible Framework for MultiObjective OptimizatioN
 <img src="moon.png" alt="Moon" width="200">
 
-'''
+''
     I raise my cup to invite the moon.
     With my shadow we become three from one.
-'''
+''
 -- Li Bai.
 
 Moon: is a multiobjective optimization framework, from single-objective optimization to multiobjective optimization, towards a better understanding of optimization problems.
@@ -18,8 +18,8 @@ This project has four important parts:
 
 (1) A standardlized gradient based framework. 
 
-- **Problem** class. 
-For synthetic problems, 
+- **Problem** class.
+  (1) For synthetic problems, 
    
 
   | Problem                                          | Paper                                                              | Project/Code                                         |
@@ -33,13 +33,16 @@ For synthetic problems,
 
 (2) For multitask learning problems, 
 
-| Problem            | Paper | Project/Code |
-|--------------------|------|--------------|
-| MO-MNIST           | [PMTL](https://proceedings.neurips.cc/paper_files/paper/2019/file/685bfde03eb646c27ed565881917c71c-Paper.pdf)     | [COSMOS](https://github.com/ruchtem/cosmos)     |
-| Fairness           |[COSMOS](https://arxiv.org/pdf/2103.13392.pdf) |[COSMOS](https://github.com/ruchtem/cosmos) |
-| Federated Learning | | |
+| Problem                 | Paper | Project/Code |
+|-------------------------|------|--------------|
+| MO-MNISTs               | [PMTL](https://proceedings.neurips.cc/paper_files/paper/2019/file/685bfde03eb646c27ed565881917c71c-Paper.pdf)     | [COSMOS](https://github.com/ruchtem/cosmos)     |
+| Fairness Classification |[COSMOS](https://arxiv.org/pdf/2103.13392.pdf) |[COSMOS](https://github.com/ruchtem/cosmos) |
+| Federated Learning      | | |
 
-For 
+(3) For MORL problems,
+|Problem|Paper|Project/Code|
+|-------|-----|------------|
+|Synthetic | | |
 
 
 - **Gradient-based Solver**.

@@ -40,9 +40,13 @@ This project has four important parts:
 | Federated Learning      | | |
 
 (3) For MORL problems,
-|Problem|Paper|Project/Code|
-|-------|-----|------------|
-|Synthetic | | |
+
+| Problem                 | Paper                                                                                                            | Project/Code                              |
+|-------------------------|------------------------------------------------------------------------------------------------------------------|-------------------------------------------|
+| Synthetic (DST FTS...)  | [Envelop](https://proceedings.neurips.cc/paper_files/paper/2019/file/4a46fbfca3f1465a27b210f4bdfe6ab3-Paper.pdf) | [code]()                                  |
+| Robotics (MO-MuJoCo...) | [PGMORL](http://proceedings.mlr.press/v119/xu20h/xu20h.pdf)                                                      | [code](https://github.com/mit-gfx/PGMORL) |
+
+
 
 
 - **Gradient-based Solver**.
@@ -79,6 +83,15 @@ This project has four important parts:
     
     Important things to notice:
         The original code MOO-SVGD does not offer a MTL implement. Our code is the first open source code for MTL MOO-SVGD.
+
+
+- **MTL Solver (The non-moo line) **.
+
+    | Method   | Paper                                         |Code| Institude | Published |
+    |----------|-----------------------------------------------|----|---------|-----------|
+    | CAGrad   | [Paper](https://openreview.net/forum?id=IMPnRXEWpvr) | |ICLR 2021| Tsinghua  |
+    | PCGrad   | [Paper](https://arxiv.org/pdf/2001.06782.pdf) | |NeurIPS 2020| UCB       |
+    | Nash MTL | [Paper](https://arxiv.org/abs/2202.01017)     | |ICML 2022| Nvidia    |
 
 
 

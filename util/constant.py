@@ -3,6 +3,9 @@ from problem.synthetic import VLMOP1, VLMOP2, ZDT1, ZDT2, ZDT3, ZDT4, ZDT6
 from problem.synthetic import MAF1
 import os
 from numpy import array
+import torch
+
+
 
 FONT_SIZE = 20
 solution_eps = 1e-5
@@ -31,8 +34,6 @@ hv_ref_dict = {
     'maf1': array([2.0, 2.0, 2.0]),
     'mnist': array([3.0, 3.0])
 }
-
-
 def get_hv_ref_dict(problem_name):
     if problem_name.startswith('zdt'):
         ref = array([1.0, 1.0])
@@ -40,11 +41,18 @@ def get_hv_ref_dict(problem_name):
         ref = hv_ref_dict[problem_name]
     return ref + 0.5
 
-
-
 root_name = os.path.dirname(os.path.dirname(__file__))
 def is_pref_based(mtd):
     if mtd in ['epo', 'mgda', 'agg', 'pmgda']:
         return True
     else:
         return False
+
+def get_device():
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+        print('cuda is available')
+    else:
+        device = torch.device("cpu")
+        print('cuda is not available')
+    return device

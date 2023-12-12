@@ -1,6 +1,7 @@
 from problem.synthetic import ZDT1
 # from problem.sy
-from solver.psl.simple import SimplePSLModel
+from solver.psl.model.simple import SimplePSLModel
+
 from util.constant import root_name, problem_dict
 import argparse
 import torch
@@ -9,6 +10,7 @@ import numpy as np
 import torch
 from util.scalarization import tche
 from util.weight_factor.funs import uniform_pref
+
 
 
 if __name__ == '__main__':
@@ -20,7 +22,6 @@ if __name__ == '__main__':
     parser.add_argument('--batch-size', default=128, type=int )
     parser.add_argument('--lr', default=1e-3, type=float )
 
-    # print()
     args = parser.parse_args()
     if torch.cuda.is_available():
         device = torch.device("cuda")
@@ -62,9 +63,7 @@ if __name__ == '__main__':
     predict_x = model(test_pref)
     predict_y = problem.evaluate(predict_x)
     predict_y_np = predict_y.cpu().detach().numpy()
-
     plt.scatter(predict_y_np[:, 0], predict_y_np[:, 1])
-
 
 
     plt.show()

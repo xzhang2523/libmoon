@@ -12,9 +12,8 @@ class CoreHVGrad:
         self.hv_solver = HvMaximization(args.n_prob, args.n_obj, get_hv_ref_dict(args.problem))
 
     def get_alpha(self, losses):
-        alpha = self.hv_solver.compute_weights(losses)
+        alpha = self.hv_solver.compute_weights(losses).T
         return alpha
-
 
 
 class CoreMOOSVGD:

@@ -1,14 +1,15 @@
 from problem.synthetic import ZDT1
 # from problem.sy
 from solver.psl.model import SimplePSLModel
-from util.constant import root_name, problem_dict, FONT_SIZE
+from util_global.constant import root_name, problem_dict, FONT_SIZE
 import argparse
 import torch
 from tqdm import tqdm
 import numpy as np
 import torch
-from util.scalarization import tche
-from util.weight_factor.funs import uniform_pref
+from util_global.scalarization import tche
+from util_global.weight_factor.funs import uniform_pref
+
 
 
 if __name__ == '__main__':

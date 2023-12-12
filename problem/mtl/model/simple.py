@@ -62,7 +62,7 @@ class FullyConnected(nn.Module):
 
 
 if __name__ == '__main__':
-    from util.constant import root_name
+    from util_global.constant import root_name
     import os
     import pickle
 

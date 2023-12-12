@@ -14,7 +14,7 @@ from torch.optim import SGD
 import warnings
 warnings.filterwarnings("ignore")
 
-from util.constant import solution_eps
+from util_global.constant import solution_eps
 from numpy import array
 from pymoo.indicators.hv import HV
 

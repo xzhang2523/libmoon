@@ -7,11 +7,11 @@ from matplotlib import pyplot as plt
 from solver.gradient.min_norm_solvers_numpy import MinNormSolver
 import numpy as np
 
-from util.constant import problem_dict
+from util_global.constant import problem_dict
 from torch.autograd import Variable
 
 from tqdm import tqdm
-from util.constant import solution_eps
+from util_global.constant import solution_eps
 
 
 problem = problem_dict['vlmop2']

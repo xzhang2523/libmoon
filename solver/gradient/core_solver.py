@@ -3,7 +3,7 @@ from solver.gradient.mgda_core import solve_mgda
 from solver.gradient.epo_solver import EPO_LP
 import torch
 from solver.gradient.gradhv import HvMaximization
-from util.constant import get_hv_ref_dict
+from util_global.constant import get_hv_ref_dict
 
 
 class CoreHVGrad:

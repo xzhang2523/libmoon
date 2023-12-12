@@ -13,12 +13,12 @@ from .functions_hv_grad_3d import grad_multi_sweep_with_duplicate_handling
 from .base_solver import GradBaseSolver
 
 from torch.autograd import Variable
-from util.constant import get_hv_ref_dict
+from util_global.constant import get_hv_ref_dict
 
 from tqdm import tqdm
 
 from pymoo.indicators.hv import HV
-from util.constant import solution_eps
+from util_global.constant import solution_eps
 
 
 

@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import numpy as np
 from torch.utils import data
-from util.constant import root_name
+from util_global.constant import root_name
 
 
 

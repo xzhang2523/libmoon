@@ -5,7 +5,7 @@ import torch
 import math
 from torch.autograd import Variable
 from torch.optim import SGD
-from util.constant import solution_eps
+from util_global.constant import solution_eps
 from tqdm import tqdm
 
 def kernel_functional_rbf(losses):

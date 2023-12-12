@@ -1,6 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from util.constant import FONT_SIZE
+from util_global.constant import FONT_SIZE
 
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 def vis_res(res, problem, prefs, args):

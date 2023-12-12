@@ -13,8 +13,7 @@ def from_name(names, task_names):
     if task_names is not None:
         return [objectives[n]("labels_{}".format(t), "logits_{}".format(t)) for n, t in zip(names, task_names)]
     else:
-        return [objectives[n]() for n in names]
-
+        return [ objectives[n]() for n in names ]
 
 
 class CrossEntropyLoss(torch.nn.CrossEntropyLoss):

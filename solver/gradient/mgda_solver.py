@@ -9,9 +9,9 @@ from tqdm import tqdm
 from torch import Tensor
 import numpy as np
 from numpy import array
-from util.constant import solution_eps
+from util_global.constant import solution_eps
 from pymoo.indicators.hv import HV
-from util.constant import get_hv_ref_dict
+from util_global.constant import get_hv_ref_dict
 
 '''
     MGDA solver, published in: 

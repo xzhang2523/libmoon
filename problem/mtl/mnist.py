@@ -1,24 +1,24 @@
 import matplotlib.pyplot as plt
-from util.constant import root_name
+from util_global.constant import root_name
 from problem.mtl.loaders.multimnist_loader import MultiMNISTData
 import torch
 
 from problem.mtl.objectives import CrossEntropyLoss
 from problem.mtl.model.simple import MultiLeNet
 from solver.gradient.core_solver import CoreAgg
-from util.weight_factor.funs import uniform_pref
-from util.constant import FONT_SIZE
-
+from util_global.weight_factor.funs import uniform_pref
+from util_global.constant import FONT_SIZE
 
 loss_1 = CrossEntropyLoss(label_name='labels_l', logits_name='logits_l')
 loss_2 = CrossEntropyLoss(label_name='labels_r', logits_name='logits_r')
+
 from tqdm import tqdm
 import numpy as np
 from numpy import array
 import os
 from solver.gradient import get_core_solver
 from solver.gradient.util import get_grads_from_model, numel_params
-from util.constant import is_pref_based
+from util_global.constant import is_pref_based
 from solver.gradient.moosvgd import get_svgd_gradient
 import itertools
 

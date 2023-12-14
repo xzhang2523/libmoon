@@ -12,6 +12,7 @@ from util_global.weight_factor.funs import uniform_pref
 
 
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--problem', default='zdt1', type=str)

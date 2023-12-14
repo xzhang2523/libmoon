@@ -1,0 +1,1 @@
+from .multimnist_loader import MultiMNISTData

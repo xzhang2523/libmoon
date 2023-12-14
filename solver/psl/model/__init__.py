@@ -1,2 +1,2 @@
 from .simple import SimplePSLModel
-from .mtl import HyperNetPSLModel
+from .mtl import HyperNet, LeNetTarget

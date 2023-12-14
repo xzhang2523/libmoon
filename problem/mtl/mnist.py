@@ -35,6 +35,7 @@ class MultiMnistProblem:
         self.dataset_test = MultiMNISTData('mnist', 'test')
         self.loader_test = torch.utils.data.DataLoader(self.dataset_test, batch_size=args.batch_size, shuffle=True,
                                                        num_workers=0)
+
         self.lr = args.lr
         self.prefs = prefs
         self.n_prob = len(prefs)

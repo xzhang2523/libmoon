@@ -12,7 +12,6 @@ from util_global.weight_factor.funs import uniform_pref
 
 
 
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--problem', default='zdt1', type=str)
@@ -21,6 +20,7 @@ if __name__ == '__main__':
     parser.add_argument('--epoch', default=100, type=int )
     parser.add_argument('--batch-size', default=128, type=int )
     parser.add_argument('--lr', default=1e-3, type=float )
+
 
     args = parser.parse_args()
     if torch.cuda.is_available():
@@ -34,6 +34,7 @@ if __name__ == '__main__':
     problem = problem_dict[args.problem]
     model = SimplePSLModel(problem, args).to(args.device)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+
 
     loss_history = []
     for _ in tqdm(range(args.epoch)):

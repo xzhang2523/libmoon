@@ -33,19 +33,9 @@ class SimplePSLModel(nn.Module):
                 nn.Linear(self.hidden_size, self.args.n_var),
             )
 
-
     def forward(self, pref):
-
         mid = self.psl_model(pref)
         if 'lb' in dir(self.problem):
             return mid * (self.problem.ub - self.problem.lb) + self.problem.lb
         else:
             return mid
-
-
-
-
-
-
-
-

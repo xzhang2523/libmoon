@@ -5,11 +5,11 @@ import numpy as np
 # from util_global.constant import get_device
 from problem.mtl.objectives import from_name
 from util_global.constant import get_device
-loss_arr = from_name( names=['CrossEntropyLoss', 'CrossEntropyLoss'], task_names=['l', 'r'] )
 
+loss_func_arr = from_name( names=['CrossEntropyLoss', 'CrossEntropyLoss'], task_names=['l', 'r'] )
 from model.mtl import HyperNet, LeNetTarget
 from problem.mtl.loaders import MultiMNISTData
-
+from tqdm import tqdm
 
 
 if __name__ == '__main__':
@@ -19,34 +19,55 @@ if __name__ == '__main__':
     parse.add_argument('--lr', type=float, default=1e-3)
     parse.add_argument('--n-obj', type=int, default=2)
     parse.add_argument('--model', type=str, default='lenet')
+    parse.add_argument('--ray-hidden', type=int, default=100)
+
     dataset = MultiMNISTData('mnist', 'train')
     args = parse.parse_args()
-
     loader = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size, shuffle=True,
                                               num_workers=0)
-
     dataset_test = MultiMNISTData('mnist', 'test')
     loader_test = torch.utils.data.DataLoader(dataset_test, batch_size=args.batch_size, shuffle=True,
                                                    num_workers=0)
 
     args.device = get_device()
     if args.model == 'lenet':
-        hypernet = HyperNet([9,5])
-        net = LeNetTarget([9,5])
+        hnet = HyperNet( [9,5] )
+        net = LeNetTarget( [9,5] )
     else:
         assert False, 'model not supported'
 
+    hnet.to(args.device)
+    optimizer = torch.optim.Adam(hnet.parameters(), lr=args.lr)
 
-    hypernet.to(args.device)
-    optimizer = torch.optim.Adam(hypernet.parameters(), lr=args.lr)
 
-    for idx in range( args.n_epoch ):
+
+    loss_history = []
+
+    for idx in tqdm(range( args.n_epoch)):
         for i, batch in enumerate(loader):
-            prefs = torch.Tensor( np.random.dirichlet(np.ones(args.n_obj), args.batch_size) ).to(args.device)
-            hypernet.train()
-            weights = hypernet(prefs)
 
-            logits1, logits2 = net(batch['data'], weights)
-            print()
+            ray = torch.from_numpy(
+                np.random.dirichlet((1, 1), 1).astype(np.float32).flatten()
+            ).to(args.device)  # ray.shape (1,2)
 
-    print('hello world')
+            batch_ = {}
+            for k, v in batch.items():
+                batch_[k] = v.to(args.device)
+
+            hnet.train()
+            weights = hnet( ray )
+            logits_l, logits_r = net(batch_['data'], weights)
+
+            batch_['logits_l'] = logits_l
+            batch_['logits_r'] = logits_r
+
+            loss_arr = torch.stack([loss(**batch_) for loss in loss_func_arr])
+            # print()
+            optimizer.zero_grad()
+            loss = ray@loss_arr
+            (loss).backward()
+            loss_item = loss.cpu().detach().numpy()
+            loss_history.append(loss_item)
+
+            optimizer.step()
+

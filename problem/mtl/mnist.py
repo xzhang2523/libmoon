@@ -22,8 +22,6 @@ from util_global.constant import is_pref_based
 from solver.gradient.moosvgd import get_svgd_gradient
 import itertools
 
-
-
 class MultiMnistProblem:
 
     # How to train at the same time.
@@ -47,8 +45,6 @@ class MultiMnistProblem:
 
         for model in self.model_arr:
             model.to(args.device)
-
-
 
         self.is_pref_flag = is_pref_based(args.mtd)
 

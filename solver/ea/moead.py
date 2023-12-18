@@ -115,5 +115,3 @@ if __name__ == '__main__':
 
     plt.scatter(alg.pop.F[:, 0], alg.pop.F[:, 1], c='none', edgecolors='r')
     plt.show()
-
-

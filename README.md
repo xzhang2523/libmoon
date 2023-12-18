@@ -92,12 +92,22 @@ This project has four important parts:
     | PCGrad   | [Paper](https://arxiv.org/pdf/2001.06782.pdf) | |NeurIPS 2020| UCB       |
     | Nash-MTL | [Paper](https://arxiv.org/abs/2202.01017)     | |ICML 2022| Nvidia    |
 
+- 
 - **PSL solvers**
-    -EPO-based
-    -Agg-based
+    - EPO-based
+    - Agg-based
+    - Hypernetwork-based
+    - ConditionalNet-based
+    - Simple PSL model
+    
+    
+- **MOEA/D**
+    Current supported:
+    - Vanilla [MOEA/D](https://ieeexplore.ieee.org/document/4358754)
+    
+    - Will be released soon:
+    - [MOEA/D AWA](https://pubmed.ncbi.nlm.nih.gov/23777254/). 
+    - [MOEA/D neural AWA](https://openreview.net/pdf?id=W3T9rql5eo).
 
-
-- **MOEAs**
-   -- archiving and logging.
 
 - ML pretrained methods. 

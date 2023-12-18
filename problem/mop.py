@@ -45,20 +45,21 @@ class mop():
 
     def evaluate(self, x: any) -> any:
         """
-        Evaluate the objectives for x
-        Parameters
-        ----------
-        x : any
-            Tensor or ndarray
-        Returns
-        -------
-        any
-            Tensor or ndarray correspondingly
-        Raises
-        ------
-        ValueError
-            wrong type of x
+            Evaluate the objectives for x
+            Parameters
+            ----------
+            x : any
+                Tensor or ndarray
+            Returns
+            -------
+            any
+                Tensor or ndarray correspondingly
+            Raises
+            ------
+            ValueError
+                wrong type of x
         """
+
         if type(x) == torch.Tensor:
             return self._evaluate_torch(torch.atleast_2d(x))
         elif isinstance(x, np.ndarray):

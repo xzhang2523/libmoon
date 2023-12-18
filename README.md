@@ -109,5 +109,8 @@ This project has four important parts:
     - [MOEA/D AWA](https://pubmed.ncbi.nlm.nih.gov/23777254/). 
     - [MOEA/D neural AWA](https://openreview.net/pdf?id=W3T9rql5eo).
 
+- **MOBO**
+    - 
 
 - ML pretrained methods. 
+    - HV net. 

@@ -1,7 +1,7 @@
 from typing import Any
 import numpy as np 
 
-from solver.ea.utils.utils_ea import dominance_min
+from solver.moea.utils.utils_ea import dominance_min
 
 class population: 
 

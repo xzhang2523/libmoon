@@ -3,26 +3,26 @@ ZDT test suite for multi-objective problem
 
 Reference
 ----------
-Zitzler, E., Deb, K., & Thiele, L. (2000). Comparison of multiobjective
-evolutionary algorithms: Empirical results. Evolutionary computation,
-8(2), 173-195. DOI: 10.1162/106365600568202
+    Zitzler, E., Deb, K., & Thiele, L. (2000). Comparison of multiobjective
+    evolutionary algorithms: Empirical results. Evolutionary computation,
+    8(2), 173-195. DOI: 10.1162/106365600568202
 """
 
 import numpy as np
 import torch
 import argparse
 from matplotlib import pyplot as plt
-
 from problem.mop import mop
-
-
 class ZDT1(mop):
 
-    def __init__(self) -> None:
-        super().__init__(n_var=30,
-                         n_obj=2,
-                         lower_bound=np.array([.0] * 30),
-                         upper_bound=np.array([1.] * 30), )
+    def __init__(self, n_var=30, n_obj=2, lower_bound=np.zeros(30),
+                 upper_bound=np.ones(30)):
+        super().__init__(n_var=n_var,
+                         n_obj=n_obj,
+                         lower_bound=lower_bound,
+                         upper_bound=upper_bound, )
+        self.problem_name = 'ZDT1'
+
 
     def _evaluate_torch(self, x: torch.Tensor):
         f1 = x[:, 0]
@@ -44,11 +44,12 @@ class ZDT1(mop):
 
 class ZDT2(mop):
 
-    def __init__(self) -> None:
-        super().__init__(n_var=30,
-                         n_obj=2,
-                         lower_bound=np.array([.0] * 30),
-                         upper_bound=np.array([1.] * 30))
+    def __init__(self, n_var=30, n_obj=2, lower_bound=np.zeros(30), upper_bound=np.ones(30)):
+        super().__init__(n_var=n_var,
+                         n_obj=n_obj,
+                         lower_bound=lower_bound,
+                         upper_bound=upper_bound)
+        self.problem_name = 'ZDT2'
 
     def _evaluate_torch(self, x: torch.Tensor):
         f1 = x[:, 0]
@@ -70,11 +71,13 @@ class ZDT2(mop):
 
 class ZDT3(mop):
 
-    def __init__(self) -> None:
+    def __init__(self, n_var, n_obj, lower_bound, upper_bound):
         super().__init__(n_var=30,
                          n_obj=2,
-                         lower_bound=np.array([.0] * 30),
-                         upper_bound=np.array([1.] * 30), )
+                         lower_bound=np.zeros(30),
+                         upper_bound=np.ones(30), )
+        self.problem_name = 'ZDT3'
+
 
     def _evaluate_torch(self, x: torch.Tensor):
         f1 = x[:, 0]
@@ -100,11 +103,13 @@ class ZDT3(mop):
 
 class ZDT4(mop):
 
-    def __init__(self) -> None:
-        super().__init__(n_var=10,
-                         n_obj=2,
-                         lower_bound=np.array([-5.] * 10),
-                         upper_bound=np.array([5.] * 10), )
+    def __init__(self, n_var=10, n_obj=2, lower_bound=-5*np.ones(10), upper_bound=5*np.ones(10)):
+        super().__init__(n_var=n_var,
+                         n_obj=n_obj,
+                         lower_bound=lower_bound,
+                         upper_bound=upper_bound, )
+        self.problem_name = 'ZDT4'
+
 
     def _evaluate_torch(self, x: torch.Tensor):
         f1 = x[:, 0]
@@ -126,11 +131,13 @@ class ZDT4(mop):
 
 class ZDT6(mop):
 
-    def __init__(self) -> None:
-        super().__init__(n_var=10,
-                         n_obj=2,
-                         lower_bound=np.array([0.] * 10),
-                         upper_bound=np.array([1.] * 10), )
+    def __init__(self, n_var=30, n_obj=2, lower_bound=np.zeros(30), upper_bound=np.ones(30) ) -> None:
+        super().__init__(n_var=n_var,
+                         n_obj=n_obj,
+                         lower_bound=lower_bound,
+                         upper_bound=upper_bound, )
+        self.problem_name = 'ZDT6'
+
 
     def _evaluate_torch(self, x: torch.Tensor):
         f1 = 1 - torch.exp(-4 * x[:, 0]) * (torch.sin(6 * np.pi * x[:, 0])) ** 6

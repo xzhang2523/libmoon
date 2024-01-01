@@ -1,3 +1,6 @@
+
+
+
 class DTLZ1:
     def __init__(self, n_var=30, n_obj=3):
         self.n_var = n_var

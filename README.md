@@ -26,14 +26,14 @@ This project has four important parts:
   (1) For synthetic problems, 
    
 
-  | Problem                                          | Paper                                                                | Project/Code                                         |
-  |--------------------------------------------------|----------------------------------------------------------------------|------------------------------------------------------|
-  | ZDT                                              | [paper](https://ieeexplore.ieee.org/document/996017)                 | [project](https://pymoo.org/problems/multi/zdt.html) |
-  | DTLZ                                             | [paper]                                                              | Y                                                    |
-  | MAF                                              | [paper](https://link.springer.com/article/10.1007/s40747-017-0039-7) | Y                                                    |
-  | [WFG](https://ieeexplore.ieee.org/document/996017) [code]() | Real world problems.                                                 | Y                                                    |
+  | Problem                                                      | Paper                                                                | Project/Code                                         |
+  |--------------------------------------------------------------|----------------------------------------------------------------------|------------------------------------------------------|
+  | ZDT                                                          | [paper](https://ieeexplore.ieee.org/document/996017)                 | [project](https://pymoo.org/problems/multi/zdt.html) |
+  | DTLZ                                                         | [paper] | [project](https://pymoo.org/problems/many/dtlz.html) |Y                                        |
+  | MAF                                                          | [paper](https://link.springer.com/article/10.1007/s40747-017-0039-7) | [project]                         |
+  | [WFG](https://ieeexplore.ieee.org/document/996017) [code]()  | Real world problems.                                                 | Y                                                    |
   | [Fi's](https://ieeexplore.ieee.org/document/996017) [code]() | Real world problems.                                                 | Y                                                    |
-  | RE  | [paper](https://arxiv.org/abs/2009.12867)                            | [code](https://github.com/ryojitanabe/reproblems)|
+  | RE                                                           | [paper](https://arxiv.org/abs/2009.12867)                            | [code](https://github.com/ryojitanabe/reproblems)    |
 
 (2) For multitask learning problems, 
 

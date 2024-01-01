@@ -52,7 +52,6 @@ def vis_res(res, problem, prefs, args):
             y1 = np.array([0, 2, 0])
             z1 = np.array([2, 0, 0])  # z1 should have 3 coordinates, right?
             ax.scatter(x1, y1, z1)
-
             # 1. create vertices from points
             verts = [list(zip(x1, y1, z1))]
             # 2. create 3d polygons and specify parameters

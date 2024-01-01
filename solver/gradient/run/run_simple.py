@@ -14,9 +14,6 @@ import pickle
 import time
 
 
-
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser( description= 'example' )
     parser.add_argument( '--n-partition', type=int, default=10 )

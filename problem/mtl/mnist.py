@@ -5,7 +5,6 @@ import torch
 
 from problem.mtl.objectives import CrossEntropyLoss
 from problem.mtl.model.simple import MultiLeNet
-from solver.gradient.core_solver import CoreAgg
 from util_global.weight_factor.funs import uniform_pref
 from util_global.constant import FONT_SIZE
 
@@ -17,9 +16,8 @@ import numpy as np
 from numpy import array
 import os
 from solver.gradient import get_core_solver
-from solver.gradient.util import get_grads_from_model, numel_params
+from solver.gradient.utils.util import get_grads_from_model, numel_params
 from util_global.constant import is_pref_based
-from solver.gradient.moosvgd import get_svgd_gradient
 import itertools
 
 class MultiMnistProblem:

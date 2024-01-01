@@ -13,6 +13,8 @@ import torch
 import argparse
 from matplotlib import pyplot as plt
 from problem.mop import mop
+
+
 class ZDT1(mop):
 
     def __init__(self, n_var=30, n_obj=2, lower_bound=np.zeros(30),
@@ -71,11 +73,11 @@ class ZDT2(mop):
 
 class ZDT3(mop):
 
-    def __init__(self, n_var, n_obj, lower_bound, upper_bound):
-        super().__init__(n_var=30,
-                         n_obj=2,
-                         lower_bound=np.zeros(30),
-                         upper_bound=np.ones(30), )
+    def __init__(self, n_var=30, n_obj=2, lower_bound=np.zeros(30), upper_bound=np.ones(30)):
+        super().__init__(n_var=n_var,
+                         n_obj=n_obj,
+                         lower_bound=lower_bound,
+                         upper_bound=upper_bound, )
         self.problem_name = 'ZDT3'
 
 
@@ -157,8 +159,9 @@ class ZDT6(mop):
         return np.stack((f1, f2), axis=1)
 
 
+
 if __name__ == '__main__':
-    problem = ZDT2()
+    problem = ZDT3()
 
     res = problem.evaluate(torch.rand(10, problem.get_number_variable))
     pf = problem.get_pf()

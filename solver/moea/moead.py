@@ -12,6 +12,13 @@ from solver.moea.utils.termination import termination
 from solver.moea.utils.genetic_operator import cross_sbx, mut_pm
 from solver.moea.utils.utils_ea import population_initialization, neighborhood_selection
 
+from util_global.constant import FONT_SIZE
+from visulization.util import plot_simplex, plot_unit_sphere
+
+import argparse
+
+
+
 
 class MOEAD():
     def __init__(self,
@@ -20,6 +27,7 @@ class MOEAD():
                  n_neighbors: int = 10,
                  ):
 
+        self.name = 'MOEA/D'
         self.mop = copy.deepcopy(mop)
         self.ref_vec = ref_vec
         self.n_neighbors = n_neighbors
@@ -71,14 +79,13 @@ class MOEAD():
     def reset(self,
               problem: any):
         """
-        Initialization
+            Initialization.
         """
 
     def step(self):
 
         for k in np.random.permutation(self.n_pop):
             P = neighborhood_selection(self.n_pop, self.neighbors[k])
-
             X = self.pop.parent_select(P)
 
             off_cross = cross_sbx(X, self.mop.get_lower_bound, self.mop.get_upper_bound)
@@ -88,11 +95,9 @@ class MOEAD():
             self.z_star = np.minimum(self.z_star, off_f)
             self._update_neighbor(off, off_f, self.neighbors[k])
             self.ep(off, off_f)
-
         self.termina(nfe=self.n_pop, gen=1)
 
     def _update_neighbor(self, off, off_f, neighbors):
-
         for i in neighbors:
             if self.decomposition(off_f, self.ref_vec[i], self.z_star) <= self.decomposition(self.pop.F[i],
                                                                                              self.ref_vec[i],
@@ -100,18 +105,44 @@ class MOEAD():
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--n_gen', type=int, default=3000)
+    args = parser.parse_args()
+
+
     from problem.synthetic.zdt import ZDT1, ZDT2, ZDT3, ZDT4, ZDT6
-
-    problem = ZDT2()
+    from problem.synthetic.dtlz import DTLZ1, DTLZ2, DTLZ3, DTLZ4
+    problem = DTLZ4()
     alg = MOEAD()
+    print('{} on {}'.format(alg.name, problem.problem_name))
 
-    alg.setup(problem, max_gen=1000, pop_size=50)
+    alg.setup(problem, max_gen=args.n_gen, pop_size=8)
     alg.solve()
     print('solving over')
 
-    plt.scatter(alg.pop.F[:, 0], alg.pop.F[:, 1], c='none', edgecolors='r')
-    pf = problem.get_pf()
-    plt.plot(pf[:, 0], pf[:, 1], c='b')
-    plt.title('MOEA/D on {}'.format(problem.problem_name))
+    if problem.n_obj == 2:
+        plt.scatter(alg.pop.F[:, 0], alg.pop.F[:, 1], c='none', edgecolors='r')
+        pf = problem.get_pf()
+        plt.plot(pf[:, 0], pf[:, 1], c='b')
+        plt.xlabel('$f_1$', fontsize=FONT_SIZE)
+        plt.ylabel('$f_2$', fontsize=FONT_SIZE)
+    else:
+        fig = plt.figure()
+        ax = fig.add_subplot(projection='3d')
+        ax.scatter(alg.pop.F[:, 0], alg.pop.F[:, 1], alg.pop.F[:, 2], c='none', edgecolors='r')
 
+        if problem.problem_name == 'DTLZ1':
+            p1 = np.array([0, 0, 0.5])
+            p2 = np.array([0, 0.5, 0.0])
+            p3 = np.array([0.5, 0, 0.0])
+            plot_simplex(ax, p1, p2, p3)
+
+        elif problem.problem_name.startswith('DTLZ'):
+            plot_unit_sphere(ax)
+
+        ax.set_xlabel('$f_1$', fontsize=FONT_SIZE)
+        ax.set_ylabel('$f_2$', fontsize=FONT_SIZE)
+        ax.set_zlabel('$f_3$', fontsize=FONT_SIZE)
+
+    plt.title('MOEA/D on {}'.format(problem.problem_name))
     plt.show()

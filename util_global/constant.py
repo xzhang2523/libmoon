@@ -1,6 +1,11 @@
 from util_global.scalarization import ls, mtche, tche, pbi, cosmos
 from problem.synthetic import VLMOP1, VLMOP2, ZDT1, ZDT2, ZDT3, ZDT4, ZDT6
 from problem.synthetic import MAF1
+from problem.synthetic.dtlz import DTLZ1, DTLZ2, DTLZ3, DTLZ4
+
+from problem.synthetic.re import RE21, RE22, RE24
+
+
 import os
 from numpy import array
 import torch
@@ -23,9 +28,16 @@ problem_dict = {
     'zdt3': ZDT3(),
     'zdt4': ZDT4(),
     'zdt6': ZDT6(),
+    'dtlz1': DTLZ1(),
+    'dtlz2': DTLZ2(),
+    'dtlz3': DTLZ3(),
+    'dtlz4': DTLZ4(),
     'vlmop1': VLMOP1(),
     'vlmop2': VLMOP2(),
-    'maf1': MAF1()
+    'maf1': MAF1(),
+    'RE21' : RE21(),
+    'RE22': RE22(),
+    'RE24' : RE24()
 }
 
 

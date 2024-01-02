@@ -63,6 +63,7 @@ class RE22():
         self.problem_name = 'RE22'
         self.n_objectives = 2
         self.n_variables = 3
+
         self.n_constraints = 0
         self.n_original_constraints = 2
 

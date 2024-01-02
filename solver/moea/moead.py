@@ -12,12 +12,11 @@ from solver.moea.utils.termination import termination
 from solver.moea.utils.genetic_operator import cross_sbx, mut_pm
 from solver.moea.utils.utils_ea import population_initialization, neighborhood_selection
 
-from util_global.constant import FONT_SIZE
+from util_global.constant import FONT_SIZE, problem_dict
+
 from visulization.util import plot_simplex, plot_unit_sphere
-
 import argparse
-
-
+import time
 
 
 class MOEAD():
@@ -69,12 +68,15 @@ class MOEAD():
         self.pop(pop, f)
         self.termina(nfe=self.n_pop)
         self.neighbors = np.argsort(cdist(self.ref_vec, self.ref_vec), axis=1)[:, :self.n_neighbors]
-        self.decomposition = get_decomposition('mtch')
+        self.decomposition = get_decomposition('tch')
+        self.gen = 0
 
     def solve(self):
 
         while self.termina.has_next:
             self.step()
+            if self.gen % 500 == 0:
+                print('gen: {}'.format(self.gen))
 
     def reset(self,
               problem: any):
@@ -83,7 +85,7 @@ class MOEAD():
         """
 
     def step(self):
-
+        self.gen += 1
         for k in np.random.permutation(self.n_pop):
             P = neighborhood_selection(self.n_pop, self.neighbors[k])
             X = self.pop.parent_select(P)
@@ -105,27 +107,43 @@ class MOEAD():
 
 
 if __name__ == '__main__':
+
     parser = argparse.ArgumentParser()
-    parser.add_argument('--n_gen', type=int, default=3000)
+
+    parser.add_argument('--n-gen', type=int, default=2000 )
+    parser.add_argument('--problem-name', type=str, default='RE21')  # should be in lowwer case
+
     args = parser.parse_args()
-
-
     from problem.synthetic.zdt import ZDT1, ZDT2, ZDT3, ZDT4, ZDT6
     from problem.synthetic.dtlz import DTLZ1, DTLZ2, DTLZ3, DTLZ4
-    problem = DTLZ4()
+    from problem.synthetic.re import RE21
+
+    problem = problem_dict[args.problem_name]
     alg = MOEAD()
     print('{} on {}'.format(alg.name, problem.problem_name))
 
-    alg.setup(problem, max_gen=args.n_gen, pop_size=8)
+    alg.setup(problem, max_gen=args.n_gen, pop_size=10)
+
+    ref_vec = alg.ref_vec
+    ts = time.time()
+
     alg.solve()
-    print('solving over')
+    print('solving over {:.2f}m'.format( (time.time() - ts) / 60 ))
 
     if problem.n_obj == 2:
         plt.scatter(alg.pop.F[:, 0], alg.pop.F[:, 1], c='none', edgecolors='r')
-        pf = problem.get_pf()
-        plt.plot(pf[:, 0], pf[:, 1], c='b')
+        plt.plot(alg.pop.F[:, 0], alg.pop.F[:, 1], c='r')
+
+        if not problem.problem_name.startswith('RE'):
+            pf = problem.get_pf()
+            plt.plot(pf[:, 0], pf[:, 1], c='b')
+
         plt.xlabel('$f_1$', fontsize=FONT_SIZE)
         plt.ylabel('$f_2$', fontsize=FONT_SIZE)
+
+        for ref in ref_vec:
+            plt.plot([0, ref[0]], [0, ref[1]], c='k')
+
     else:
         fig = plt.figure()
         ax = fig.add_subplot(projection='3d')
@@ -136,7 +154,6 @@ if __name__ == '__main__':
             p2 = np.array([0, 0.5, 0.0])
             p3 = np.array([0.5, 0, 0.0])
             plot_simplex(ax, p1, p2, p3)
-
         elif problem.problem_name.startswith('DTLZ'):
             plot_unit_sphere(ax)
 
@@ -144,5 +161,5 @@ if __name__ == '__main__':
         ax.set_ylabel('$f_2$', fontsize=FONT_SIZE)
         ax.set_zlabel('$f_3$', fontsize=FONT_SIZE)
 
-    plt.title('MOEA/D on {}'.format(problem.problem_name))
+    plt.title('MOEA/D on {} with {}'.format(problem.problem_name, args.n_gen ) )
     plt.show()

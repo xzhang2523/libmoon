@@ -6,16 +6,15 @@ class mop():
     def __init__(self,
                  n_var: int,
                  n_obj: int,
-                 lower_bound: np.ndarray,
-                 upper_bound: np.ndarray,
+                 lbound: np.ndarray,
+                 ubound: np.ndarray,
                  n_cons: int=0,
                  ) -> None:
 
         self.n_var = n_var
         self.n_obj = n_obj
-        self.lb = lower_bound
-        self.ub = upper_bound
         self.n_cons = n_cons
+
 
     @property
     def get_number_variable(self) -> int:
@@ -27,11 +26,11 @@ class mop():
 
     @property
     def get_lower_bound(self) -> np.ndarray:
-        return self.lb
+        return self.lbound
 
     @property
     def get_upper_bound(self) -> np.ndarray:
-        return self.ub
+        return self.ubound
 
     @property
     def has_constraint(self) -> bool:
@@ -88,5 +87,5 @@ class mop():
 
 class mop_noCons(mop):
 
-    def __init__(self, n_var: int, n_obj: int, lower_bound: np.ndarray, upper_bound: np.ndarray, n_cons: int = 0) -> None:
-        super().__init__(n_var, n_obj, lower_bound, upper_bound, n_cons)
+    def __init__(self, n_var: int, n_obj: int, lbound: np.ndarray, ubound: np.ndarray, n_cons: int = 0) -> None:
+        super().__init__(n_var, n_obj, lbound, ubound, n_cons)

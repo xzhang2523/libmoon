@@ -10,13 +10,13 @@ from problem.mop import mop
 
 class DTLZ1(mop):
 
-    def __init__(self, n_var=30, n_obj=3, lower_bound=np.zeros(30),
-                 upper_bound=np.ones(30)):
+    def __init__(self, n_var=30, n_obj=3, lbound=np.zeros(30),
+                 ubound=np.ones(30)):
 
         super().__init__(n_var=n_var,
                          n_obj=n_obj,
-                         lower_bound=lower_bound,
-                         upper_bound=upper_bound,)
+                         lbound=lbound,
+                         ubound=ubound)
         self.problem_name= 'DTLZ1'
 
     def _evaluate_torch(self, x: torch.Tensor):
@@ -48,12 +48,12 @@ class DTLZ1(mop):
 
 
 class DTLZ2(mop):
-    def __init__(self, n_var=30, n_obj=3, lower_bound=np.zeros(30),
-                 upper_bound=np.ones(30)):
+    def __init__(self, n_var=30, n_obj=3, lbound=np.zeros(30),
+                 ubound=np.ones(30)):
         super().__init__(n_var=n_var,
                          n_obj=n_obj,
-                         lower_bound=lower_bound,
-                         upper_bound=upper_bound, )
+                         lbound=lbound,
+                         ubound=ubound, )
         self.problem_name = 'DTLZ2'
 
     def _evaluate_torch(self, x):
@@ -74,12 +74,12 @@ class DTLZ2(mop):
 
 
 class DTLZ3(mop):
-    def __init__(self, n_var=30, n_obj=3, lower_bound=np.zeros(30),
-                 upper_bound=np.ones(30)):
+    def __init__(self, n_var=30, n_obj=3, lbound=np.zeros(30),
+                 ubound=np.ones(30)):
         super().__init__(n_var=n_var,
                          n_obj=n_obj,
-                         lower_bound=lower_bound,
-                         upper_bound=upper_bound, )
+                         lbound=lbound,
+                         ubound=ubound, )
         self.problem_name = 'DTLZ3'
 
 
@@ -105,14 +105,14 @@ class DTLZ3(mop):
 
 
 class DTLZ4(mop):
-    def __init__(self, n_var=30, n_obj=3, lower_bound=np.zeros(30),
-                 upper_bound=np.ones(30)):
+    def __init__(self, n_var=30, n_obj=3, lbound=np.zeros(30),
+                 ubound=np.ones(30)):
         super().__init__(n_var=n_var,
                          n_obj=n_obj,
-                         lower_bound=lower_bound,
-                         upper_bound=upper_bound, )
+                         lbound=lbound,
+                         ubound=ubound, )
         self.problem_name = 'DTLZ4'
-        self.alpha = 10
+        self.alpha = 20
 
     def _evaluate_torch(self, x):
         xm = x[:, 2:]
@@ -121,7 +121,7 @@ class DTLZ4(mop):
 
         f1 = torch.cos(x[:, 0] ** self.alpha * np.pi / 2) * torch.cos(x[:, 1] ** self.alpha * np.pi / 2) * (1 + g)
         f2 = torch.cos(x[:, 0] ** self.alpha * np.pi / 2) * torch.sin(x[:, 1] ** self.alpha * np.pi / 2) * (1 + g)
-        f3 = torch.sin(x[:, 1] ** self.alpha * np.pi / 2) * (1 + g)
+        f3 = torch.sin(x[:, 0] ** self.alpha * np.pi / 2) * (1 + g)
         return torch.stack((f1, f2, f3), dim=1)
 
     def _evaluate_numpy(self, x):
@@ -130,7 +130,7 @@ class DTLZ4(mop):
 
         f1 = np.cos(x[:, 0] ** self.alpha * np.pi / 2) * np.cos(x[:, 1] ** self.alpha * np.pi / 2) * (1 + g)
         f2 = np.cos(x[:, 0] ** self.alpha * np.pi / 2) * np.sin(x[:, 1] ** self.alpha * np.pi / 2) * (1 + g)
-        f3 = np.sin(x[:, 1] ** self.alpha * np.pi / 2) * (1 + g)
+        f3 = np.sin(x[:, 0] ** self.alpha * np.pi / 2) * (1 + g)
         return np.stack((f1, f2, f3), axis=1 )
 
 # DTLZ5, DTLZ6.

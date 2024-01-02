@@ -17,12 +17,12 @@ from problem.mop import mop
 
 class ZDT1(mop):
 
-    def __init__(self, n_var=30, n_obj=2, lower_bound=np.zeros(30),
-                 upper_bound=np.ones(30)):
+    def __init__(self, n_var=30, n_obj=2, lbound=np.zeros(30),
+                 ubound=np.ones(30)):
         super().__init__(n_var=n_var,
                          n_obj=n_obj,
-                         lower_bound=lower_bound,
-                         upper_bound=upper_bound, )
+                         lbound=lbound,
+                         ubound=ubound, )
         self.problem_name = 'ZDT1'
 
 
@@ -46,11 +46,11 @@ class ZDT1(mop):
 
 class ZDT2(mop):
 
-    def __init__(self, n_var=30, n_obj=2, lower_bound=np.zeros(30), upper_bound=np.ones(30)):
+    def __init__(self, n_var=30, n_obj=2, lbound=np.zeros(30), ubound=np.ones(30)):
         super().__init__(n_var=n_var,
                          n_obj=n_obj,
-                         lower_bound=lower_bound,
-                         upper_bound=upper_bound)
+                         lbound=lbound,
+                         ubound=ubound)
         self.problem_name = 'ZDT2'
 
     def _evaluate_torch(self, x: torch.Tensor):
@@ -73,11 +73,11 @@ class ZDT2(mop):
 
 class ZDT3(mop):
 
-    def __init__(self, n_var=30, n_obj=2, lower_bound=np.zeros(30), upper_bound=np.ones(30)):
+    def __init__(self, n_var=30, n_obj=2, lbound=np.zeros(30), ubound=np.ones(30)):
         super().__init__(n_var=n_var,
                          n_obj=n_obj,
-                         lower_bound=lower_bound,
-                         upper_bound=upper_bound, )
+                         lbound=lbound,
+                         ubound=ubound, )
         self.problem_name = 'ZDT3'
 
 
@@ -105,11 +105,11 @@ class ZDT3(mop):
 
 class ZDT4(mop):
 
-    def __init__(self, n_var=10, n_obj=2, lower_bound=-5*np.ones(10), upper_bound=5*np.ones(10)):
+    def __init__(self, n_var=10, n_obj=2, lbound=-5*np.ones(10), ubound=5*np.ones(10)):
         super().__init__(n_var=n_var,
                          n_obj=n_obj,
-                         lower_bound=lower_bound,
-                         upper_bound=upper_bound, )
+                         lbound=lbound,
+                         ubound=ubound, )
         self.problem_name = 'ZDT4'
 
 
@@ -133,11 +133,11 @@ class ZDT4(mop):
 
 class ZDT6(mop):
 
-    def __init__(self, n_var=30, n_obj=2, lower_bound=np.zeros(30), upper_bound=np.ones(30) ) -> None:
+    def __init__(self, n_var=30, n_obj=2, lbound=np.zeros(30), ubound=np.ones(30) ) -> None:
         super().__init__(n_var=n_var,
                          n_obj=n_obj,
-                         lower_bound=lower_bound,
-                         upper_bound=upper_bound, )
+                         lbound=lbound,
+                         ubound=ubound, )
         self.problem_name = 'ZDT6'
 
 

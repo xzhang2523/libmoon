@@ -57,10 +57,8 @@ class MOEAD():
         if self.ref_vec is None:
             self.ref_vec = get_reference_directions("uniform", mop.get_number_objective, n_partitions=pop_size-1)
             self.ref_vec = np.clip(self.ref_vec, 0.01, 1-0.01)
-            # print()
 
         self.n_pop = len(self.ref_vec)
-
         pop = population_initialization(self.n_pop, self.mop)
         f = self.mop(pop)
         self.z_star = np.min(f, axis=0)
@@ -105,11 +103,9 @@ class MOEAD():
                                                                                              self.ref_vec[i],
                                                                                              self.z_star): self.pop(off, F=off_f, ind=i)
 
-
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-
     parser.add_argument('--n-gen', type=int, default=2000 )
     parser.add_argument('--problem-name', type=str, default='RE21')  # should be in lowwer case
 
@@ -117,7 +113,6 @@ if __name__ == '__main__':
     from problem.synthetic.zdt import ZDT1, ZDT2, ZDT3, ZDT4, ZDT6
     from problem.synthetic.dtlz import DTLZ1, DTLZ2, DTLZ3, DTLZ4
     from problem.synthetic.re import RE21
-
     problem = problem_dict[args.problem_name]
     alg = MOEAD()
     print('{} on {}'.format(alg.name, problem.problem_name))

@@ -153,11 +153,13 @@ class RE23(mop):
         self.ubound[3] = 240
 
     def _evaluate_numpy(self, x):
-        f = np.zeros(self.n_obj )
-        g = np.zeros(self.n_original_constraints)
 
-        x1 = 0.0625 * int(np.round(x[:,0]))
-        x2 = 0.0625 * int(np.round(x[:,1]))
+        f = np.zeros( (len(x), self.n_obj) )
+        g = np.zeros( (len(x), self.n_original_constraints))
+
+        x1 = 0.0625 * np.round(x[:,0]).astype(np.int32)
+        x2 = 0.0625 * np.round(x[:,1]).astype(np.int32)
+
         x3 = x[:,2]
         x4 = x[:,3]
 
@@ -246,4 +248,25 @@ class RE24(mop):
         pass
 
 
+class RE25(mop):
+    def __init__(self, n_var=3, n_obj=2):
+        self.problem_name = 'RE25'
+        self.n_objectives = 2
+        self.n_variables = 3
+        self.n_cons = 0
+        self.n_original_constraints = 6
+
+        self.ubound = np.zeros(self.n_variables)
+        self.lbound = np.zeros(self.n_variables)
+        self.lbound[0] = 1
+        self.lbound[1] = 0.6
+        self.lbound[2] = 0.09
+        self.ubound[0] = 70
+        self.ubound[1] = 3
+        self.ubound[2] = 0.5
+
+        self.feasible_vals = np.array(
+            [0.009, 0.0095, 0.0104, 0.0118, 0.0128, 0.0132, 0.014, 0.015, 0.0162, 0.0173, 0.018, 0.02, 0.023, 0.025,
+             0.028, 0.032, 0.035, 0.041, 0.047, 0.054, 0.063, 0.072, 0.08, 0.092, 0.105, 0.12, 0.135, 0.148, 0.162,
+             0.177, 0.192, 0.207, 0.225, 0.244, 0.263, 0.283, 0.307, 0.331, 0.362, 0.394, 0.4375, 0.5])
 

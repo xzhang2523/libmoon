@@ -3,7 +3,7 @@ from problem.synthetic import VLMOP1, VLMOP2, ZDT1, ZDT2, ZDT3, ZDT4, ZDT6
 from problem.synthetic import MAF1
 from problem.synthetic.dtlz import DTLZ1, DTLZ2, DTLZ3, DTLZ4
 
-from problem.synthetic.re import RE21, RE22, RE24
+from problem.synthetic.re import RE21, RE22, RE23, RE24
 
 
 import os
@@ -37,6 +37,7 @@ problem_dict = {
     'maf1': MAF1(),
     'RE21' : RE21(),
     'RE22': RE22(),
+    'RE23': RE23(),
     'RE24' : RE24()
 }
 

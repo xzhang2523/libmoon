@@ -22,10 +22,9 @@ This project has four important parts:
 
 (1) A standardlized gradient based framework. 
 
-- **Problem** class.
-  (1) For synthetic problems, 
-   
-
+- **Problem** class. For more problem details, please also check the Readme_problem.md file. 
+  (1) For synthetic problems,
+- 
   | Problem                                                      | Paper                                                                | Project/Code                                         |
   |--------------------------------------------------------------|----------------------------------------------------------------------|------------------------------------------------------|
   | ZDT                                                          | [paper](https://ieeexplore.ieee.org/document/996017)                 | [project](https://pymoo.org/problems/multi/zdt.html) |

@@ -168,8 +168,7 @@ class MOBOD(object):
 
     def _OperatorDE(self, Parent1, Parent2, Parent3):
         '''
-        generate one offspring by P1 + 0.5*(P2-P3) and polynomial mutation.
-
+            generate one offspring by P1 + 0.5*(P2-P3) and polynomial mutation.
         '''
         # Parameter
         CR = 1
@@ -178,7 +177,6 @@ class MOBOD(object):
         disM = 20
         #
         N, D = Parent1.shape
-
         # Differental evolution
         Site = np.random.rand(N, D) < CR
         Offspring = Parent1.copy()

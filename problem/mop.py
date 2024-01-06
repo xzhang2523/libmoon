@@ -15,6 +15,9 @@ class mop():
         self.n_obj = n_obj
         self.n_cons = n_cons
 
+        self.lbound=lbound
+        self.ubound=ubound
+
 
     @property
     def get_number_variable(self) -> int:

@@ -4,18 +4,18 @@ from torch import nn
 
 
 class PFLModel(nn.Module):
-    def __init__(self, args):
+    def __init__(self, n_obj=2):
         super().__init__()
-        self.args = args
+        # self.args = args
         hidden_size = 128
         self.model = nn.Sequential(
-            nn.Linear(self.args.n_obj, hidden_size),
+            nn.Linear(n_obj, hidden_size),
             nn.ReLU(),
             nn.Linear(hidden_size, hidden_size),
             nn.ReLU(),
             nn.Linear(hidden_size, hidden_size),
             nn.ReLU(),
-            nn.Linear(hidden_size, self.args.n_obj)
+            nn.Linear(hidden_size, n_obj)
         )
 
     def forward(self, x):
@@ -23,7 +23,8 @@ class PFLModel(nn.Module):
         :param x: input
         :return: the predicted Pareto front
         '''
-        raise NotImplementedError
+        # raise NotImplementedError
+        return self.model(x)
 
     def get_pf(self):
         '''

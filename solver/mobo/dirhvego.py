@@ -11,6 +11,7 @@ from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
 from solver.mobo.mobod import MOBOD
 
+
 class DirHVEGO(MOBOD):
     def __init__(self,
                  mop: any = None,
@@ -66,7 +67,8 @@ class DirHVEGO(MOBOD):
         EIDs = np.zeros((L, N))
         for j in range(L):
             EIDs[j, :] = self.evaluator_acquisition(np.tile(Pop_u[j], (N, 1)), np.tile(Pop_s[j], (N, 1)), Lambda, Xi)
-            # Find q solutions with the greedy algorithm
+
+        # Find q solutions with the greedy algorithm
         # Batch_size = np.min(Problem.maxFE - Problem.FE, q)  # the total budget is Problem.maxFE
         Qb = self.batchSelection(EIDs, self.batch_size)
 
@@ -120,8 +122,10 @@ if __name__ == '__main__':
                 upper_bound=np.array([1.] * 8))
     alg = DirHVEGO()
     alg.setup(prob, max_iter=10, batch_size=5)
+
     xdoe = (prob.ub - prob.lb) * lhs(prob.n_var, samples=11 * prob.n_var - 1,
                                      criterion='maximin', iterations=10) + prob.lb
+
 
     ydoe = prob.evaluate(xdoe)
 

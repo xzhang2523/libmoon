@@ -4,6 +4,8 @@ from solver.moea.utils.utils_ea import repair_clamp
 
 
 
+
+
 def cross_sbx(X, xl, xu, eta=15, prob_var=0.5, prob_bin=0.5, eps=1.0e-14, n_offsprings=1):
     n_parents, n_var = X.shape
 
@@ -15,7 +17,6 @@ def cross_sbx(X, xl, xu, eta=15, prob_var=0.5, prob_bin=0.5, eps=1.0e-14, n_offs
 
     # disable if two individuals are already too close
     cross[too_close] = False
-
     # disable crossover when lower and upper bound are identical
     cross[xl == xu] = False
 
@@ -29,9 +30,9 @@ def cross_sbx(X, xl, xu, eta=15, prob_var=0.5, prob_bin=0.5, eps=1.0e-14, n_offs
     eta = np.full((n_var, ), eta)[cross]
     prob_bin = np.full((n_var, ), prob_bin)[cross]
 
+
     # random values for each individual
     rand = np.random.random(len(eta))
-
     def calc_betaq(beta):
         alpha = 2.0 - np.power(beta, -(eta + 1.0))
 
@@ -147,5 +148,8 @@ def mut_binomial(n, m, prob, at_least_once=True):
         M = row_at_least_once_true(M)
 
     return M
+
+
+
 
 

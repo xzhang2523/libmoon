@@ -10,13 +10,17 @@ from solver.moea.utils import get_decomposition
 from solver.moea.utils.population import population, external_population
 from solver.moea.utils.termination import termination
 from solver.moea.utils.genetic_operator import cross_sbx, mut_pm
-from solver.moea.utils.utils_ea import population_initialization, neighborhood_selection
+from solver.moea.utils.utils_ea import population_initialization, neighborhood_selection, OperatorDE
+
 
 from util_global.constant import FONT_SIZE, problem_dict
-
 from visulization.util import plot_simplex, plot_unit_sphere
 import argparse
 import time
+
+from pymoo.indicators.hv import HV
+
+
 
 
 class MOEAD():
@@ -45,10 +49,13 @@ class MOEAD():
 
     def setup(self,
               mop: any = None,
+              args: argparse.Namespace = None,
               max_gen: int = 100,
               pop_size: int = 100,
               ) -> None:
 
+
+        self.args = args
         if mop is not None:
             self.mop = mop
         assert not mop.has_constraint
@@ -58,6 +65,7 @@ class MOEAD():
             self.ref_vec = get_reference_directions("uniform", mop.get_number_objective, n_partitions=pop_size-1)
             self.ref_vec = np.clip(self.ref_vec, 0.01, 1-0.01)
 
+
         self.n_pop = len(self.ref_vec)
         pop = population_initialization(self.n_pop, self.mop)
         f = self.mop(pop)
@@ -66,15 +74,17 @@ class MOEAD():
         self.pop(pop, f)
         self.termina(nfe=self.n_pop)
         self.neighbors = np.argsort(cdist(self.ref_vec, self.ref_vec), axis=1)[:, :self.n_neighbors]
+
         self.decomposition = get_decomposition('tch')
         self.gen = 0
 
-    def solve(self):
 
+    def solve(self):
         while self.termina.has_next:
             self.step()
             if self.gen % 500 == 0:
                 print('gen: {}'.format(self.gen))
+
 
     def reset(self,
               problem: any):
@@ -85,12 +95,17 @@ class MOEAD():
     def step(self):
         self.gen += 1
         for k in np.random.permutation(self.n_pop):
-            P = neighborhood_selection(self.n_pop, self.neighbors[k])
-            X = self.pop.parent_select(P)
 
-            off_cross = cross_sbx(X, self.mop.get_lower_bound, self.mop.get_upper_bound)
+            if self.args.crossover == 'sbx':
+                P = neighborhood_selection(self.n_pop, self.neighbors[k])
+                X = self.pop.parent_select(P)
+                off_cross = cross_sbx(X, self.mop.get_lower_bound, self.mop.get_upper_bound)
+            else:
+                P = neighborhood_selection(self.n_pop, self.neighbors[k], n_selects=3)
+                X = self.pop.parent_select(P)
+                off_cross = OperatorDE(np.atleast_2d(X[0]), np.atleast_2d(X[1]), np.atleast_2d(X[2]), self.mop)
+
             off = mut_pm(off_cross, self.mop.get_lower_bound, self.mop.get_upper_bound)
-
             off_f = self.mop(off).squeeze()
             self.z_star = np.minimum(self.z_star, off_f)
             self._update_neighbor(off, off_f, self.neighbors[k])
@@ -103,27 +118,37 @@ class MOEAD():
                                                                                              self.ref_vec[i],
                                                                                              self.z_star): self.pop(off, F=off_f, ind=i)
 
+
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--n-gen', type=int, default=2000 )
-    parser.add_argument('--problem-name', type=str, default='RE21')  # should be in lowwer case
+    parser.add_argument('--n-gen', type=int, default=1000 )
+    parser.add_argument('--crossover', type=str, default='sbx')   # crossover operator ['de', 'sbx']
+    parser.add_argument('--problem-name', type=str, default='RE42')  # should be in lowwer case
 
     args = parser.parse_args()
     from problem.synthetic.zdt import ZDT1, ZDT2, ZDT3, ZDT4, ZDT6
     from problem.synthetic.dtlz import DTLZ1, DTLZ2, DTLZ3, DTLZ4
     from problem.synthetic.re import RE21
+
     problem = problem_dict[args.problem_name]
+    ref_point = np.array( 1.2 * np.ones(problem.n_obj) )
+    ind = HV(ref_point=ref_point)
+
+
     alg = MOEAD()
     print('{} on {}'.format(alg.name, problem.problem_name))
-
-    alg.setup(problem, max_gen=args.n_gen, pop_size=10)
+    alg.setup(problem, args, max_gen=args.n_gen, pop_size=10)
 
     ref_vec = alg.ref_vec
     ts = time.time()
-
     alg.solve()
-    print('solving over {:.2f}m'.format( (time.time() - ts) / 60 ))
+    print( 'solving over {:.2f}m'.format( (time.time() - ts )/60))
+
+    hv_val = ind.do(alg.pop.F)
+    print('hv: {:.4f}'.format(hv_val))
+
 
     if problem.n_obj == 2:
         plt.scatter(alg.pop.F[:, 0], alg.pop.F[:, 1], c='none', edgecolors='r')
@@ -133,16 +158,52 @@ if __name__ == '__main__':
             pf = problem.get_pf()
             plt.plot(pf[:, 0], pf[:, 1], c='b')
 
-        plt.xlabel('$f_1$', fontsize=FONT_SIZE)
-        plt.ylabel('$f_2$', fontsize=FONT_SIZE)
+        plt.xlabel('$f_1$', fontsize=FONT_SIZE )
+        plt.ylabel('$f_2$', fontsize=FONT_SIZE )
 
-        for ref in ref_vec:
+        ref_vec_norm = ref_vec / np.linalg.norm(ref_vec, axis=1, keepdims=True)
+        for ref in ref_vec_norm:
             plt.plot([0, ref[0]], [0, ref[1]], c='k')
 
     else:
-        fig = plt.figure()
-        ax = fig.add_subplot(projection='3d')
-        ax.scatter(alg.pop.F[:, 0], alg.pop.F[:, 1], alg.pop.F[:, 2], c='none', edgecolors='r')
+        if problem.n_obj==3:
+            fig = plt.figure()
+            ax = fig.add_subplot(projection='3d')
+            ax.scatter(alg.pop.F[:, 0], alg.pop.F[:, 1], alg.pop.F[:, 2], c='none', edgecolors='r')
+            ax.set_xlabel('$f_1$', fontsize=FONT_SIZE)
+            ax.set_ylabel('$f_2$', fontsize=FONT_SIZE)
+            ax.set_zlabel('$f_3$', fontsize=FONT_SIZE)
+        elif problem.n_obj==4:
+            # plt.subplot(4, 1, 1)
+            fig = plt.figure(figsize=(4, 10))
+            ax = fig.add_subplot(4, 1, 1, projection='3d')
+            ax.scatter(alg.pop.F[:, 0], alg.pop.F[:, 1], alg.pop.F[:, 2], c='none', edgecolors='r')
+            ax.set_xlabel('$f_1$', fontsize=FONT_SIZE)
+            ax.set_ylabel('$f_2$', fontsize=FONT_SIZE)
+            ax.set_zlabel('$f_3$', fontsize=FONT_SIZE)
+            ax.set_title('$f_1, f_2, f_3$')
+
+            ax = fig.add_subplot(4, 1, 2, projection='3d')
+            ax.scatter(alg.pop.F[:, 0], alg.pop.F[:, 1], alg.pop.F[:, 3], c='none', edgecolors='r')
+            ax.set_xlabel('$f_1$', fontsize=FONT_SIZE)
+            ax.set_ylabel('$f_2$', fontsize=FONT_SIZE)
+            ax.set_zlabel('$f_4$', fontsize=FONT_SIZE)
+            ax.set_title('$f_1, f_2, f_4$')
+
+            ax = fig.add_subplot(4, 1, 3, projection='3d')
+            ax.scatter(alg.pop.F[:, 0], alg.pop.F[:, 2], alg.pop.F[:, 3], c='none', edgecolors='r')
+            ax.set_xlabel('$f_1$', fontsize=FONT_SIZE)
+            ax.set_ylabel('$f_3$', fontsize=FONT_SIZE)
+            ax.set_zlabel('$f_4$', fontsize=FONT_SIZE)
+            ax.set_title('$f_1, f_3, f_4$')
+
+            ax = fig.add_subplot(4, 1, 4, projection='3d')
+            ax.scatter(alg.pop.F[:, 1], alg.pop.F[:, 2], alg.pop.F[:, 3], c='none', edgecolors='r')
+            ax.set_xlabel('$f_2$', fontsize=FONT_SIZE)
+            ax.set_ylabel('$f_3$', fontsize=FONT_SIZE)
+            ax.set_zlabel('$f_4$', fontsize=FONT_SIZE)
+            ax.set_title('$f_2, f_3, f_4$')
+
 
         if problem.problem_name == 'DTLZ1':
             p1 = np.array([0, 0, 0.5])
@@ -152,9 +213,9 @@ if __name__ == '__main__':
         elif problem.problem_name.startswith('DTLZ'):
             plot_unit_sphere(ax)
 
-        ax.set_xlabel('$f_1$', fontsize=FONT_SIZE)
-        ax.set_ylabel('$f_2$', fontsize=FONT_SIZE)
-        ax.set_zlabel('$f_3$', fontsize=FONT_SIZE)
 
-    plt.title('MOEA/D on {} with {}'.format(problem.problem_name, args.n_gen ) )
+
+    plt.title('MOEA/D({}) on {} with {}'.format(args.crossover, problem.problem_name, args.n_gen ) )
     plt.show()
+
+    plt.figure()

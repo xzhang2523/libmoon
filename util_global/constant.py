@@ -3,7 +3,9 @@ from problem.synthetic import VLMOP1, VLMOP2, ZDT1, ZDT2, ZDT3, ZDT4, ZDT6
 from problem.synthetic import MAF1
 from problem.synthetic.dtlz import DTLZ1, DTLZ2, DTLZ3, DTLZ4
 
-from problem.synthetic.re import RE21, RE22, RE23, RE24
+from problem.synthetic.re import RE21, RE22, RE23, RE24, RE25, RE31, RE37, RE41, RE42
+
+
 
 
 import os
@@ -23,22 +25,28 @@ scalar_dict = {
 }
 
 problem_dict = {
-    'zdt1': ZDT1(),
-    'zdt2': ZDT2(),
-    'zdt3': ZDT3(),
-    'zdt4': ZDT4(),
-    'zdt6': ZDT6(),
-    'dtlz1': DTLZ1(),
-    'dtlz2': DTLZ2(),
-    'dtlz3': DTLZ3(),
-    'dtlz4': DTLZ4(),
-    'vlmop1': VLMOP1(),
-    'vlmop2': VLMOP2(),
-    'maf1': MAF1(),
+    'ZDT1': ZDT1(),
+    'ZDT2': ZDT2(),
+    'ZDT3': ZDT3(),
+    'ZDT4': ZDT4(),
+    'ZDT6': ZDT6(),
+    'DTLZ1': DTLZ1(),
+    'DTLZ2': DTLZ2(),
+    'DTLZ3': DTLZ3(),
+    'DTLZ4': DTLZ4(),
+    'VLMOP1': VLMOP1(),
+    'VLMOP2': VLMOP2(),
+    'MAF1': MAF1(),
     'RE21' : RE21(),
     'RE22': RE22(),
     'RE23': RE23(),
-    'RE24' : RE24()
+    'RE24' : RE24(),
+    'RE25' : RE25(),
+    'RE31' : RE31(),
+    'RE37' : RE37(),
+    'RE41': RE41(),
+    'RE42': RE42(),
+
 }
 
 

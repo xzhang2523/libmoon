@@ -11,16 +11,17 @@ from solver.moea.utils.population import population, external_population
 from solver.moea.utils.termination import termination
 from solver.moea.utils.genetic_operator import cross_sbx, mut_pm
 from solver.moea.utils.utils_ea import population_initialization, neighborhood_selection, OperatorDE
+from util_global.constant import FONT_SIZE, problem_dict, root_name
 
-
-from util_global.constant import FONT_SIZE, problem_dict
 from visulization.util import plot_simplex, plot_unit_sphere
 import argparse
 import time
-
 from pymoo.indicators.hv import HV
+from indicator.indicator import compute_MMS, pref2angle, angle2pref, compute_indicators
 
 
+import pickle
+import os
 
 
 class MOEAD():
@@ -30,11 +31,10 @@ class MOEAD():
                  n_neighbors: int = 10,
                  ):
 
-        self.name = 'MOEA/D'
+        self.name = 'MOEAD'
         self.mop = copy.deepcopy(mop)
         self.ref_vec = ref_vec
         self.n_neighbors = n_neighbors
-
         self.pop = population()
         self.ep = external_population()
         self.termina = termination()
@@ -63,7 +63,7 @@ class MOEAD():
 
         if self.ref_vec is None:
             self.ref_vec = get_reference_directions("uniform", mop.get_number_objective, n_partitions=pop_size-1)
-            self.ref_vec = np.clip(self.ref_vec, 0.01, 1-0.01)
+            self.ref_vec = np.clip(self.ref_vec, 1e-4, 1-1e-4)
 
 
         self.n_pop = len(self.ref_vec)
@@ -95,7 +95,6 @@ class MOEAD():
     def step(self):
         self.gen += 1
         for k in np.random.permutation(self.n_pop):
-
             if self.args.crossover == 'sbx':
                 P = neighborhood_selection(self.n_pop, self.neighbors[k])
                 X = self.pop.parent_select(P)
@@ -116,17 +115,13 @@ class MOEAD():
         for i in neighbors:
             if self.decomposition(off_f, self.ref_vec[i], self.z_star) <= self.decomposition(self.pop.F[i],
                                                                                              self.ref_vec[i],
+
                                                                                              self.z_star): self.pop(off, F=off_f, ind=i)
-
-
-
 if __name__ == '__main__':
-
     parser = argparse.ArgumentParser()
-    parser.add_argument('--n-gen', type=int, default=1000 )
+    parser.add_argument('--n-gen', type=int, default=2000 )
     parser.add_argument('--crossover', type=str, default='sbx')   # crossover operator ['de', 'sbx']
-    parser.add_argument('--problem-name', type=str, default='RE42')  # should be in lowwer case
-
+    parser.add_argument('--problem-name', type=str, default='ZDT4')  # should be in lowwer case
     args = parser.parse_args()
     from problem.synthetic.zdt import ZDT1, ZDT2, ZDT3, ZDT4, ZDT6
     from problem.synthetic.dtlz import DTLZ1, DTLZ2, DTLZ3, DTLZ4
@@ -136,7 +131,6 @@ if __name__ == '__main__':
     ref_point = np.array( 1.2 * np.ones(problem.n_obj) )
     ind = HV(ref_point=ref_point)
 
-
     alg = MOEAD()
     print('{} on {}'.format(alg.name, problem.problem_name))
     alg.setup(problem, args, max_gen=args.n_gen, pop_size=10)
@@ -145,18 +139,15 @@ if __name__ == '__main__':
     ts = time.time()
     alg.solve()
     print( 'solving over {:.2f}m'.format( (time.time() - ts )/60))
-
-    hv_val = ind.do(alg.pop.F)
-    print('hv: {:.4f}'.format(hv_val))
-
+    indicator_res = compute_indicators(alg.pop.F)
 
     if problem.n_obj == 2:
-        plt.scatter(alg.pop.F[:, 0], alg.pop.F[:, 1], c='none', edgecolors='r')
+        plt.scatter(alg.pop.F[:, 0], alg.pop.F[:, 1], c='none', edgecolors='r', label='solution')
         plt.plot(alg.pop.F[:, 0], alg.pop.F[:, 1], c='r')
 
         if not problem.problem_name.startswith('RE'):
             pf = problem.get_pf()
-            plt.plot(pf[:, 0], pf[:, 1], c='b')
+            plt.plot(pf[:, 0], pf[:, 1], c='b', label='Pareto front')
 
         plt.xlabel('$f_1$', fontsize=FONT_SIZE )
         plt.ylabel('$f_2$', fontsize=FONT_SIZE )
@@ -173,6 +164,16 @@ if __name__ == '__main__':
             ax.set_xlabel('$f_1$', fontsize=FONT_SIZE)
             ax.set_ylabel('$f_2$', fontsize=FONT_SIZE)
             ax.set_zlabel('$f_3$', fontsize=FONT_SIZE)
+
+            ref_norm = np.copy(alg.ref_vec)
+            ref_norm = ref_norm / np.linalg.norm(ref_norm, axis=1, keepdims=True)
+
+            for ref in ref_norm:
+                if problem.problem_name == 'DTLZ1':
+                    ax.plot([0, 0.5*ref[0]], [0, 0.5*ref[1]], [0, 0.5*ref[2]], c='k')
+                else:
+                    ax.plot([0, ref[0]], [0, ref[1]], [0, ref[2]], c='k')
+
         elif problem.n_obj==4:
             # plt.subplot(4, 1, 1)
             fig = plt.figure(figsize=(4, 10))
@@ -213,7 +214,22 @@ if __name__ == '__main__':
         elif problem.problem_name.startswith('DTLZ'):
             plot_unit_sphere(ax)
 
+    plt.legend()
 
+
+
+    pickle_folder = os.path.join(root_name, 'output', problem.problem_name, alg.name)
+    os.makedirs(pickle_folder, exist_ok=True)
+    pickle_name = os.path.join(pickle_folder, 'res.pkl')
+    with open(pickle_name, 'wb') as f:
+        pickle.dump(alg.pop.F, f)
+        pickle.dump(indicator_res, f)
+
+
+    txt_name = os.path.join(pickle_folder, 'res.txt')
+    with open(txt_name, 'w') as f:
+        for k, v in indicator_res.items():
+            f.write('{}: {}\n'.format(k, v))
 
     plt.title('MOEA/D({}) on {} with {}'.format(args.crossover, problem.problem_name, args.n_gen ) )
     plt.show()

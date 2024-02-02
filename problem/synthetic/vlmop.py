@@ -41,13 +41,13 @@ class VLMOP2(mop):
         self.problem_name = 'VLMOP2'
 
     def _evaluate_torch(self, x):
-        f1 = torch.norm(x - 1 / np.sqrt(self.n_var), dim=1)**2
-        f2 = torch.norm(x + 1 / np.sqrt(self.n_var), dim=1)**2
+        f1 = torch.norm(x - 1 / np.sqrt(self.n_var), dim=1)**2 / 4
+        f2 = torch.norm(x + 1 / np.sqrt(self.n_var), dim=1)**2 / 4
         return torch.stack((f1, f2), dim=1)
 
     def _evaluate_numpy(self, x):
-        f1 = np.linalg.norm(x - 1 / np.sqrt(self.n_var), axis=1)**2
-        f2 = np.linalg.norm(x + 1 / np.sqrt(self.n_var), axis=1)**2
+        f1 = np.linalg.norm(x - 1 / np.sqrt(self.n_var), axis=1)**2 / 4
+        f2 = np.linalg.norm(x + 1 / np.sqrt(self.n_var), axis=1)**2 / 4
         return np.stack((f1, f2), axis=1)
 
     def get_pf(self):

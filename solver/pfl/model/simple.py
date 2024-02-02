@@ -9,7 +9,7 @@ class PFLModel(nn.Module):
         # self.args = args
         hidden_size = 128
         self.model = nn.Sequential(
-            nn.Linear(n_obj, hidden_size),
+            nn.Linear(n_obj-1, hidden_size),
             nn.ReLU(),
             nn.Linear(hidden_size, hidden_size),
             nn.ReLU(),

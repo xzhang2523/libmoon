@@ -106,6 +106,9 @@ class ZDT3(mop):
 class ZDT4(mop):
 
     def __init__(self, n_var=10, n_obj=2, lbound=-5*np.ones(10), ubound=5*np.ones(10)):
+        lbound[0] = 0
+        ubound[0] = 1
+
         super().__init__(n_var=n_var,
                          n_obj=n_obj,
                          lbound=lbound,

@@ -52,7 +52,8 @@ class RE21(mop):
         # f_arr = np.stack((f1,f2), axis=1)
 
         f_arr_norm = (f - self.ideal) / (self.nadir - self.ideal)
-
+        # f_arr_norm =
+        f_arr_norm[:, 0] = 0.5 * f_arr_norm[:, 0]
 
         return f_arr_norm
 
@@ -72,9 +73,8 @@ class RE21(mop):
         f2 = ((F * L) / E) * ((2.0 / x1) + (2.0 * np.sqrt(2.0) / x2) - (2.0 * np.sqrt(2.0) / x3) + (2.0 / x4))
         f_arr = torch.stack((f1, f2), dim=1)
         f_arr_norm = (f_arr - self.ideal) / (self.nadir - self.ideal)
+        f_arr_norm[:, 0] = 0.5 * f_arr_norm[:, 0]
         return f_arr_norm
-
-
 
 
 class RE22(mop):
@@ -132,6 +132,8 @@ class RE22(mop):
         g = np.where(g < 0, -g, 0)
         f[:,1] = g[:,0] + g[:,1]
         f_norm = (f - self.ideal) / (self.nadir - self.ideal)
+        f_norm[:, 0] = 0.5 * f_norm[:, 0]
+
         return f_norm
 
     def _evaluate_torch(self, x):

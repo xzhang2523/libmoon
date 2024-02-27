@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: libmoon
+Version: 0.1.7
+Summary: Moon, Make MOO great again
+Author: Xiaoyuan Zhang et al.
+Author-email: xzhang2523-c@my.cityu.edu.hk
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.11
+License-File: LICENSE
+Requires-Dist: numpy==1.26.4
+Requires-Dist: torch==2.2.1
+Requires-Dist: matplotlib==3.8.3
+Requires-Dist: tqdm==4.66.2
+Requires-Dist: pymoo==0.6.1.1
+Requires-Dist: cvxopt==1.3.2
+Requires-Dist: cvxpy==1.4.2

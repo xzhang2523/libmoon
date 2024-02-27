@@ -54,16 +54,16 @@ This project has four important parts:
 
 - **Gradient-based Solver**.
 
-    | Method                                                                                                                                                                              | Property                                                              | #Obj               | Support | Published | Complexity      |
-    |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------|--------------------|---------|----------|-----------------|
-    | [EPO](https://proceedings.mlr.press/v119/mahapatra20a/mahapatra20a.pdf) [code](https://github.com/dbmptr/EPOSearch)                                                                 | Exact solution.                                                       | Any                | Y       | ICML 2020 | $O(m^2 n K )$   |
-    | [COSMOS](https://arxiv.org/pdf/2103.13392.pdf) [code](https://github.com/ruchtem/cosmos)                                                                                            | Approximated exact solution.                                          | Any                | Y       | ICDM 2021| $O(m n K )$     |
-    | [MOO-SVGD](https://openreview.net/pdf?id=S2-j0ZegyrE) [code](https://github.com/gnobitab/MultiObjectiveSampling)                                                                    | A set of diverse Pareto solution.                                     | Any                | Y       | NeurIPS 2021 | $O(m^2 n K^2 )$ |
-    | [MGDA](https://proceedings.neurips.cc/paper/2018/file/432aca3a1e345e339f35a30c8f65edce-Paper.pdf) [code](https://github.com/intel-isl/MultiObjectiveOptimization) | Arbitray Pareto solutions. Location affected highly by initialization. | Any                | Y       | NeurIPS 2018 | $O(m^2 n K )$   |
-    | [PMTL](https://proceedings.neurips.cc/paper_files/paper/2019/file/685bfde03eb646c27ed565881917c71c-Paper.pdf) [code](https://github.com/Xi-L/ParetoMTL)                             | Pareto solutions in sectors.                                          | 2. 3 is difficult. | Y       | NeurIPS 2019 | $O(m^2 n K^2 )$ |
-    | PMGDA     | Pareto solutions satisfying any preference.                           | Any                | Y       | Under review | $O(m^2 n K )$   |
+    | Method                                                                                                                                                                                | Property                                                              | #Obj               | Support | Published | Complexity      |
+    |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------|--------------------|---------|----------|-----------------|
+    | [EPO](https://proceedings.mlr.press/v119/mahapatra20a/mahapatra20a.pdf) [code](https://github.com/dbmptr/EPOSearch)                                                                   | Exact solution.                                                       | Any                | Y       | ICML 2020 | $O(m^2 n K )$   |
+    | [COSMOS](https://arxiv.org/pdf/2103.13392.pdf) [code](https://github.com/ruchtem/cosmos)                                                                                              | Approximated exact solution.                                          | Any                | Y       | ICDM 2021| $O(m n K )$     |
+    | [MOO-SVGD](https://openreview.net/pdf?id=S2-j0ZegyrE) [code](https://github.com/gnobitab/MultiObjectiveSampling)                                                                      | A set of diverse Pareto solution.                                     | Any                | Y       | NeurIPS 2021 | $O(m^2 n K^2 )$ |
+    | [MGDA](https://proceedings.neurips.cc/paper/2018/file/432aca3a1e345e339f35a30c8f65edce-Paper.pdf) [code](https://github.com/intel-isl/MultiObjectiveOptimization)                     | Arbitray Pareto solutions. Location affected highly by initialization. | Any                | Y       | NeurIPS 2018 | $O(m^2 n K )$   |
+    | [PMTL](https://proceedings.neurips.cc/paper_files/paper/2019/file/685bfde03eb646c27ed565881917c71c-Paper.pdf) [code](https://github.com/Xi-L/ParetoMTL)                               | Pareto solutions in sectors.                                          | 2. 3 is difficult. | Y       | NeurIPS 2019 | $O(m^2 n K^2 )$ |
+    | [PMGDA](http://arxiv.org/abs/2402.09492)                                                                                                                                              | Pareto solutions satisfying any preference.                           | Any                | Y       | Under review | $O(m^2 n K )$   |
     | [GradienHV](https://arxiv.org/abs/2102.04523) [WangHao](https://link.springer.com/chapter/10.1007/978-3-319-54157-0_44) [code](https://github.com/timodeist/multi_objective_learning) | It is a gradient-based HV method.| 2/3                | Y       | CEC 2023| $O(m^2 n K^2 )$ |   
-    | Aggregation fun. based, e.g. Tche,mTche,LS,PBI,...                                                                                                                                  | Pareto solution with aggregations.    | Any                | Y       |
+    | Aggregation fun. based, e.g. Tche,mTche,LS,PBI,...                                                                                                                                    | Pareto solution with aggregations.    | Any                | Y       |
 
 
     Here, $m$ is the number of objectives, $K$ is the number of samples, and $n$ is the number of decision variables.
@@ -87,14 +87,6 @@ This project has four important parts:
         The original code MOO-SVGD does not offer a MTL implement. Our code is the first open source code for MTL MOO-SVGD.
 
 
-- **MTL Solver (The non-moo line) **.
-
-    | Method   | Paper                                         |Code| Institude | Published |
-    |----------|-----------------------------------------------|----|---------|-----------|
-    | CAGrad   | [Paper](https://openreview.net/forum?id=IMPnRXEWpvr) | |ICLR 2021| Tsinghua  |
-    | PCGrad   | [Paper](https://arxiv.org/pdf/2001.06782.pdf) | |NeurIPS 2020| UCB       |
-    | Nash-MTL | [Paper](https://arxiv.org/abs/2202.01017)     | |ICML 2022| Nvidia    |
-
 - 
 - **PSL solvers**
     - EPO-based
@@ -117,3 +109,8 @@ This project has four important parts:
 
 - ML pretrained methods. 
     - HV net. 
+
+
+Examples:
+```
+from libmoon.solver.gradient import GradAggSolver

@@ -40,6 +40,8 @@ secrets.txt
 *.tmp
 *.bak
 
+
+
 # Ignore documentation and build artifacts
 docs/
 build/

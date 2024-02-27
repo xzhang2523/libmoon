@@ -13,6 +13,9 @@ solver
     y: (n_prob, n_obj)
     pref: (n_prob, n_obj)
 
+2. For problems, use upper letter. 
+
+3. For methods, use small letter. 
 
 
 
@@ -22,7 +25,6 @@ solver
 problems. 
 
 (2) For EPO the recommended learning rate is 1e-2. 
-
-(3) 
+1e-2
 
 

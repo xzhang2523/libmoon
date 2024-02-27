@@ -63,6 +63,7 @@ class HyperVolume:
         hyperVolume = self.hvRecursive(dimensions - 1, len(relevantPoints), bounds)
         return hyperVolume
 
+
     def hvRecursive(self, dimIndex, length, bounds):
         """Recursive call to hypervolume calculation.
         In contrast to the paper, the code assumes that the reference point
@@ -101,8 +102,7 @@ class HyperVolume:
                     q.ignore = 0
                 q = q.prev[dimIndex]
             q = p.prev[dimIndex]
-            while length > 1 and (
-                    q.cargo[dimIndex] > bounds[dimIndex] or q.prev[dimIndex].cargo[dimIndex] >= bounds[dimIndex]):
+            while length > 1 and (q.cargo[dimIndex] > bounds[dimIndex] or q.prev[dimIndex].cargo[dimIndex] >= bounds[dimIndex]):
                 p = q
                 remove(p, dimIndex, bounds)
                 q = p.prev[dimIndex]
@@ -111,11 +111,10 @@ class HyperVolume:
             qCargo = q.cargo
             qPrevDimIndex = q.prev[dimIndex]
             if length > 1:
-                hvol = qPrevDimIndex.volume[dimIndex] + qPrevDimIndex.area[dimIndex] * (
-                            qCargo[dimIndex] - qPrevDimIndex.cargo[dimIndex])
+                hvol = qPrevDimIndex.volume[dimIndex] + qPrevDimIndex.area[dimIndex] * (qCargo[dimIndex] - qPrevDimIndex.cargo[dimIndex])
             else:
                 qArea[0] = 1
-                qArea[1:dimIndex + 1] = [qArea[i] * -qCargo[i] for i in range(dimIndex)]
+                qArea[1:dimIndex+1] = [qArea[i] * -qCargo[i] for i in range(dimIndex)]
             q.volume[dimIndex] = hvol
             if q.ignore >= dimIndex:
                 qArea[dimIndex] = qPrevDimIndex.area[dimIndex]
@@ -141,6 +140,7 @@ class HyperVolume:
             hvol -= q.area[dimIndex] * q.cargo[dimIndex]
             return hvol
 
+
     def preProcess(self, front):
         """Sets up the list data structure needed for calculation."""
         dimensions = len(self.referencePoint)
@@ -151,6 +151,7 @@ class HyperVolume:
             nodes = sorted(nodes, key=lambda node: node.cargo[i])
             nodeList.extend(nodes, i)
         self.list = nodeList
+
 
 
 class MultiList:
@@ -164,7 +165,7 @@ class MultiList:
 
         def __init__(self, numberLists, cargo=None):
             self.cargo = cargo
-            self.next = [None] * numberLists
+            self.next  = [None] * numberLists
             self.prev = [None] * numberLists
             self.ignore = 0
             self.area = [0.0] * numberLists
@@ -172,6 +173,7 @@ class MultiList:
 
         def __str__(self):
             return str(self.cargo)
+
 
     def __init__(self, numberLists):
         """Constructor.
@@ -182,6 +184,7 @@ class MultiList:
         self.sentinel = MultiList.Node(numberLists)
         self.sentinel.next = [self.sentinel] * numberLists
         self.sentinel.prev = [self.sentinel] * numberLists
+
 
     def __str__(self):
         strings = []
@@ -197,9 +200,11 @@ class MultiList:
             stringRepr += string + "\n"
         return stringRepr
 
+
     def __len__(self):
         """Returns the number of lists that are included in this MultiList."""
         return self.numberLists
+
 
     def getLength(self, i):
         """Returns the length of the i-th list."""
@@ -211,6 +216,7 @@ class MultiList:
             node = node.next[i]
         return length
 
+
     def append(self, node, index):
         """Appends a node to the end of the list at the given index."""
         lastButOne = self.sentinel.prev[index]
@@ -219,6 +225,7 @@ class MultiList:
         # set the last element as the new one
         self.sentinel.prev[index] = node
         lastButOne.next[index] = node
+
 
     def extend(self, nodes, index):
         """Extends the list at the given index with the nodes."""
@@ -231,6 +238,7 @@ class MultiList:
             sentinel.prev[index] = node
             lastButOne.next[index] = node
 
+
     def remove(self, node, index, bounds):
         """Removes and returns 'node' from all lists in [0, 'index'[."""
         for i in range(index):
@@ -241,6 +249,7 @@ class MultiList:
             if bounds[i] > node.cargo[i]:
                 bounds[i] = node.cargo[i]
         return node
+
 
     def reinsert(self, node, index, bounds):
         """
@@ -255,9 +264,11 @@ class MultiList:
                 bounds[i] = node.cargo[i]
 
 
+
 if __name__ == "__main__":
+
     # Example:
     referencePoint = [2, 2, 2]
     hv = HyperVolume(referencePoint)
-    front = [[1, 0, 1], [0, 1, 0]]
+    front = [[1,0,1], [0,1,0]]
     volume = hv.compute(front)

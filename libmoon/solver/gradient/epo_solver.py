@@ -160,11 +160,14 @@ class EPOSolver(GradBaseSolver):
         ref_point = array([2.0, 2.0])
         ind = HV(ref_point=ref_point)
         hv_arr = []
+        y_arr = []
+
 
         for i in tqdm( range(self.max_iter) ):
 
             # optimizer.zero_grad()
             y = problem.evaluate(x)
+            y_arr.append(y.detach().numpy() )
 
             alpha_arr = [0] * args.n_prob
             for prob_idx in range( args.n_prob ):
@@ -187,11 +190,10 @@ class EPOSolver(GradBaseSolver):
                 x.data = torch.clamp(x.data, torch.Tensor(problem.lbound) + solution_eps, torch.Tensor(problem.ubound)-solution_eps )
 
 
-
-
         res = {}
         res['x'] = x.detach().numpy()
         res['y'] = y.detach().numpy()
         res['hv_arr'] = [0]
+        res['y_arr'] = y_arr
 
         return res

@@ -30,12 +30,13 @@ class MGDASolver(GradBaseSolver):
 
         ind = HV(ref_point=get_hv_ref_dict(args.problem_name))
         hv_arr = []
+        y_arr = []
 
         for i in tqdm(range(self.max_iter)):
             grad_arr = [0] * args.n_prob
             y = problem.evaluate(x)
-
             y_np = y.detach().numpy()
+            y_arr.append(y_np)
             hv_arr.append(ind.do(y_np))
 
             for prob_idx in range( args.n_prob ):
@@ -55,12 +56,13 @@ class MGDASolver(GradBaseSolver):
             optimizer.step()
 
             if 'lbound' in dir(problem):
-                x.data = torch.clamp(x.data, problem.lb + solution_eps, problem.ub-solution_eps )
+                x.data = torch.clamp(x.data, torch.Tensor(problem.lbound) + solution_eps, torch.Tensor(problem.ubound) - solution_eps )
 
         res = {}
         res['x'] = x.detach().numpy()
         res['y'] = y.detach().numpy()
         res['hv_arr'] = hv_arr
+        res['y_arr'] = y_arr
 
         return res
 

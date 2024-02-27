@@ -64,9 +64,72 @@ def vis_res(res, problem, prefs, args):
         raise Exception('n_obj not supported')
 
 
+import matplotlib.cm as cm
+# import matplotlib.animation as animation
+
+from matplotlib.animation import FuncAnimation
+import matplotlib.animation as manimation
+from matplotlib.animation import PillowWriter
+
+from libmoon.util_global.constant import FONT_SIZE
 
 def vedio_res(res, problem, prefs, args):
-    print()
+    print('vedio making')
+    # print()
+    # FFMpegWriter = manimation.writers['ffmpeg']
+    metadata = dict(title='Movie Test', artist='Matplotlib',
+                    comment='a red circle following a blue sine wave')
+    # writer = PillowWriter(fps=15, metadata=metadata)
+    fps=15
+    from matplotlib.animation import FuncAnimation
+    from matplotlib.animation import FFMpegWriter
+
+    # Create some data
+    # x = np.linspace(0, 2 * np.pi, 100)
+    # y = np.sin(x)
+    subsample = 20
+    y_arr = res['y_arr'][::subsample]
+    n_frame = len( y_arr )
+
+    # Create a figure and axis
+    fig, ax = plt.subplots()
+    ax.set_xlim(0, 1.2)
+    ax.set_ylim(0, 1.2)
+
+    ax.set_xlabel('$f_1$', fontsize=FONT_SIZE)
+    ax.set_ylabel('$f_2$', fontsize=FONT_SIZE)
+
+
+    # Create a function to update the plot for each frame of the animation
+    def update(frame):
+        ax.clear()
+        ax.scatter(y_arr[frame][:,0], y_arr[frame][:,1])
+        ax.set_xlim(0, 1.2)
+        ax.set_ylim(0, 1.2)
+
+        ax.set_xlabel('$f_1$', fontsize=FONT_SIZE)
+        ax.set_ylabel('$f_2$', fontsize=FONT_SIZE)
+
+    # Create the animation
+    ani = FuncAnimation(fig, update, frames=n_frame, interval=100)
+
+    # Define the writer for the animation using FFMpegWriter
+    writer = FFMpegWriter(fps=15, metadata=dict(artist='Me'), bitrate=1800)
+
+
+    if args.solver == 'agg':
+        file_name = '{}_{}_{}.mp4'.format(args.problem_name, args.solver, args.agg)
+    else:
+        file_name = '{}_{}.mp4'.format(args.problem_name, args.solver)
+
+
+    # Save the animation as a video file
+    ani.save(file_name, writer=writer)
+
+    plt.show()
+
+
+
 
 
 

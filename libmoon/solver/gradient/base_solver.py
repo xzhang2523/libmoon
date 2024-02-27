@@ -31,7 +31,6 @@ class GradAggSolver(GradBaseSolver):
     def __init__(self, step_size, max_iter, tol):
         super().__init__(step_size, max_iter, tol)
 
-
     def solve(self, problem, x, prefs, args):
         x = Variable(x, requires_grad=True)
 
@@ -40,6 +39,8 @@ class GradAggSolver(GradBaseSolver):
 
 
         hv_arr = []
+        y_arr = []
+
         prefs = Tensor(prefs)
         optimizer = SGD([x], lr=self.step_size)
         agg_func = scalar_dict[args.agg]
@@ -54,10 +55,13 @@ class GradAggSolver(GradBaseSolver):
             torch.sum(agg_val).backward()
             optimizer.step()
 
+            y_arr.append(y.detach().numpy())
+
             if 'lbound' in dir(problem):
                 x.data = torch.clamp(x.data, torch.Tensor(problem.lbound) + solution_eps, torch.Tensor(problem.ubound)-solution_eps)
 
         res['x'] = x.detach().numpy()
         res['y'] = y.detach().numpy()
         res['hv_arr'] = hv_arr
+        res['y_arr'] = y_arr
         return res

@@ -24,6 +24,8 @@ setup(
                     'tqdm==4.66.2',
                     'pymoo==0.6.1.1',
                     'cvxopt==1.3.2',
-                    'cvxpy==1.4.2'
+                    'cvxpy==1.4.2',
+                    'ffmpeg-python',
+                      'ffmpeg'
                       ]
 )

@@ -9,7 +9,7 @@ print(f"vscode current run path is {os.getcwd()}")
 from libmoon.solver.gradient import MGDASolver, GradAggSolver, EPOSolver, MOOSVGDSolver, GradHVSolver, PMTLSolver
 from libmoon.util_global.weight_factor.funs import uniform_pref
 from libmoon.util_global.constant import problem_dict
-from libmoon.visulization.view_res import vis_res
+from libmoon.visulization.view_res import vis_res, vedio_res
 import argparse
 import torch
 from matplotlib import pyplot as plt
@@ -18,15 +18,17 @@ import time
 
 
 
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser( description= 'example script' )
     parser.add_argument( '--n-partition', type=int, default=10 )
     parser.add_argument( '--agg', type=str, default='tche')  # If solve is agg, then choose a specific agg method.
-    parser.add_argument('--solver', type=str, default='moosvgd')
-    # ['agg', 'epo', 'moosvgd', 'hvgrad', 'pmtl']
+    parser.add_argument('--solver', type=str, default='mgda')
+    # ['agg', 'epo', 'moosvgd', 'hvgrad', 'pmtl', 'mgda']
     parser.add_argument( '--problem-name', type=str, default='VLMOP2')
-    parser.add_argument('--iter', type=int, default=10000)
-    parser.add_argument('--step-size', type=float, default=1e-2)
+    parser.add_argument('--iter', type=int, default=4000)
+    parser.add_argument('--step-size', type=float, default=0.01)
     parser.add_argument('--tol', type=float, default=1e-6)
     parser.add_argument('--plt-pref-flag', type=str, default='N')
 
@@ -47,6 +49,8 @@ if __name__ == '__main__':
         solver = GradHVSolver(args.step_size, args.iter, args.tol)
     elif args.solver == 'pmtl':
         solver = PMTLSolver(args.step_size, args.iter, args.tol)
+    elif args.solver=='pmgda':
+        assert False, 'will be implemented soon'
     else:
         raise Exception('solver not supported')
 
@@ -65,19 +69,29 @@ if __name__ == '__main__':
         else:
             x0 = torch.rand(args.n_prob, problem.n_var)
     else:
-        x0 = torch.rand( args.n_prob, problem.n_var )*20 - 10
+        x0 = torch.rand( args.n_prob, problem.n_var ) * 20 - 10
 
 
     ts = time.time()
     res = solver.solve( problem, x=x0, prefs=prefs, args=args)
+
     elapsed = time.time() - ts
     res['elapsed'] = elapsed
 
-    vis_res(res, problem, prefs, args)
-    fig_name = os.path.join(args.folder_name, 'res.svg')
-    plt.savefig(fig_name)
-    print('Save fig to %s' % fig_name)
-    plt.show()
+
+    use_fig=False
+    if use_fig:
+        vis_res(res, problem, prefs, args)
+        fig_name = os.path.join(args.folder_name, 'res.svg')
+        plt.savefig(fig_name)
+        print('Save fig to %s' % fig_name)
+        plt.show()
+
+
+    use_vedio=True
+    if use_vedio:
+        vedio_res(res, problem, prefs, args)
+
 
     pickle_name = os.path.join(args.folder_name, 'res.pkl')
     with open(pickle_name, 'wb') as f:

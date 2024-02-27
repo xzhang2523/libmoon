@@ -183,8 +183,8 @@ class EPOSolver(GradBaseSolver):
             torch.sum(alpha_arr * y).backward()
             optimizer.step()
 
-            if 'lb' in dir(problem):
-                x.data = torch.clamp(x.data, problem.lb + solution_eps, problem.ub-solution_eps )
+            if 'lbound' in dir(problem):
+                x.data = torch.clamp(x.data, torch.Tensor(problem.lbound) + solution_eps, torch.Tensor(problem.ubound)-solution_eps )
 
 
 

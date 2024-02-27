@@ -1,5 +1,4 @@
 import numpy as np
-
 import os
 import sys
 print(f"vscode current run path is {os.getcwd()}")
@@ -14,24 +13,24 @@ from libmoon.visulization.view_res import vis_res
 import argparse
 import torch
 from matplotlib import pyplot as plt
-
 import pickle
 import time
+
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser( description= 'example script' )
     parser.add_argument( '--n-partition', type=int, default=10 )
-    parser.add_argument( '--agg', type=str, default='ls')  # If solve is agg, then choose a specific agg method.
-    parser.add_argument('--solver', type=str, default='agg')
-    parser.add_argument( '--problem-name', type=str, default='ZDT1')
-    parser.add_argument('--iter', type=int, default=1000)
+    parser.add_argument( '--agg', type=str, default='tche')  # If solve is agg, then choose a specific agg method.
+    parser.add_argument('--solver', type=str, default='moosvgd')
+    # ['agg', 'epo', 'moosvgd', 'hvgrad', 'pmtl']
+    parser.add_argument( '--problem-name', type=str, default='VLMOP2')
+    parser.add_argument('--iter', type=int, default=10000)
     parser.add_argument('--step-size', type=float, default=1e-2)
     parser.add_argument('--tol', type=float, default=1e-6)
     parser.add_argument('--plt-pref-flag', type=str, default='N')
 
     args = parser.parse_args()
-
     problem = problem_dict[args.problem_name]
     args.n_obj, args.n_var = problem.n_obj, problem.n_var
     root_name = os.path.dirname(os.path.dirname(__file__))

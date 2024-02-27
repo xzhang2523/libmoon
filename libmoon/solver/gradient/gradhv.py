@@ -104,7 +104,7 @@ class GradHVSolver(GradBaseSolver):
             optimizer.zero_grad()
             torch.sum(weight*y).backward()
             optimizer.step()
-            if 'lb' in dir(problem):
+            if 'lbound' in dir(problem):
                 x.data = torch.clamp(x.data, problem.lb + solution_eps, problem.ub-solution_eps )
 
 

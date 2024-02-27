@@ -43,7 +43,7 @@ def get_svgd_gradient(G, inputs, losses):
     g_w = [0] * n_prob
 
     for idx in range(n_prob):
-        g_w[idx] = solve_mgda(G[idx], return_coeff=False)
+        g_w[idx] = torch.Tensor( solve_mgda(G[idx], return_coeff=False) )
 
     g_w = torch.stack(g_w)  # (n_prob, n_var)
     # See https://github.com/activatedgeek/svgd/issues/1#issuecomment-649235844 for why there is a factor -0.5
@@ -80,8 +80,8 @@ class MOOSVGDSolver(GradBaseSolver):
             x.grad = gw
             optimizer.step()
 
-            if 'lb' in dir(problem):
-                x.data = torch.clamp(x.data, problem.lb + solution_eps, problem.ub-solution_eps)
+            if 'lbound' in dir(problem):
+                x.data = torch.clamp(x.data, torch.Tensor(problem.lbound) + solution_eps, torch.Tensor(problem.ubound) - solution_eps)
 
         res={}
         res['x'] = x.detach().numpy()

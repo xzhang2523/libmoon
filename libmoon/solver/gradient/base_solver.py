@@ -55,7 +55,7 @@ class GradAggSolver(GradBaseSolver):
             optimizer.step()
 
             if 'lbound' in dir(problem):
-                x.data = torch.clamp(x.data, problem.lb + solution_eps, problem.ub-solution_eps)
+                x.data = torch.clamp(x.data, torch.Tensor(problem.lbound) + solution_eps, torch.Tensor(problem.ubound)-solution_eps)
 
         res['x'] = x.detach().numpy()
         res['y'] = y.detach().numpy()

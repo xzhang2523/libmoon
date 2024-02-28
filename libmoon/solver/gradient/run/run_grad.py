@@ -22,9 +22,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser( description= 'example script' )
     parser.add_argument( '--n-partition', type=int, default=10 )
     parser.add_argument( '--agg', type=str, default='tche')  # If solve is agg, then choose a specific agg method.
-    parser.add_argument('--solver', type=str, default='pmtl')
+    parser.add_argument('--solver', type=str, default='hvgrad')
     # ['agg', 'epo', 'moosvgd', 'hvgrad', 'pmtl', 'mgda']
-    parser.add_argument( '--problem-name', type=str, default='ZDT1')
+    parser.add_argument( '--problem-name', type=str, default='VLMOP2')
     parser.add_argument('--iter', type=int, default=2000)
     parser.add_argument('--step-size', type=float, default=0.1)
     parser.add_argument('--tol', type=float, default=1e-6)
@@ -34,6 +34,7 @@ if __name__ == '__main__':
     problem = problem_dict[args.problem_name]
     args.n_obj, args.n_var = problem.n_obj, problem.n_var
     root_name = os.path.dirname(os.path.dirname(__file__))
+
 
     if args.solver == 'mgda':
         solver = MGDASolver(args.step_size, args.iter, args.tol)

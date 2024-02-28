@@ -11,6 +11,7 @@ from torch.autograd import Variable
 from tqdm import tqdm
 from ...util_global.constant import solution_eps
 
+from .mgda_core import solve_mgda
 
 
 
@@ -31,14 +32,18 @@ def get_d_paretomtl(grads, value, weights, i):
     # check active constraints
     normalized_current_weight = weights[i] / np.linalg.norm(weights[i])
     normalized_rest_weights = np.delete(weights, (i), axis=0) / np.linalg.norm(np.delete(weights, (i), axis=0), axis=1,
-                                                                               keepdims=True)
+                                                                     keepdims=True)
+    # shape: (9, 2)
     w = normalized_rest_weights - normalized_current_weight
     # solve QP
     gx = np.dot(w, value / np.linalg.norm(value))
     idx = gx > 0
     vec = np.concatenate((grads, np.dot(w[idx], grads)), axis=0)
     # use MinNormSolver to solve QP
-    sol, nd = MinNormSolver.find_min_norm_element( vec )
+    # vec.shape:
+
+    # sol, nd = MinNormSolver.find_min_norm_element( vec )
+    _, sol = solve_mgda( torch.Tensor(vec), return_coeff=True)
 
     # reformulate ParetoMTL as linear scalarization method, return the weights
     weight0 = sol[0] + np.sum(np.array([sol[j] * w[idx][j - 2, 0] for j in np.arange(2, 2 + np.sum(idx))]))
@@ -69,7 +74,8 @@ def get_d_paretomtl_init(grads, value, weights, i):
         sol = np.ones(1)
     else:
         vecs = np.dot(w[idx], grads)
-        sol, nd = MinNormSolver.find_min_norm_element( vecs )
+        _, sol = solve_mgda( torch.Tensor(vecs), return_coeff=True)
+        # print()
 
     # calculate the weights
     weight0 = np.sum(np.array([sol[j] * w[idx][j, 0] for j in np.arange(0, np.sum(idx))]))
@@ -116,10 +122,8 @@ class PMTLSolver(GradBaseSolver):
                 for obj_idx in range(args.n_obj):
                     y[prob_idx][obj_idx].backward(retain_graph=True)
                     grad_arr[prob_idx][obj_idx] = x.grad[prob_idx].clone()
-                    # grad_arr: (n_prob, n_obj, n_var)
                     x.grad.zero_()
                 grad_arr[prob_idx] = torch.stack(grad_arr[prob_idx])
-
 
             grad_arr = torch.stack(grad_arr)
             grad_arr_np = grad_arr.detach().numpy()
@@ -127,7 +131,6 @@ class PMTLSolver(GradBaseSolver):
                 weights = [ get_d_paretomtl_init(grad_arr_np[i], y_np[i], prefs, i) for i in range(args.n_prob) ]
             else:
                 weights = [ get_d_paretomtl(grad_arr_np[i], y_np[i], prefs, i) for i in range(args.n_prob) ]
-                # print()
 
             optimizer.zero_grad()
             torch.sum(torch.tensor(weights) * y).backward()

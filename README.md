@@ -1,5 +1,7 @@
 ### Moon: A Standardized/Flexible Framework for MultiObjective OptimizatioN
+<p align="center"
 <img src="moon.png" alt="Moon" width="200">
+</p>
 
 ''
     I raise my cup to invite the moon.
@@ -119,6 +121,7 @@ import torch
 import numpy as np
 from matplotlib import pyplot as plt
 import argparse
+from libmoon.visulization.view_res import vedio_res
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='example')
@@ -138,7 +141,6 @@ if __name__ == '__main__':
     prefs = uniform_pref(args.n_partition, problem.n_obj, clip_eps=1e-2)
     args.n_prob = len(prefs)
 
-    
     # Initialize the initial solution 
     if 'lbound' in dir(problem):
         if args.problem_name == 'VLMOP1':
@@ -158,6 +160,11 @@ if __name__ == '__main__':
     plt.xlabel('$f_1$', fontsize=20)
     plt.ylabel('$f_2$', fontsize=20)
     plt.show()
+    
+    # If use vedio
+    use_vedio=True
+    if use_vedio:
+        vedio_res(res, problem, prefs, args)
 
     
 

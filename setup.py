@@ -1,8 +1,13 @@
 from setuptools import setup, find_packages
 
+from pathlib import Path
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
+
+
 setup(
     name='libmoon',
-    version='0.1.8',
+    version='0.1.9',
     author='Xiaoyuan Zhang et al.',
     author_email='xzhang2523-c@my.cityu.edu.hk',
     description='Moon, Make MOO great again',
@@ -27,5 +32,7 @@ setup(
                     'cvxpy==1.4.2',
                     'ffmpeg-python',
                       'ffmpeg'
-                      ]
+                      ],
+    long_description=long_description,
+    long_description_content_type='text/markdown'
 )

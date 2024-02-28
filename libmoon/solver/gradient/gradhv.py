@@ -98,14 +98,13 @@ class GradHVSolver(GradBaseSolver):
         optimizer = torch.optim.SGD([x,], lr=self.step_size)
         hv_ind = HV(ref_point=get_hv_ref_dict(args.problem_name))
         hv_arr = [0] * self.max_iter
+        y_arr=[]
         for iter_idx in tqdm(range(self.max_iter)):
             y = problem.evaluate(x)
             y_np = y.detach().numpy()
+            y_arr.append(y_np)
             hv_arr[iter_idx] = hv_ind.do(y_np)
-
             weight = hv_maximizer.compute_weights(y_np.T)
-
-
             weight = torch.tensor(weight.T, dtype=torch.float)
             optimizer.zero_grad()
             torch.sum(weight*y).backward()
@@ -118,4 +117,6 @@ class GradHVSolver(GradBaseSolver):
         res['x'] = x.detach().numpy()
         res['y'] = y.detach().numpy()
         res['hv_arr'] = hv_arr
+        res['y_arr'] = y_arr
+
         return res

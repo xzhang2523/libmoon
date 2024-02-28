@@ -101,6 +101,10 @@ def vedio_res(res, problem, prefs, args):
 
 
     # Create a function to update the plot for each frame of the animation
+    if args.solver == 'agg':
+        file_name = '{}_{}_{}'.format(args.problem_name, args.solver, args.agg)
+    else:
+        file_name = '{}_{}'.format(args.problem_name, args.solver)
     def update(frame):
         ax.clear()
         ax.scatter(y_arr[frame][:,0], y_arr[frame][:,1])
@@ -110,6 +114,9 @@ def vedio_res(res, problem, prefs, args):
         ax.set_xlabel('$f_1$', fontsize=FONT_SIZE)
         ax.set_ylabel('$f_2$', fontsize=FONT_SIZE)
 
+        ax.set_title(file_name, fontsize=FONT_SIZE)
+
+
     # Create the animation
     ani = FuncAnimation(fig, update, frames=n_frame, interval=100)
 
@@ -117,14 +124,13 @@ def vedio_res(res, problem, prefs, args):
     writer = FFMpegWriter(fps=15, metadata=dict(artist='Me'), bitrate=1800)
 
 
-    if args.solver == 'agg':
-        file_name = '{}_{}_{}.mp4'.format(args.problem_name, args.solver, args.agg)
-    else:
-        file_name = '{}_{}.mp4'.format(args.problem_name, args.solver)
 
+
+    mp4_file_name = file_name + '.mp4'
 
     # Save the animation as a video file
-    ani.save(file_name, writer=writer)
+    ani.save(mp4_file_name, writer=writer)
+    print('Vedio saved: {}'.format(mp4_file_name))
 
     plt.show()
 

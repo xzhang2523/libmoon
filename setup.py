@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='libmoon',
-    version='0.1.7',
+    version='0.1.8',
     author='Xiaoyuan Zhang et al.',
     author_email='xzhang2523-c@my.cityu.edu.hk',
     description='Moon, Make MOO great again',

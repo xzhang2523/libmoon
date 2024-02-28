@@ -7,16 +7,16 @@
 ''
 -- Li Bai.
 
-Moon: is a multiobjective optimization framework, from single-objective optimization to multiobjective optimization, towards a better understanding of optimization problems.
+Moon: is a multiobjective optimization framework, from single-objective optimization to multiobjective optimization, towards a better understanding of optimization problems and fair comparasions between MOO algorithms. d
 
 
-Do not release.  
 
-Main contributors: Xiaoyuan Zhang, Ji Cheng, Liao Zhang, Weiduo Liao, Xi Lin.
+Main contributors: Xiaoyuan Zhang (project leader), Ji Cheng, Liao Zhang, Weiduo Liao, Zhe Zhao, Xi Lin.
+
+Advised by: Prof. Yifan Chen, Prof. Zhichao Lu, Prof. Ke Shang, Prof. Tao Qin. 
 
 Corresponding to: Prof. Qingfu Zhang. 
 
-Advised by: Prof. Yifan Chen, Prof. Zhichao Lu, Prof. Ke Shang, Prof. Tao Qin. 
 
 This project has four important parts:
 
@@ -34,7 +34,8 @@ This project has four important parts:
   | [Fi's](https://ieeexplore.ieee.org/document/996017) [code]() | Real world problems.                                                 | Y                                                    |
   | RE                                                           | [paper](https://arxiv.org/abs/2009.12867)                            | [code](https://github.com/ryojitanabe/reproblems)    |
 
-(2) For multitask learning problems, 
+
+(2) For multitask learning problems,
 
 | Problem                 | Paper | Project/Code |
 |-------------------------|------|--------------|
@@ -71,15 +72,13 @@ This project has four important parts:
 
     As a result, m^2 is not a big problem. n^2 is a big problem. K^2 is a big problem.
 
-    For running time consideration, .
-        -1 T1. 
+    Time complexity of gradient based methods are as follows,
+        -1 Tier 1. GradAggSolver.
+        -2 Tier 2. MGDASolver, EPOSolver, PMTLSolver. 
+        -3 Tier 3. GradHVSolver
+        -4 Tier 4. MOOSVGDSolver
 
-    MOO-SVGD is the slowest one.
 
-
-    EPO, MOO-SVGD, PMTL, 
-
-    
     Current support:
         GradAggSolver, MGDASolver, EPOSolver, MOOSVGDSolver, GradHVSolver, PMTLSolver.
 
@@ -87,14 +86,13 @@ This project has four important parts:
         The original code MOO-SVGD does not offer a MTL implement. Our code is the first open source code for MTL MOO-SVGD.
 
 
-- 
 - **PSL solvers**
     - EPO-based
     - Agg-based
     - Hypernetwork-based
     - ConditionalNet-based
     - Simple PSL model
-    
+    - Generative PSL model     
     
 - **MOEA/D**
     Current supported:
@@ -104,13 +102,64 @@ This project has four important parts:
     - [MOEA/D AWA](https://pubmed.ncbi.nlm.nih.gov/23777254/). 
     - [MOEA/D neural AWA](https://openreview.net/pdf?id=W3T9rql5eo).
 
-- **MOBO**
-    - 
-
-- ML pretrained methods. 
-    - HV net. 
+    
 
 
-Examples:
+- **ML pretrained methods.** 
+    - HV net (https://arxiv.org/abs/2203.02185).  
+
+
+
+
+
+Example code:
 ```
 from libmoon.solver.gradient import GradAggSolver
+from libmoon.util_global.constant import problem_dict
+from libmoon.util_global.weight_factor.funs import uniform_pref
+import torch
+import numpy as np
+from matplotlib import pyplot as plt
+import argparse
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='example')
+    parser.add_argument('--n-partition', type=int, default=10)
+    parser.add_argument('--agg', type=str, default='tche')  # If solve is agg, then choose a specific agg method.
+    parser.add_argument('--solver', type=str, default='agg')
+    parser.add_argument('--problem-name', type=str, default='VLMOP2')
+    parser.add_argument('--iter', type=int, default=1000)
+    parser.add_argument('--step-size', type=float, default=1e-2)
+    parser.add_argument('--tol', type=float, default=1e-6)
+    args = parser.parse_args()
+    
+    
+    # Init the solver, problem and prefs. 
+    solver = GradAggSolver(args.step_size, args.iter, args.tol)
+    problem = problem_dict[args.problem_name]
+    prefs = uniform_pref(args.n_partition, problem.n_obj, clip_eps=1e-2)
+    args.n_prob = len(prefs)
+
+    
+    # Initialize the initial solution 
+    if 'lbound' in dir(problem):
+        if args.problem_name == 'VLMOP1':
+            x0 = torch.rand(args.n_prob, problem.n_var) * 2 / np.sqrt(problem.n_var) - 1 / np.sqrt(problem.n_var)
+        else:
+            x0 = torch.rand(args.n_prob, problem.n_var)
+    else:
+        x0 = torch.rand( args.n_prob, problem.n_var )*20 - 10
+
+
+    # Solve results
+    res = solver.solve(problem, x=x0, prefs=prefs, args=args)
+    
+    # Plot results
+    y_arr = res['y']
+    plt.scatter(y_arr[:,0], y_arr[:,1], s=50)
+    plt.xlabel('$f_1$', fontsize=20)
+    plt.ylabel('$f_2$', fontsize=20)
+    plt.show()
+
+    
+

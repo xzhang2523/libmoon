@@ -136,6 +136,7 @@ class MinNormSolver:
             nc, nd = MinNormSolver._min_norm_element_from2(v1v1, v1v2, v2v2)
             new_sol_vec = nc * sol_vec + (1 - nc) * new_point
             change = new_sol_vec - sol_vec
+            change = np.array(change)
 
             if np.sum( np.abs(change) ) < MinNormSolver.STOP_CRIT:
                 return sol_vec, nd

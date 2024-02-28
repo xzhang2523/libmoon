@@ -81,6 +81,9 @@ libmoon/util_global/scalarization.py
 libmoon/util_global/weight_factor/__init__.py
 libmoon/util_global/weight_factor/das_dennis.py
 libmoon/util_global/weight_factor/funs.py
+libmoon/visulization/__init__.py
+libmoon/visulization/util.py
+libmoon/visulization/view_res.py
 src/__init__.py
 test/test2.py
 test/test_kernel.py

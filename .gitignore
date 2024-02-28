@@ -39,6 +39,7 @@ secrets.txt
 # Ignore temporary files
 *.tmp
 *.bak
+*.mp4
 
 
 

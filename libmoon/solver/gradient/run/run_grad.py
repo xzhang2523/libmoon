@@ -18,17 +18,15 @@ import time
 
 
 
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser( description= 'example script' )
     parser.add_argument( '--n-partition', type=int, default=10 )
     parser.add_argument( '--agg', type=str, default='tche')  # If solve is agg, then choose a specific agg method.
-    parser.add_argument('--solver', type=str, default='mgda')
+    parser.add_argument('--solver', type=str, default='pmtl')
     # ['agg', 'epo', 'moosvgd', 'hvgrad', 'pmtl', 'mgda']
-    parser.add_argument( '--problem-name', type=str, default='VLMOP2')
-    parser.add_argument('--iter', type=int, default=4000)
-    parser.add_argument('--step-size', type=float, default=0.01)
+    parser.add_argument( '--problem-name', type=str, default='ZDT1')
+    parser.add_argument('--iter', type=int, default=2000)
+    parser.add_argument('--step-size', type=float, default=0.1)
     parser.add_argument('--tol', type=float, default=1e-6)
     parser.add_argument('--plt-pref-flag', type=str, default='N')
 

@@ -33,15 +33,12 @@ def get_d_paretomtl(grads, value, weights, i):
     normalized_rest_weights = np.delete(weights, (i), axis=0) / np.linalg.norm(np.delete(weights, (i), axis=0), axis=1,
                                                                                keepdims=True)
     w = normalized_rest_weights - normalized_current_weight
-
     # solve QP
     gx = np.dot(w, value / np.linalg.norm(value))
     idx = gx > 0
-
     vec = np.concatenate((grads, np.dot(w[idx], grads)), axis=0)
-
     # use MinNormSolver to solve QP
-    sol, nd = MinNormSolver.find_min_norm_element(vec)
+    sol, nd = MinNormSolver.find_min_norm_element( vec )
 
     # reformulate ParetoMTL as linear scalarization method, return the weights
     weight0 = sol[0] + np.sum(np.array([sol[j] * w[idx][j - 2, 0] for j in np.arange(2, 2 + np.sum(idx))]))
@@ -62,9 +59,9 @@ def get_d_paretomtl_init(grads, value, weights, i):
     normalized_rest_weights = np.delete(weights, (i), axis=0) / np.linalg.norm(np.delete(weights, (i), axis=0), axis=1,
                                                                                keepdims=True)
     w = normalized_rest_weights - normalized_current_weight
-
     gx = np.dot(w, value / np.linalg.norm(value))
     idx = gx > 0
+
 
     if np.sum(idx) <= 0:
         return np.zeros(nobj)
@@ -72,7 +69,7 @@ def get_d_paretomtl_init(grads, value, weights, i):
         sol = np.ones(1)
     else:
         vecs = np.dot(w[idx], grads)
-        sol, nd = MinNormSolver.find_min_norm_element(vecs)
+        sol, nd = MinNormSolver.find_min_norm_element( vecs )
 
     # calculate the weights
     weight0 = np.sum(np.array([sol[j] * w[idx][j, 0] for j in np.arange(0, np.sum(idx))]))
@@ -107,9 +104,11 @@ class PMTLSolver(GradBaseSolver):
         warmup_iter = self.max_iter // 5
         optimizer = torch.optim.SGD([x], lr=self.step_size)
 
+        y_arr = []
         for iter_idx in tqdm( range(self.max_iter) ):
             y = problem.evaluate(x)
             y_np = y.detach().numpy()
+            y_arr.append(y_np)
 
             grad_arr = [0] * args.n_prob
             for prob_idx in range(args.n_prob):
@@ -141,4 +140,5 @@ class PMTLSolver(GradBaseSolver):
         res['x'] = x.detach().numpy()
         res['y'] = y.detach().numpy()
         res['hv_arr'] = [0]
+        res['y_arr'] = y_arr
         return res

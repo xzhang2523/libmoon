@@ -7,23 +7,22 @@
 ''
 -- Li Bai.
 
-Moon: is a multiobjective optimization framework, from single-objective optimization to multiobjective optimization, towards a better understanding of optimization problems and fair comparasions between MOO algorithms. d
+Moon: is a multiobjective optimization framework, from single-objective optimization to multiobjective optimization, towards a better understanding of optimization problems and fair comparasions between MOO algorithms.
 
 
 
-Main contributors: Xiaoyuan Zhang (project leader), Ji Cheng, Liao Zhang, Weiduo Liao, Zhe Zhao, Xi Lin.
+Main contributors: Xiaoyuan Zhang (project leader), Ji Cheng, Liao Zhang, Weiduo Liao, Zhe Zhao, Xi Lin, Cheng Gong, Longcan Chen.
 
 Advised by: Prof. Yifan Chen, Prof. Zhichao Lu, Prof. Ke Shang, Prof. Tao Qin. 
 
-Corresponding to: Prof. Qingfu Zhang. 
+Corresponding to: Prof. Qingfu Zhang (CityU HK).
 
 
-This project has four important parts:
 
 (1) A standardlized gradient based framework. 
 
 - **Problem** class. For more problem details, please also check the Readme_problem.md file. 
-  (1) For synthetic problems,
+  (i) For synthetic problems,
 - 
   | Problem                                                      | Paper                                                                | Project/Code                                         |
   |--------------------------------------------------------------|----------------------------------------------------------------------|------------------------------------------------------|
@@ -77,7 +76,6 @@ This project has four important parts:
         -2 Tier 2. MGDASolver, EPOSolver, PMTLSolver. 
         -3 Tier 3. GradHVSolver
         -4 Tier 4. MOOSVGDSolver
-
 
     Current support:
         GradAggSolver, MGDASolver, EPOSolver, MOOSVGDSolver, GradHVSolver, PMTLSolver.
@@ -154,7 +152,7 @@ if __name__ == '__main__':
     # Solve results
     res = solver.solve(problem, x=x0, prefs=prefs, args=args)
     
-    # Plot results
+    # Visualize results
     y_arr = res['y']
     plt.scatter(y_arr[:,0], y_arr[:,1], s=50)
     plt.xlabel('$f_1$', fontsize=20)

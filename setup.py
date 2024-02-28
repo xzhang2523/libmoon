@@ -31,7 +31,8 @@ setup(
                     'cvxopt==1.3.2',
                     'cvxpy==1.4.2',
                     'ffmpeg-python',
-                      'ffmpeg'
+                      'ffmpeg',
+                    'scikit-learn'
                       ],
     long_description=long_description,
     long_description_content_type='text/markdown'

@@ -1,7 +1,7 @@
 ### Moon: A Standardized/Flexible Framework for MultiObjective OptimizatioN
-<p align="center"
+
 <img src="moon.png" alt="Moon" width="200">
-</p>
+
 
 ''
     I raise my cup to invite the moon.

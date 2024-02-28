@@ -51,7 +51,10 @@ hv_ref_dict = {
     'VLMOP1': array([1.0, 1.0]),
     'VLMOP2': array([4.0, 4.0]),
     'MAF1': array([2.0, 2.0, 2.0]),
-    'MNIST': array([3.0, 3.0])
+    'mnist': array([3.0, 3.0]),
+    'fmnist': array([3.0, 3.0]),
+
+
 }
 
 def get_hv_ref_dict(problem_name):

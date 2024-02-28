@@ -13,7 +13,7 @@ Moon: is a multiobjective optimization framework, from single-objective optimiza
 
 
 
-Main contributors: Xiaoyuan Zhang (project leader), Ji Cheng, Liao Zhang, Weiduo Liao, Zhe Zhao, Xi Lin, Cheng Gong, Longcan Chen.
+Main contributors: Xiaoyuan Zhang (project leader), Ji Cheng, Liao Zhao, Weiduo Liao, Zhe Zhao, Xi Lin, Cheng Gong, Longcan Chen.
 
 Advised by: Prof. Yifan Chen, Prof. Zhichao Lu, Prof. Ke Shang, Prof. Tao Qin. 
 

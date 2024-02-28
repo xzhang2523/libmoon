@@ -7,7 +7,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name='libmoon',
-    version='0.1.9',
+    version='0.1.11',
     author='Xiaoyuan Zhang et al.',
     author_email='xzhang2523-c@my.cityu.edu.hk',
     description='Moon, Make MOO great again',

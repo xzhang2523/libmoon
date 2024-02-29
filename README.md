@@ -109,10 +109,14 @@ Corresponding to: Prof. Qingfu Zhang (CityU HK).
     - HV net (https://arxiv.org/abs/2203.02185).  
 
 
+How to install libmoon? libmoon is on the standard pypi (https://pypi.org/project/libmoon/).
+``` 
+    pip install libmoon==0.1.11
+```
 
 
 
-Example code:
+Example code for a synthetic problem,
 ```
 from libmoon.solver.gradient import GradAggSolver
 from libmoon.util_global.constant import problem_dict
@@ -164,7 +168,14 @@ if __name__ == '__main__':
     # If use vedio
     use_vedio=True
     if use_vedio:
-        vedio_res(res, problem, prefs, args)
+        vedio_res(res, problem, prefs, args)     
+```
+        
+Example of MTL
+```
+
+
+```
 
     
 

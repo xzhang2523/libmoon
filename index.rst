@@ -11,7 +11,6 @@ Welcome to libmoon's documentation!
    :caption: Contents:
 
 
-
 Indices and tables
 ==================
 

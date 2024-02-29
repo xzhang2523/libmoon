@@ -116,7 +116,6 @@ class MultiMnistProblem:
                         l2 = loss_2(**logits_dict)
 
                         losses_ts[model_idx] = torch.stack([l1, l2])
-
                         l1_np, l2_np = np.array(l1.cpu().detach().numpy(), copy=True), np.array(l2.cpu().detach().numpy(), copy=True)
                         losses[model_idx] = [l1_np, l2_np]
 
@@ -139,21 +138,16 @@ class MultiMnistProblem:
 
 
 
-
-
-
-
 if __name__ == '__main__':
 
     import argparse
     parser = argparse.ArgumentParser()
-
     parser.add_argument('--problem', default='mnist', type=str)  # For attribute in args, we all call problem.
     parser.add_argument('--split', default='train', type=str)
     parser.add_argument('--batch_size', default=512, type=int)
     parser.add_argument('--shuffle', default=True, type=bool)
     parser.add_argument('--lr', default=1e-2, type=float)
-    parser.add_argument('--num_epoch', default=10, type=int)
+    parser.add_argument('--num_epoch', default=1, type=int)
     parser.add_argument('--use-cuda', default=True, type=bool)
     parser.add_argument('--agg-mtd', default='ls', type=str)   # This att is only valid when args.solver=agg.
     parser.add_argument('--solver', default='agg', type=str)
@@ -172,16 +166,13 @@ if __name__ == '__main__':
     prefs = uniform_pref(n_partition=10, n_obj=2, clip_eps=0.1)
     args.n_prob = len(prefs)
     problem = MultiMnistProblem(args, prefs)
-    # args.n_obj = problem.n_obj
 
     loss_history = problem.optimize()
     loss_history = np.array(loss_history)
     final_solution = loss_history[-1,:,:]
 
-    # plt.scatter(final_solution[:,0], final_solution[:,1], label='final solution')
     for idx in range(loss_history.shape[1]):
         plt.plot(loss_history[:,idx,0], loss_history[:,idx,1], 'o-', label='pref {}'.format(idx))
-
 
     plt.plot(final_solution[:,0], final_solution[:,1], color='k', linewidth=3)
     plt.legend(fontsize=FONT_SIZE)
@@ -193,13 +184,18 @@ if __name__ == '__main__':
         for pref in prefs_norm:
             plt.plot([0, pref[0]], [0, pref[1]], color='k')
 
+
     plt.xlabel('$L_1$', fontsize=FONT_SIZE)
     plt.ylabel('$L_2$', fontsize=FONT_SIZE)
-
 
     folder_name = os.path.join( root_name, 'output', args.problem, args.solver)
     os.makedirs(folder_name, exist_ok=True)
     fig_name = os.path.join(folder_name, 'final_solution.svg')
     plt.savefig(fig_name)
+
+
+    plt.title('{}_{}'.format(args.problem, args.solver), fontsize= FONT_SIZE )
+
     print('saved in ', fig_name)
+
     plt.show()

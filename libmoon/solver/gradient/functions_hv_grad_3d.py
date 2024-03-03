@@ -1,9 +1,11 @@
+# This is file follows Emmerich's work
+
 '''
-The function grad_multi_sweep and its subfunctions in this file are based on the algorithm described in:
-Emmerich, Michael, and André Deutz.
-"Time complexity and zeros of the hypervolume indicator gradient field."
-EVOLVE-a bridge between probability, set oriented numerics,
-and evolutionary computation III. Springer, Heidelberg, 2014. 169-193.
+    The function grad_multi_sweep and its subfunctions in this file are based on the algorithm described in:
+    Emmerich, Michael, and André Deutz.
+    "Time complexity and zeros of the hypervolume indicator gradient field."
+    EVOLVE-a bridge between probability, set oriented numerics,
+    and evolutionary computation III. Springer, Heidelberg, 2014. 169-193.
 '''
 import numpy as np
 import copy

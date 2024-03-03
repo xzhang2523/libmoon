@@ -7,6 +7,7 @@ from tqdm import tqdm
 from pymoo.indicators.hv import HV
 
 
+
 class GradBaseSolver:
     def __init__(self, step_size, max_iter, tol):
         self.step_size = step_size
@@ -21,7 +22,6 @@ class GradBaseSolver:
             :return:
                 is a dict with keys: x, y
         '''
-
         # The abstract class cannot be implemented directly.
         raise NotImplementedError
 
@@ -33,30 +33,22 @@ class GradAggSolver(GradBaseSolver):
 
     def solve(self, problem, x, prefs, args):
         x = Variable(x, requires_grad=True)
-
         # ref_point = array([2.0, 2.0])
         ind = HV(ref_point = get_hv_ref_dict(args.problem_name))
-
-
         hv_arr = []
         y_arr = []
-
         prefs = Tensor(prefs)
         optimizer = SGD([x], lr=self.step_size)
         agg_func = scalar_dict[args.agg]
         res = {}
         for i in tqdm(range(self.max_iter)):
-
             y = problem.evaluate(x)
             hv_arr.append(ind.do(y.detach().numpy()))
-
             agg_val = agg_func(y, prefs)
             optimizer.zero_grad()
             torch.sum(agg_val).backward()
             optimizer.step()
-
             y_arr.append(y.detach().numpy())
-
             if 'lbound' in dir(problem):
                 x.data = torch.clamp(x.data, torch.Tensor(problem.lbound) + solution_eps, torch.Tensor(problem.ubound)-solution_eps)
 

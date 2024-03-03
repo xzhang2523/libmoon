@@ -17,6 +17,9 @@ from ...util_global.constant import solution_eps
 
 
 class EPO_LP(object):
+    # Paper: https://proceedings.mlr.press/v119/mahapatra20a.html
+    # Paper: https://arxiv.org/abs/2010.06313
+
     def __init__(self, m, n, r, eps=1e-4):
         cvxopt.glpk.options["msg_lev"] = "GLP_MSG_OFF"
         self.m = m
@@ -115,6 +118,7 @@ def solve_epo(grad_arr, losses, pref, epo_lp):
 
         return : gw: (n,).
     '''
+
     if type(pref) == torch.Tensor:
         pref = pref.numpy()
 

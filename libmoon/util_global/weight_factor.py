@@ -21,3 +21,17 @@ def das_dennis_recursion(ref_dirs, ref_dir, n_partitions, beta, depth):
             das_dennis_recursion(ref_dirs, np.copy(ref_dir), n_partitions, beta - i, depth + 1)
 
 
+def uniform_pref(n_partition, n_obj=2, clip_eps=0, mtd='uniform'):
+
+    if n_obj == 2:
+        pref_1 = np.linspace(clip_eps, 1-clip_eps, n_partition)
+        pref_2 = 1 - pref_1
+        prefs = np.stack((pref_1, pref_2), axis=1)
+    else:
+        prefs = das_dennis(n_partition, n_obj)
+
+        prefs = np.clip(prefs, clip_eps, 1-clip_eps)
+        prefs = prefs / prefs.sum(axis=1, keepdims=True)
+
+    return prefs
+

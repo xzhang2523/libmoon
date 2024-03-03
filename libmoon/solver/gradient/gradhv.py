@@ -112,7 +112,6 @@ class GradHVSolver(GradBaseSolver):
             if 'lbound' in dir(problem):
                 x.data = torch.clamp(x.data, torch.Tensor(problem.lbound) + solution_eps, torch.Tensor(problem.ubound)-solution_eps )
 
-
         res = {}
         res['x'] = x.detach().numpy()
         res['y'] = y.detach().numpy()

@@ -1,3 +1,8 @@
+# Paper: https://openreview.net/pdf?id=S2-j0ZegyrE
+# Paper name: Profiling Pareto Front With Multi-Objective Stein Variational Gradient Descent
+
+
+
 from .mgda_core import solve_mgda
 from .base_solver import GradBaseSolver
 
@@ -8,6 +13,7 @@ from torch.optim import SGD
 import sys
 from ...util_global.constant import solution_eps
 from tqdm import tqdm
+
 
 def kernel_functional_rbf(losses):
     '''
@@ -62,9 +68,12 @@ class MOOSVGDSolver(GradBaseSolver):
 
     def solve(self, problem, x, prefs, args):
         x = Variable(x, requires_grad=True)
+        y_arr = []
         optimizer = SGD([x], lr=self.step_size)
         for i in tqdm(range(self.max_iter)):
             y = problem.evaluate(x)
+            y_arr.append( y.detach().numpy() )
+
             grad_arr = [0] * args.n_prob
             for prob_idx in range(args.n_prob):
                 grad_arr[prob_idx] = [0] * args.n_obj
@@ -86,6 +95,7 @@ class MOOSVGDSolver(GradBaseSolver):
         res={}
         res['x'] = x.detach().numpy()
         res['y'] = y.detach().numpy()
+        res['y_arr'] = y_arr
         res['hv_arr'] = [0]
         return res
 

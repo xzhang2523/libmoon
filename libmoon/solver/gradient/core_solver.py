@@ -46,15 +46,12 @@ class CoreEPO(CoreGrad):
         self.pref = pref
         self.epo_lp = EPO_LP(m=len(pref), n=1, r=1/np.array(pref))
 
-
     def get_alpha(self, G, losses):
         if type(G) == torch.Tensor:
             G = G.detach().cpu().numpy().copy()
         GG = G @ G.T
-
         alpha = self.epo_lp.get_alpha(losses, G=GG, C=True)
         return alpha
-
 
 
 

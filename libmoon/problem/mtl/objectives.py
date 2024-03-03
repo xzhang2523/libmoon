@@ -1,4 +1,12 @@
+'''
+    This file defines MOO objectives.
+'''
+
+
+
 import torch
+
+
 
 def from_name(names, task_names):
     objectives = {
@@ -121,59 +129,4 @@ class DEOHyperbolicTangentRelaxation():
             torch.tanh(self.c * torch.relu(s_negative))))
 
 
-"""
-Popular problem proposed by
 
-    Carlos Manuel Mira da Fonseca. Multiobjective genetic algorithms with 
-    application to controlengineering problems.PhD thesis, University of Sheffield, 1995.
-
-with a concave pareto front.
-
-$ \mathcal{L}_1(\theta) = 1 - \exp{ - || \theta - 1 / \sqrt{d} || $
-$ \mathcal{L}_1(\theta) = 1 - \exp{ - || \theta + 1 / \sqrt{d} || $
-
-with $\theta \in R^d$ and $ d = 100$
-"""
-
-
-#
-# class Fonseca1():
-#
-#     def f1(theta):
-#         d = len(theta)
-#         sum1 = autograd.numpy.sum([(theta[i] - 1.0 / autograd.numpy.sqrt(d)) ** 2 for i in range(d)])
-#         f1 = 1 - autograd.numpy.exp(- sum1)
-#         return f1
-#
-#     f1_dx = autograd.grad(f1)
-#
-#     def __call__(self, **kwargs):
-#         return f1(kwargs['parameters'])
-#
-#     def gradient(self, **kwargs):
-#         return f1_dx(kwargs['parameters'])
-#
-#
-# class Fonseca2():
-#
-#     def f2(theta):
-#         d = len(theta)
-#         sum1 = autograd.numpy.sum([(theta[i] + 1.0 / autograd.numpy.sqrt(d)) ** 2 for i in range(d)])
-#         f1 = 1 - autograd.numpy.exp(- sum1)
-#         return f1
-#
-#     f2_dx = autograd.grad(f2)
-#
-#     def __call__(self, **kwargs):
-#         return f2(kwargs['parameters'])
-#
-#     def gradient(self, **kwargs):
-#         return f2_dx(kwargs['parameters'])
-
-
-
-
-
-#
-# if __name__ == '__main__':
-#     problem = Fonseca1()

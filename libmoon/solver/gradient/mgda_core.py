@@ -1,3 +1,9 @@
+'''
+    Copyright (c) Xiaoyuan Zhang, City University of Hong Kong
+    This script is to design the core mgda functions.
+'''
+
+
 import torch
 from numpy import array
 import numpy as np

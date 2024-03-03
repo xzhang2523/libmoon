@@ -38,13 +38,11 @@ Corresponding to: Prof. Qingfu Zhang (CityU HK).
 
 (2) For multitask learning problems,
 
-| Problem                 | Paper | Project/Code |
-|-------------------------|------|--------------|
-| MO-MNISTs               | [PMTL](https://proceedings.neurips.cc/paper_files/paper/2019/file/685bfde03eb646c27ed565881917c71c-Paper.pdf)     | [COSMOS](https://github.com/ruchtem/cosmos)     |
-| Fairness Classification |[COSMOS](https://arxiv.org/pdf/2103.13392.pdf) |[COSMOS](https://github.com/ruchtem/cosmos) |
-| Federated Learning      | | |
-
-(3) For MORL problems,
+| Problem                 | Paper                                                                                                         | Project/Code |
+|-------------------------|---------------------------------------------------------------------------------------------------------------|--------------|
+| MO-MNISTs               | [PMTL](https://proceedings.neurips.cc/paper_files/paper/2019/file/685bfde03eb646c27ed565881917c71c-Paper.pdf) | [COSMOS](https://github.com/ruchtem/cosmos)     |
+| Fairness Classification | [COSMOS](https://arxiv.org/pdf/2103.13392.pdf)                                                                |[COSMOS](https://github.com/ruchtem/cosmos) |
+| Federated Learning      | [Federal MTL](https://proceedings.neurips.cc/paper_files/paper/2023/file/7cb2c2a8d35576c00078b6591ec26a7d-Paper-Conference.pdf)                                                                                               | |
 
 | Problem                 | Paper                                                                                                            | Project/Code                              |
 |-------------------------|------------------------------------------------------------------------------------------------------------------|-------------------------------------------|

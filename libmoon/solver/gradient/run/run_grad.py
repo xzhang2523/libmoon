@@ -35,8 +35,10 @@ if __name__ == '__main__':
     parser.add_argument('--step-size', type=float, default=0.1)
     parser.add_argument('--tol', type=float, default=1e-6)
     parser.add_argument('--plt-pref-flag', type=str, default='N')
-    args = parser.parse_args()
+    parser.add_argument('--use-plt', type=str, default='Y')
 
+
+    args = parser.parse_args()
 
 
     problem = problem_dict[args.problem_name]
@@ -78,7 +80,6 @@ if __name__ == '__main__':
             x0 = torch.rand(args.n_prob, problem.n_var)
     else:
         x0 = torch.rand( args.n_prob, problem.n_var ) * 20 - 10
-
 
     ts = time.time()
     res = solver.solve( problem, x=x0, prefs=prefs, args=args)

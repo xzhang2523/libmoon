@@ -1,8 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from libmoon.util_global.constant import FONT_SIZE
+from libmoon.util_global.constant import FONT_SIZE, root_name
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-
 
 
 def vis_res(res, problem, prefs, args):
@@ -75,12 +74,6 @@ from libmoon.util_global.constant import FONT_SIZE
 
 def vedio_res(res, problem, prefs, args):
     print('vedio making')
-    # print()
-    # FFMpegWriter = manimation.writers['ffmpeg']
-    metadata = dict(title='Movie Test', artist='Matplotlib',
-                    comment='a red circle following a blue sine wave')
-    # writer = PillowWriter(fps=15, metadata=metadata)
-    fps=15
     from matplotlib.animation import FuncAnimation
     from matplotlib.animation import FFMpegWriter
 
@@ -99,7 +92,6 @@ def vedio_res(res, problem, prefs, args):
     ax.set_xlabel('$f_1$', fontsize=FONT_SIZE)
     ax.set_ylabel('$f_2$', fontsize=FONT_SIZE)
 
-
     # Create a function to update the plot for each frame of the animation
     if args.solver == 'agg':
         file_name = '{}_{}_{}'.format(args.problem_name, args.solver, args.agg)
@@ -108,9 +100,13 @@ def vedio_res(res, problem, prefs, args):
     def update(frame):
         ax.clear()
         ax.scatter(y_arr[frame][:,0], y_arr[frame][:,1])
+
+        pf = problem.get_pf()
+
+        ax.plot(pf[:,0], pf[:,1], 'k', linewidth=1)
+
         ax.set_xlim(0, 1.2)
         ax.set_ylim(0, 1.2)
-
         ax.set_xlabel('$f_1$', fontsize=FONT_SIZE)
         ax.set_ylabel('$f_2$', fontsize=FONT_SIZE)
 
@@ -125,14 +121,18 @@ def vedio_res(res, problem, prefs, args):
 
 
 
+    import os
+    folder_name = os.path.join(root_name, 'solver', 'gradient', 'output')
+    mp4_file_name = os.path.join(folder_name, file_name + '.mp4')
 
-    mp4_file_name = file_name + '.mp4'
+
 
     # Save the animation as a video file
     ani.save(mp4_file_name, writer=writer)
     print('Vedio saved: {}'.format(mp4_file_name))
 
-    plt.show()
+    if args.use_plt=='Y':
+        plt.show()
 
 
 

@@ -39,7 +39,7 @@ secrets.txt
 # Ignore temporary files
 *.tmp
 *.bak
-*.mp4
+#*.mp4
 
 
 
@@ -47,3 +47,9 @@ secrets.txt
 docs/
 build/
 dist/
+
+
+# Ignore running shells
+*.sh
+
+

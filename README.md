@@ -20,6 +20,7 @@ Advised by: Prof. Yifan Chen, Prof. Zhichao Lu, Prof. Ke Shang, Prof. Tao Qin.
 Corresponding to: Prof. Qingfu Zhang (CityU HK).
 
 
+The following methods can refer to https://github.com/xzhang2523/awesome-moo-ml-papers. (Welcome to star both!)
 
 (1) A standardlized gradient based framework. 
 

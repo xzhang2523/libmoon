@@ -18,7 +18,6 @@ import time
 from pymoo.indicators.hv import HV
 from indicator.indicator import compute_indicators
 
-
 import pickle
 import os
 

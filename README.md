@@ -1,55 +1,72 @@
 ### Moon: A Standardized/Flexible Framework for MultiObjective OptimizatioN
 
+
 <img src="moon.png" alt="Moon" width="200">
 
+# Moon: A Multiobjective Optimization Framework
 
-''
-    I raise my cup to invite the moon.
-    With my shadow we become three from one.
-''
--- Li Bai.
+## Introduction
+**Moon** is a multiobjective optimization framework that spans from single-objective optimization to multiobjective optimization. It aims to enhance the understanding of optimization problems and facilitate fair comparisons between MOO algorithms.
 
-Moon: is a multiobjective optimization framework, from single-objective optimization to multiobjective optimization, towards a better understanding of optimization problems and fair comparasions between MOO algorithms.
+> "I raise my cup to invite the moon.  
+> With my shadow we become three from one."  
+> -- Li Bai
+
+## Main Contributors
+- **Xiaoyuan Zhang** (Project Leader)
+- Ji Cheng
+- Liao Zhao
+- Weiduo Liao
+- Zhe Zhao
+- Xi Lin
+- Cheng Gong
+- Longcan Chen
+- YingYing Yu
+
+## Advisory Board
+- **Prof. Yifan Chen** (Hong Kong Baptist University)
+- **Prof. Zhichao Lu** (City University of Hong Kong)
+- **Prof. Ke Shang** (Shenzhen University)
+- **Prof. Tao Qin** (Microsoft Research)
+- **Prof. Han Zhao** (University of Illinois at Urbana-Champaign)
+
+## Correspondence
+For any inquiries, please contact **Prof. Qingfu Zhang** (City University of Hong Kong) at the corresponding address.
+
+## Resources
+For more information on methodologies, please visit our [GitHub repository](https://github.com/xzhang2523/awesome-moo-ml-papers). Contributions and stars are welcome!
 
 
-
-Main contributors: Xiaoyuan Zhang (project leader), Ji Cheng, Liao Zhao, Weiduo Liao, Zhe Zhao, Xi Lin, Cheng Gong, Longcan Chen.
-
-Advised by: Prof. Yifan Chen (HKBU), Prof. Zhichao Lu (CityU), Prof. Ke Shang (SZU), Prof. Tao Qin (MSRA), Prof. Han Zhao (UIUC) 
-
-Corresponding* to: Prof. Qingfu Zhang (CityU HK).
-
-
-The following methods can refer to https://github.com/xzhang2523/awesome-moo-ml-papers. (Welcome to star both!)
 
 (1) A standardlized gradient based framework. 
+# Optimization Problem Classes
 
-- **Problem** class. For more problem details, please also check the Readme_problem.md file. 
-  (i) For synthetic problems,
-- 
-  | Problem                                                      | Paper                                                                | Project/Code                                         |
-  |--------------------------------------------------------------|----------------------------------------------------------------------|------------------------------------------------------|
-  | ZDT                                                          | [paper](https://ieeexplore.ieee.org/document/996017)                 | [project](https://pymoo.org/problems/multi/zdt.html) |
-  | DTLZ                                                         | [paper] | [project](https://pymoo.org/problems/many/dtlz.html) |Y                                        |
-  | MAF                                                          | [paper](https://link.springer.com/article/10.1007/s40747-017-0039-7) | [project]                         |
-  | [WFG](https://ieeexplore.ieee.org/document/996017) [code]()  | Real world problems.                                                 | Y                                                    |
-  | [Fi's](https://ieeexplore.ieee.org/document/996017) [code]() | Real world problems.                                                 | Y                                                    |
-  | RE                                                           | [paper](https://arxiv.org/abs/2009.12867)                            | [code](https://github.com/ryojitanabe/reproblems)    |
+## **Problem Class Details**
+For more information on problem specifics, please refer to the `Readme_problem.md` file.
 
+### Synthetic Problems
+Here's a list of synthetic problems along with relevant research papers and project/code links:
 
-(2) For multitask learning problems,
+| Problem | Paper | Project/Code |
+|---------|-------|--------------|
+| ZDT     | [Paper](https://ieeexplore.ieee.org/document/996017) | [Project](https://pymoo.org/problems/multi/zdt.html) |
+| DTLZ    | [Paper](https://ieeexplore.ieee.org/document/996017) | [Project](https://pymoo.org/problems/many/dtlz.html) |
+| MAF     | [Paper](https://link.springer.com/article/10.1007/s40747-017-0039-7) | [Project](https://pymoo.org/problems/multi/maf.html) |
+| WFG     | [Paper](https://ieeexplore.ieee.org/document/996017) | [Code](https://github.com/sample-repo/wfg-code) |
+| Fi's    | [Paper](https://ieeexplore.ieee.org/document/996017) | [Code](https://github.com/sample-repo/fis-code) |
+| RE      | [Paper](https://arxiv.org/abs/2009.12867) | [Code](https://github.com/ryojitanabe/reproblems) |
 
-| Problem                 | Paper                                                                                                         | Project/Code |
-|-------------------------|---------------------------------------------------------------------------------------------------------------|--------------|
-| MO-MNISTs               | [PMTL](https://proceedings.neurips.cc/paper_files/paper/2019/file/685bfde03eb646c27ed565881917c71c-Paper.pdf) | [COSMOS](https://github.com/ruchtem/cosmos)     |
-| Fairness Classification | [COSMOS](https://arxiv.org/pdf/2103.13392.pdf)                                                                |[COSMOS](https://github.com/ruchtem/cosmos) |
-| Federated Learning      | [Federal MTL](https://proceedings.neurips.cc/paper_files/paper/2023/file/7cb2c2a8d35576c00078b6591ec26a7d-Paper-Conference.pdf)                                                                                               | |
+### Multitask Learning Problems
 
-| Problem                 | Paper                                                                                                            | Project/Code                              |
-|-------------------------|------------------------------------------------------------------------------------------------------------------|-------------------------------------------|
-| Synthetic (DST FTS...)  | [Envelop](https://proceedings.neurips.cc/paper_files/paper/2019/file/4a46fbfca3f1465a27b210f4bdfe6ab3-Paper.pdf) | [code]()                                  |
-| Robotics (MO-MuJoCo...) | [PGMORL](http://proceedings.mlr.press/v119/xu20h/xu20h.pdf)                                                      | [code](https://github.com/mit-gfx/PGMORL) |
+This section details problems related to multitask learning, along with their corresponding papers and project/code references:
 
+| Problem              | Paper                                                                                                           | Project/Code                                   |
+|----------------------|-----------------------------------------------------------------------------------------------------------------|------------------------------------------------|
+| MO-MNISTs            | [PMTL](https://proceedings.neurips.cc/paper_files/paper/2019/file/685bfde03eb646c27ed565881917c71c-Paper.pdf) | [COSMOS](https://github.com/ruchtem/cosmos)    |
+| Fairness Classification | [COSMOS](https://arxiv.org/pdf/2103.13392.pdf)                                                                  | [COSMOS](https://github.com/ruchtem/cosmos)    |
+| Federated Learning   | [Federal MTL](https://proceedings.neurips.cc/paper_files/paper/2023/file/7cb2c2a8d35576c00078b6591ec26a7d-Paper.pdf) | [COSMOS](https://github.com/ruchtem/cosmos) |
+| Synthetic (DST, FTS...) | [Envelop](https://proceedings.neurips.cc/paper_files/paper/2019/file/4a46fbfca3f1465a27b210f4bdfe6ab3-Paper.pdf) | [Project](https://github.com/sample-repo/envelop-code) |
+| Robotics (MO-MuJoCo...) | [PGMORL](http://proceedings.mlr.press/v119/xu20h/xu20h.pdf)                                                      | [Code](https://github.com/mit-gfx/PGMORL)     |
 
 
 
@@ -84,35 +101,50 @@ The following methods can refer to https://github.com/xzhang2523/awesome-moo-ml-
     Important things to notice:
         The original code MOO-SVGD does not offer a MTL implement. Our code is the first open source code for MTL MOO-SVGD.
 
+## Supported Solvers
 
-- **PSL solvers**
-    - EPO-based
-    - Agg-based
-    - Hypernetwork-based
-    - ConditionalNet-based
-    - Simple PSL model
-    - Generative PSL model     
-    
-- **MOEA/D**
-    Current supported:
-    - Vanilla [MOEA/D](https://ieeexplore.ieee.org/document/4358754)
-    
-    - Will be released soon:
-    - [MOEA/D AWA](https://pubmed.ncbi.nlm.nih.gov/23777254/). 
-    - [MOEA/D neural AWA](https://openreview.net/pdf?id=W3T9rql5eo).
+### Current Support
+Libmoon includes a variety of solvers tailored for different needs:
+- GradAggSolver
+- MGDASolver
+- EPOSolver
+- MOOSVGDSolver (*)
+- GradHVSolver
+- PMTLSolver
 
-    
+(*) The original MOO-SVGD code does not include an implementation for Multitask Learning (MTL). Our release of MOO-SVGD is the first open-source code that supports MTL.
+
+## PSL (Pareto set learning) Solvers
+
+Libmoon supports various models of PSL solvers, categorized as follows:
+- EPO-based PSL model
+- Agg-based PSL model 
+- Hypernetwork-based PSL model 
+- ConditionalNet-based PSL model 
+- Simple PSL model
+- Generative PSL model
 
 
-- **ML pretrained methods.** 
-    - HV net (https://arxiv.org/abs/2203.02185).  
 
 
-How to install libmoon? libmoon is on the standard pypi (https://pypi.org/project/libmoon/).
-``` 
-    pip install libmoon==0.1.11
-```
+## MOEA/D Framework
 
+### Currently Supported
+- Vanilla [MOEA/D](https://ieeexplore.ieee.org/document/4358754)
+
+### Upcoming Releases
+- [MOEA/D AWA](https://pubmed.ncbi.nlm.nih.gov/23777254/)
+- [MOEA/D Neural AWA](https://openreview.net/pdf?id=W3T9rql5eo)
+
+## ML Pretrained Methods
+- HV Net, a model for handling high-volume data, available [here](https://arxiv.org/abs/2203.02185).
+
+## Installation
+
+Libmoon is available on PyPI. You can install it using pip:
+
+```bash
+pip install libmoon==0.1.11
 
 
 Example code for a synthetic problem,

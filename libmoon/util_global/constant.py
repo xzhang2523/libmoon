@@ -13,7 +13,8 @@ import torch
 
 FONT_SIZE = 20
 solution_eps = 1e-5
-scalar_dict = {
+
+agg_dict = {
     'ls' : ls,
     'mtche' : mtche,
     'tche' : tche,

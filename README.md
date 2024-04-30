@@ -15,9 +15,9 @@ Moon: is a multiobjective optimization framework, from single-objective optimiza
 
 Main contributors: Xiaoyuan Zhang (project leader), Ji Cheng, Liao Zhao, Weiduo Liao, Zhe Zhao, Xi Lin, Cheng Gong, Longcan Chen.
 
-Advised by: Prof. Yifan Chen, Prof. Zhichao Lu, Prof. Ke Shang, Prof. Tao Qin. 
+Advised by: Prof. Yifan Chen (HKBU), Prof. Zhichao Lu (CityU), Prof. Ke Shang (SZU), Prof. Tao Qin (MSRA), Prof. Han Zhao (UIUC) 
 
-Corresponding to: Prof. Qingfu Zhang (CityU HK).
+Corresponding* to: Prof. Qingfu Zhang (CityU HK).
 
 
 The following methods can refer to https://github.com/xzhang2523/awesome-moo-ml-papers. (Welcome to star both!)

@@ -1,7 +1,7 @@
 
 import numpy as np
 import torch
-from ..mop import mop
+from libmoon.problem.synthetic.mop import mop
 
 
 

@@ -17,7 +17,7 @@ from torch import Tensor
 from torch.optim import Adam
 
 from torch.autograd import Variable
-from indicator.indicator import get_MMS, pref2angle, angle2pref
+from libmoon.metrics.metrics import get_MMS, pref2angle, angle2pref
 
 import pickle
 

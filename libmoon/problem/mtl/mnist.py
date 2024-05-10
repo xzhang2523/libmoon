@@ -1,23 +1,29 @@
 '''
     This file define the MO-Mnist problem as first proposed in Pareto multitask learning in Section 6.1.
 '''
-
 import matplotlib.pyplot as plt
 import torch
+
 
 from libmoon.util_global.constant import root_name
 from libmoon.problem.mtl.loaders.multimnist_loader import MultiMNISTData
 from libmoon.problem.mtl.objectives import CrossEntropyLoss
-from libmoon.problem.mtl.model.simple import MultiLeNet
+from libmoon.problem.mtl.model.lenet import MultiLeNet
 from libmoon.util_global.weight_factor import uniform_pref
 from libmoon.util_global.constant import FONT_SIZE
+
 from libmoon.solver.gradient import get_core_solver
-from libmoon.solver.gradient.utils.util import get_grads_from_model, numel_params
+from libmoon.solver.gradient import get_grads_from_model, numel_params
+
+
 from libmoon.util_global.constant import is_pref_based
 
 
 loss_1 = CrossEntropyLoss(label_name='labels_l', logits_name='logits_l')
 loss_2 = CrossEntropyLoss(label_name='labels_r', logits_name='logits_r')
+
+
+
 
 from tqdm import tqdm
 import numpy as np
@@ -40,9 +46,6 @@ class MultiMnistProblem:
                                                        num_workers=0)
 
         self.lr = args.lr
-
-
-
         self.model_arr = [MultiLeNet([1, 36, 36]) for _ in range(self.args.n_prob)]
         num_params = numel_params(self.model_arr[0])
         print('num_params: ', num_params)

@@ -1,12 +1,7 @@
 '''
-    This file defines MOO objectives.
+    This file defines MOO objectives for deep learning problems.
 '''
-
-
-
 import torch
-
-
 
 def from_name(names, task_names):
     objectives = {
@@ -33,7 +28,9 @@ class CrossEntropyLoss(torch.nn.CrossEntropyLoss):
     def __call__(self, **kwargs):
         logits = kwargs[self.logits_name]
         labels = kwargs[self.label_name]
-        return super().__call__(logits, labels)
+        res = super().__call__(logits, labels)
+        print()
+        return res
 
 
 

@@ -64,14 +64,9 @@ class ADULT(data.Dataset):
 
     def __init__(self, split="train", sensible_attribute="gender"):
         assert split in ["train", "val", "test"]
-
         # folder_name = os.path.dirname( os.path.dirname(__file__) )
 
-
-
-
-        path = os.path.join(root_name, 'mtldata', "adult.csv")
-
+        path = os.path.join(root_name, 'libmoon', 'problem', 'mtl', 'mtl_data', 'adult', "adult.csv")
         x, y, s1 = load_dataset(path, sensible_attribute)
 
 
@@ -115,10 +110,10 @@ class ADULT(data.Dataset):
         return None
 
 
-    
+
 if __name__ == "__main__":
     dataset = ADULT(split="train")
     trainloader = data.DataLoader(dataset, batch_size=256, num_workers=0)
 
     for i, data in enumerate(trainloader):
-        break
+        print()

@@ -10,12 +10,13 @@ Reference
 import numpy as np
 import torch
 from matplotlib import pyplot as plt
-from ..mop import mop
+from libmoon.problem.synthetic.mop import mop
 
 class ZDT1(mop):
 
-    def __init__(self, n_var=30, n_obj=2, lbound=np.zeros(30),
-                 ubound=np.ones(30)):
+    def __init__(self, n_var=30, n_obj=2):
+        lbound = np.zeros(n_var)
+        ubound = np.ones(n_var)
         super().__init__(n_var=n_var,
                          n_obj=n_obj,
                          lbound=lbound,
@@ -25,18 +26,21 @@ class ZDT1(mop):
 
     def _evaluate_torch(self, x: torch.Tensor):
         f1 = x[:, 0]
-        n = len(x)
+        n = x.shape[-1]
         g = 1 + 9/(n-1) * torch.sum(x[:, 1:], dim=1)
         h = 1 - torch.sqrt(f1 / g)
         f2 = g * h
         return torch.stack((f1, f2), dim=1)
 
     def _evaluate_numpy(self, x: np.ndarray):
-        n = len(x)
+        assert len(x.shape)==2
+        n = x.shape[-1]
+
         f1 = x[:, 0]
         g = 1 + 9 / (n-1) * np.sum(x[:, 1:], axis=1)
         f2 = 1 - np.sqrt(f1 / g)
         return np.stack((f1, f2), axis=1)
+
 
     def _get_pf(self, n_points: int = 100):
         f1 = np.linspace(0, 1, n_points)
@@ -46,7 +50,10 @@ class ZDT1(mop):
 
 class ZDT2(mop):
 
-    def __init__(self, n_var=30, n_obj=2, lbound=np.zeros(30), ubound=np.ones(30)):
+    def __init__(self, n_var=30, n_obj=2):
+        lbound = np.zeros(n_var)
+        ubound = np.ones(n_var)
+
         super().__init__(n_var=n_var,
                          n_obj=n_obj,
                          lbound=lbound,

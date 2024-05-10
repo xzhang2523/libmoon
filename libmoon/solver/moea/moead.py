@@ -16,7 +16,7 @@ from libmoon.visulization.util import plot_simplex, plot_unit_sphere
 import argparse
 import time
 from pymoo.indicators.hv import HV
-from indicator.indicator import compute_indicators
+from libmoon.metrics.metrics import compute_indicators
 
 import pickle
 import os

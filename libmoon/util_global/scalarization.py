@@ -8,6 +8,23 @@ from torch import Tensor
     I.e., the optimas may not be Pareto optimal.
 '''
 
+
+def soft_tche(f_arr, w, mu=0.1, z=0, normalization=False):
+    inner = w * (f_arr - z) / mu
+
+    if type(f_arr) == Tensor:
+        if normalization:
+            inner = inner - torch.max(inner, axis=1).values.unsqueeze(1)
+        val = mu * torch.logsumexp(inner, axis=1)
+        return val
+    else:
+        if normalization:
+            inner = inner - np.max(inner, axis=1).reshape(-1, 1)
+        val = mu * np.log(np.sum(inner, axis=1))
+        return val
+
+
+
 def tche(f_arr, w, z=0):
     if type(f_arr) == Tensor:
         idx = torch.argmax(w * (f_arr - z), axis=1)
@@ -35,8 +52,16 @@ def ls(f_arr, w, z=0):
         raise Exception('type not supported')
 
 
-def pbi(f_arr, w, coeff=5, z=0):
+def invagg(f_arr, w, z=1):
+    elem_arr = (z - f_arr)
+    elem_arr = torch.pow(elem_arr, w)
+    if type(f_arr) == Tensor:
+        return 1 / torch.prod(elem_arr, axis=1)
+    else:
+        return 1 / np.prod(elem_arr, axis=1)
 
+
+def pbi(f_arr, w, coeff=1, z=0):
     if type(f_arr) == Tensor:
         w0 = w / torch.norm(w, dim=1).unsqueeze(1)
         d1 = torch.sum(f_arr * w0, axis=1)

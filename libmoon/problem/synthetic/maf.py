@@ -5,12 +5,12 @@ import torch
 
 
 class MAF1:
-    def __init__(self):
+    def __init__(self, n_var):
         '''
             n_obj can be set as any number. For simlicity, we set it as 3.
         '''
         self.n_obj = 3
-        self.n_var = 30
+        self.n_var = n_var
         self.lb = 0
         self.ub = 1
 

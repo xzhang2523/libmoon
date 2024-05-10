@@ -3,9 +3,7 @@ from torch import nn
 
 
 class SimplePSLModel(nn.Module):
-
     def __init__(self, problem, args):
-
         '''
             :param dim: a 3d-array. [chanel, height, width]
             :param
@@ -13,11 +11,16 @@ class SimplePSLModel(nn.Module):
         super().__init__()
         self.problem = problem
         self.args = args
-        self.hidden_size = 128
+        self.hidden_size = 256
+        self.n_obj = problem.n_obj
 
-        if 'lb' in dir(problem):
+        if 'lbound' in dir(problem):
             self.psl_model = nn.Sequential(
                 nn.Linear(self.problem.n_obj, self.hidden_size),
+                nn.ReLU(),
+                nn.Linear(self.hidden_size, self.hidden_size),
+                nn.ReLU(),
+                nn.Linear(self.hidden_size, self.hidden_size),
                 nn.ReLU(),
                 nn.Linear(self.hidden_size, self.hidden_size),
                 nn.ReLU(),
@@ -30,12 +33,17 @@ class SimplePSLModel(nn.Module):
                 nn.ReLU(),
                 nn.Linear(self.hidden_size, self.hidden_size),
                 nn.ReLU(),
+                nn.Linear(self.hidden_size, self.hidden_size),
+                nn.ReLU(),
+                nn.Linear(self.hidden_size, self.hidden_size),
+                nn.ReLU(),
                 nn.Linear(self.hidden_size, self.args.n_var),
             )
 
     def forward(self, pref):
         mid = self.psl_model(pref)
-        if 'lb' in dir(self.problem):
-            return mid * (self.problem.ub - self.problem.lb) + self.problem.lb
+        if 'lbound' in dir(self.problem):
+
+            return mid * torch.Tensor(self.problem.ubound - self.problem.lbound).to(mid.device)  + torch.Tensor(self.problem.lbound).to(mid.device)
         else:
             return mid

@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import torch
 import numpy as np
 
-from ..mop import mop
+from libmoon.problem.synthetic.mop import mop
 
 
 

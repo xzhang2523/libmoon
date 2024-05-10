@@ -52,8 +52,8 @@ def load_dataset(path, s_label):
     x = StandardScaler().fit(data1).transform(data1)
     y = data['two_year_recid'].values
     s = data['sex'].values
-
     return x, y, s
+
 
 
 class Compas(torch.utils.data.Dataset):
@@ -61,11 +61,11 @@ class Compas(torch.utils.data.Dataset):
     def __init__(self, split, sensible_attribute='sex'):
         assert split in ['train', 'val', 'test']
 
-        folder_name = os.path.dirname(os.path.dirname(__file__))
-        path = os.path.join(folder_name, 'mtldata', "compas.csv")
+        from libmoon.util_global.constant import root_name
+        # folder_name = os.path.dirname(os.path.dirname(__file__))
+        path = os.path.join(root_name, 'libmoon', 'problem', 'mtl', 'mtl_data', 'compas', "compas.csv")
 
         x, y, s = load_dataset(path, sensible_attribute)
-
         x = torch.from_numpy(x).float()
         y = torch.from_numpy(y).long()
         s = torch.from_numpy(s).long()
@@ -99,3 +99,11 @@ class Compas(torch.utils.data.Dataset):
     
     def task_names(self):
         return None
+
+
+if __name__ == "__main__":
+    from torch.utils import data
+    dataset = Compas(split="train")
+    trainloader = data.DataLoader(dataset, batch_size=256, num_workers=0)
+    for i, data in enumerate(trainloader):
+        print()

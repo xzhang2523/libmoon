@@ -3,6 +3,7 @@
 .vscode/
 .idea/
 script/
+output/
 *.iml
 *.ipynb_checkpoints/
 

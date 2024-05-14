@@ -15,7 +15,6 @@ from libmoon.util_global.constant import agg_dict, color_arr, normalize_vec
 from libmoon.util_global.grad_util import calc_gradients, flatten_grads
 
 
-
 if __name__ == '__main__':
     if torch.cuda.is_available():
         print("CUDA is available")

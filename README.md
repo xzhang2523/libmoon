@@ -1,7 +1,7 @@
 ### Moon: A Standardized/Flexible Framework for MultiObjective OptimizatioN
 
 
-<img src="moon.png" alt="Moon" width="200">
+<img src="img/moon.png" alt="Moon" width="200">
 
 # Moon: A Multiobjective Optimization Framework
 
@@ -14,9 +14,9 @@ A submission to NeurIPS 2024 DB track.
 > -- Li Bai
 
 ## Main Contributors
-- **Xiaoyuan Zhang** (Project Leader)
+- **Xiaoyuan Zhang** (Pareto set learning, gradient-based solver)
 - Ji Cheng
-- Liao Zhao
+- Liao Zhao  (MOBO)  
 - Weiduo Liao
 - Zhe Zhao
 - Xi Lin
@@ -26,16 +26,20 @@ A submission to NeurIPS 2024 DB track.
 
 
 ## Advisory Board
-- **Prof. Yifan Chen** (Hong Kong Baptist University)
-- **Prof. Zhichao Lu** (City University of Hong Kong)
-- **Prof. Ke Shang** (Shenzhen University)
-- **Prof. Tao Qin** (Microsoft Research)
-- **Prof. Han Zhao** (University of Illinois at Urbana-Champaign)
+- **Prof. Yifan Chen** (Hong Kong Baptist University) (For advice of OR)
+- **Prof. Zhichao Lu** (City University of Hong Kong) (For advice of ML problems)
+- **Prof. Ke Shang** (Shenzhen University) (For advice of hypervolume-based methods)
+- **Prof. Tao Qin** (Microsoft Research)   (For advice of industrial software)
+- **Prof. Han Zhao** (University of Illinois at Urbana-Champaign) (For advice of fariness classification)
 
 
 ## Correspondence
-For any inquiries, please contact **Prof. Qingfu Zhang** (City University of Hong Kong) at the corresponding address.
+For any inquiries, please contact **Prof. Qingfu Zhang** (City University of Hong Kong).
 
+## Contact
+- **Xiaoyuan Zhang** (xzhang2523-c@my.cityu.edu.hk)
+- QQ group: 
+- <img src="img/qq.jpg" alt="Moon" width="200">
 
 ## Resources
 For more information on methodologies, please visit our [GitHub repository](https://github.com/xzhang2523/awesome-moo-ml-papers). Contributions and stars are welcome!

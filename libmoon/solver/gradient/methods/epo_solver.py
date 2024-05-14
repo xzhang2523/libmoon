@@ -12,12 +12,8 @@ from pymoo.indicators.hv import HV
 
 import warnings
 warnings.filterwarnings("ignore")
-
 from libmoon.util_global.constant import solution_eps
 from libmoon.util_global.grad_util import get_moo_grad, get_moo_Jacobian
-
-
-
 
 
 class EPO_LP(object):
@@ -91,9 +87,14 @@ class EPO_LP(object):
 
 
 def mu(rl, normed=False):
-    if len(np.where(rl < 0)[0]):
-        raise ValueError(f"rl<0 \n rl={rl}")
-        return None
+
+    # Modified by Xiaoyuan to handle negative issue.
+    # if len(np.where(rl < 0)[0]):
+    #     raise ValueError(f"rl<0 \n rl={rl}")
+    #     return None
+    #
+    rl = np.clip(rl, 0, np.inf)
+
     m = len(rl)
     l_hat = rl if normed else rl / rl.sum()
     eps = np.finfo(rl.dtype).eps

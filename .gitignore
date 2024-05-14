@@ -2,8 +2,11 @@
 .git/
 .vscode/
 .idea/
+script/
 *.iml
 *.ipynb_checkpoints/
+
+
 
 # Ignore compiled and built files
 *.pyc

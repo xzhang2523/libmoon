@@ -15,15 +15,17 @@ from libmoon.util_global.grad_util import calc_gradients, flatten_grads
 
 
 
+
+
 if __name__ == '__main__':
     if torch.cuda.is_available():
         print("CUDA is available")
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset', type=str, default='adult')
-    parser.add_argument('--solver', type=str, default='moosvgd')
+    parser.add_argument('--solver', type=str, default='hvgrad')
     parser.add_argument('--agg', type=str, default='ls')
-    parser.add_argument('--epoch', type=int, default=10)
+    parser.add_argument('--epoch', type=int, default=50)
     parser.add_argument('--batch-size', type=int, default=256)
     parser.add_argument('--n-sub', type=int, default=5)    # Denoted as K in the paper.
     parser.add_argument('--lr', type=float, default=1e-2)
@@ -34,6 +36,12 @@ if __name__ == '__main__':
     # For pmtl.
     parser.add_argument('--pmtl-warmup-iter', type=int, default=200)
     parser.add_argument('--pmtl-warmup-iter-counter', type=int, default=0)
+
+    parser.add_argument('--update-counter', type=int, default=0)
+
+
+    parser.add_argument('--seed', type=int, default=1)
+
 
 
     args = parser.parse_args()
@@ -53,6 +61,7 @@ if __name__ == '__main__':
     # if args.solver == 'pmtl':
     # For MOOSVGD and hvgrad, we do not need to specify preferences. However, prefs are remained for visulization purpose.
     pref_mat = torch.Tensor( uniform_pref(number=args.n_sub, clip_eps=0.2) )
+    pref_mat_np = pref_mat.detach().cpu().numpy()
 
     for _ in tqdm(range(args.epoch)):
         loss_batch = []  # shape: (batch, K, n_obj)
@@ -64,15 +73,13 @@ if __name__ == '__main__':
                 batch.update(logits)
                 loss_vec = [0] * 2
                 for idx, obj in enumerate(obj_arr):
-                    loss = obj(**batch) / 5 if idx==0 else obj(**batch)
-                    loss_vec[idx] = loss
+                    loss_vec[idx] = obj(**batch)
                 loss_vec = torch.stack(loss_vec)
                 loss_mat.append(loss_vec)
-            loss_mat = torch.stack(loss_mat)
 
+            loss_mat = torch.stack(loss_mat)
             assert args.solver in ['hvgrad', 'moosvgd', 'pmtl']
             if args.solver in ['moosvgd', 'pmtl']:
-
                 Jacobian_arr = []
                 for pref_idx in range(args.n_sub):
                     gradients, obj_values = calc_gradients(batch, model_arr[pref_idx], obj_arr)
@@ -102,6 +109,7 @@ if __name__ == '__main__':
             loss.backward()
             for k in range(args.n_sub):
                 optimizer_arr[k].step()
+                args.update_counter += 1
 
             loss_batch.append(loss_mat.detach().cpu().numpy())
 
@@ -113,7 +121,7 @@ if __name__ == '__main__':
 
     import os
     from libmoon.util_global.constant import root_name
-    output_folder_name = os.path.join(root_name, 'output', 'mtl', args.task_name, 'adult')
+    output_folder_name = os.path.join(root_name, 'output', 'mtl', args.task_name, 'adult', '{}'.format(args.seed))
     os.makedirs(output_folder_name, exist_ok=True)
 
     fig = plt.figure()
@@ -145,6 +153,32 @@ if __name__ == '__main__':
     fig_name = os.path.join(output_folder_name, 'res.pdf')
     print('Saving figure to', fig_name)
     plt.savefig(fig_name)
+
+    # Finally save indicators
+    from libmoon.metrics.metrics import compute_indicators
+
+    indicators_dict = compute_indicators(epoch_loss_pref_final)
+    indicator_name = os.path.join(output_folder_name, 'indicators.txt')
+    with open(indicator_name, 'w') as f:
+        for k, v in indicators_dict.items():
+            f.write('{}: {}\n'.format(k, v))
+        f.write('{}: {}\n'.format('counter', args.update_counter))
+    print('Saving indicators to', indicator_name)
+
+    # Finally, save all information into pickle files.
+    pickle_name = os.path.join(output_folder_name, 'res.pickle')
+    with open(pickle_name, 'wb') as f:
+        import pickle
+
+        pickle.dump({
+            'args': args,
+            'epoch_loss_pref': epoch_loss_pref,
+            'epoch_loss_pref_final': epoch_loss_pref_final,
+            'pref_mat_np': pref_mat_np,
+            'indicators_dict': indicators_dict
+        }, f)
+
+    print('Saving all information to', pickle_name)
 
 
 

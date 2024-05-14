@@ -138,14 +138,14 @@ def compute_hv( sols ):
     return hv_val
 
 def compute_indicators(objs):
-    mms = compute_MMS(objs)
+    mms = -compute_MMS(objs)
     soft_mms = compute_soft_MMS(objs)
     spacing = compute_spacing(objs)
     sparsity = compute_sparsity_mit(objs)
     hv = compute_hv(objs)
     return {
-        'mms': mms,
-        'soft_mms': soft_mms,
+        'uniform': mms,
+        'soft uniform': soft_mms,
         'spacing': spacing,
         'sparsity': sparsity,
         'hv': hv

@@ -7,6 +7,7 @@
 
 ## Introduction
 **Moon** is a multiobjective optimization framework that spans from single-objective optimization to multiobjective optimization. It aims to enhance the understanding of optimization problems and facilitate fair comparisons between MOO algorithms.
+A submission to NeurIPS 2024 DB track. 
 
 > "I raise my cup to invite the moon.  
 > With my shadow we become three from one."  
@@ -23,6 +24,7 @@
 - Longcan Chen
 - YingYing Yu
 
+
 ## Advisory Board
 - **Prof. Yifan Chen** (Hong Kong Baptist University)
 - **Prof. Zhichao Lu** (City University of Hong Kong)
@@ -30,13 +32,13 @@
 - **Prof. Tao Qin** (Microsoft Research)
 - **Prof. Han Zhao** (University of Illinois at Urbana-Champaign)
 
+
 ## Correspondence
 For any inquiries, please contact **Prof. Qingfu Zhang** (City University of Hong Kong) at the corresponding address.
 
+
 ## Resources
 For more information on methodologies, please visit our [GitHub repository](https://github.com/xzhang2523/awesome-moo-ml-papers). Contributions and stars are welcome!
-
-
 
 (1) A standardlized gradient based framework. 
 # Optimization Problem Classes

@@ -59,7 +59,7 @@ def load_dataset(path, s_label):
 
 
 
-class ADULT(data.Dataset):
+class Adult(data.Dataset):
 
 
     def __init__(self, split="train", sensible_attribute="gender"):

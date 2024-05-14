@@ -13,45 +13,38 @@ from libmoon.solver.pfl.model.simple import PFLModel
 from torch import nn
 criterion = nn.MSELoss()
 
-
 from libmoon.util_global.weight_factor import uniform_pref
 from libmoon.metrics.metrics import compute_MMS
 
 
-
-
-def train_pfl_model(pfl_model, pfl_optimizer, criterion, y, prefs):
+def train_pfl_model(pfl_model, pfl_optimizer, criterion, y, prefs, use_plt_loss = False):
     loss_arr = []
     for _ in range(100):
         y_hat = pfl_model(prefs)
-
         loss = criterion(y_hat, y)
         loss_arr.append(loss.item())
         pfl_optimizer.zero_grad()
         loss.backward()
         pfl_optimizer.step()
 
-    use_plt_loss = False
     if use_plt_loss:
         plt.plot(loss_arr)
         plt.xlabel('Iteration')
         plt.ylabel('PFL Loss')
         plt.show()
         assert False
-
     return pfl_model
 
 
 
 
 class UniformSolver(GradBaseSolver):
-
     '''
         UniformSolver is a bilevel agg solver.
     '''
-
     def __init__(self, step_size, max_iter, tol):
         super().__init__(step_size, max_iter, tol)
+
 
     def solve(self, problem, x, prefs, args):
         x = Variable(x, requires_grad=True)
@@ -103,7 +96,7 @@ class UniformSolver(GradBaseSolver):
 
 
             prefs = prefs_var.data
-            use_mms_plt = False
+            use_mms_plt = True
             if use_mms_plt:
                 plt.plot(mms_arr)
                 plt.xlabel('Iteration')

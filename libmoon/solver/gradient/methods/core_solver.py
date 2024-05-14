@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 from libmoon.solver.gradient.methods.mgda_core import solve_mgda
 from libmoon.solver.gradient.methods.epo_solver import EPO_LP
@@ -10,6 +11,13 @@ import math
 
 from torch.autograd import Variable
 
+from libmoon.solver.pfl.model.simple import PFLModel
+from torch import nn
+from libmoon.solver.gradient.methods.uniform_solver import train_pfl_model
+from torch.autograd import Variable
+from torch.optim import SGD
+
+from libmoon.metrics.metrics import compute_MMS
 
 class CoreHVGrad:
     '''
@@ -37,13 +45,7 @@ class CorePMGDA:
         _, alpha = solve_pmgda(Jacobian, grad_h, h_val, args, return_coeff=return_coeff, Jhf=Jhf)
         return alpha
         #     Input:
-        #     Jacobian: (m,n)
-        #     grad_h: (1,n)
-        #     h_val: (1,)
-        #     args: args
-        #     return_coeff: bool
-        #     Jhf: (m,) .
-        #
+        #     Jacobian: (m,n), grad_h: (1,n), h_val: (1,), return_coeff: bool, Jhf: (m,) .
         #     Output:
         #     if use_coeff:
         #         gw: (n,)
@@ -106,10 +108,8 @@ class CoreMOOSVGD:
 
 
     def get_alpha(self, Jacobian_arr, loss_mat):
-
         # Jacobian_arr.shape: (n_sub, n_obj, n_var)
         # loss_mat.shape: (n_sub, n_obj)
-
         Jacobian_arr = torch.stack(Jacobian_arr)
         n_sub = len(Jacobian_arr)
         mgda_alpha_mat = [0] * n_sub
@@ -140,6 +140,46 @@ class CoreMGDA:
         _, alpha = solve_mgda(G, return_coeff=True)
         return alpha
 
+class CoreUniform:
+    def __init__(self):
+        # pass
+        self.loss_mat_ts_arr = []
+        self.pref_mat_ts_arr = []
+
+    def update_pref_mat(self, pref_mat, loss_mat):
+
+        # Step 1. Fit the PFL model. Step 2, update prefs.
+        # print()
+        # self.pref_mat = pref_mat
+        # Training the PFL model on the solutions.
+
+        criterion = nn.MSELoss()
+        loss_mat_ts = torch.Tensor(loss_mat)
+        self.loss_mat_ts_arr.append(loss_mat_ts)
+        self.pref_mat_ts_arr.append(pref_mat)
+
+        pfl_model = PFLModel(n_obj=2)
+        pfl_optimizer = torch.optim.Adam(pfl_model.parameters(), lr=0.01)
+        pfl_model = train_pfl_model(pfl_model, pfl_optimizer, criterion, torch.cat(self.loss_mat_ts_arr), torch.cat(self.pref_mat_ts_arr) )
+
+        # Update the prefs using the PFL model.
+        prefs_var = Variable(pref_mat, requires_grad=True)
+        prefs_optimizer = SGD([prefs_var], lr=5e-3)
+        mms_arr = []
+        for _ in range(1000):
+            y_pred = pfl_model(prefs_var)
+            mms_val = compute_MMS(y_pred)
+
+            prefs_optimizer.zero_grad()
+            mms_val.backward()
+            prefs_optimizer.step()
+            prefs_var.data = torch.clamp(prefs_var.data, 0, 1)
+            prefs_var.data = prefs_var.data / torch.sum(prefs_var.data, axis=1, keepdim=True)
+            mms_arr.append( mms_val.item() )
+
+
+        pref_mat = prefs_var.data
+        return pref_mat
 
 
 class CoreGrad:

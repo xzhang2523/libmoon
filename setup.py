@@ -7,7 +7,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name='libmoon',
-    version='0.1.11',
+    version='0.2.2',
     author='Xiaoyuan Zhang et al.',
     author_email='xzhang2523-c@my.cityu.edu.hk',
     description='Moon, Make MOO great again',
@@ -23,7 +23,7 @@ setup(
         'Operating System :: OS Independent',
     ],
     python_requires='>=3.11',
-    install_requires=['numpy==1.26.4',
+    install_requires=['numpy==1.26.2',
                     'torch==2.2.1',
                     'matplotlib==3.8.3',
                     'tqdm==4.66.2',

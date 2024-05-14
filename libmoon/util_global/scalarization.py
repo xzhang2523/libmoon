@@ -23,6 +23,9 @@ def soft_tche(f_arr, w, mu=0.1, z=0, normalization=False):
         val = mu * np.log(np.sum(inner, axis=1))
         return val
 
+def soft_mtche(f_arr, w, mu=0.1, z=0, normalization=False):
+    return soft_tche(f_arr, 1/w, mu, z, normalization)
+
 
 
 def tche(f_arr, w, z=0):

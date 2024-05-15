@@ -146,13 +146,9 @@ class CoreUniform:
         self.loss_mat_ts_arr = []
         self.pref_mat_ts_arr = []
 
-    def update_pref_mat(self, pref_mat, loss_mat):
 
-        # Step 1. Fit the PFL model. Step 2, update prefs.
-        # print()
-        # self.pref_mat = pref_mat
-        # Training the PFL model on the solutions.
-
+    def update_pref_mat(self, pref_mat, loss_mat, args):
+        args.uniform_update_counter += 1
         criterion = nn.MSELoss()
         loss_mat_ts = torch.Tensor(loss_mat)
         self.loss_mat_ts_arr.append(loss_mat_ts)
@@ -160,7 +156,7 @@ class CoreUniform:
 
         pfl_model = PFLModel(n_obj=2)
         pfl_optimizer = torch.optim.Adam(pfl_model.parameters(), lr=0.01)
-        pfl_model = train_pfl_model(pfl_model, pfl_optimizer, criterion, torch.cat(self.loss_mat_ts_arr), torch.cat(self.pref_mat_ts_arr) )
+        pfl_model = train_pfl_model(pfl_model, pfl_optimizer, criterion, torch.cat(self.loss_mat_ts_arr), torch.cat(self.pref_mat_ts_arr), args)
 
         # Update the prefs using the PFL model.
         prefs_var = Variable(pref_mat, requires_grad=True)
@@ -169,7 +165,6 @@ class CoreUniform:
         for _ in range(1000):
             y_pred = pfl_model(prefs_var)
             mms_val = compute_MMS(y_pred)
-
             prefs_optimizer.zero_grad()
             mms_val.backward()
             prefs_optimizer.step()
@@ -177,6 +172,12 @@ class CoreUniform:
             prefs_var.data = prefs_var.data / torch.sum(prefs_var.data, axis=1, keepdim=True)
             mms_arr.append( mms_val.item() )
 
+        fig = plt.figure()
+        plt.plot(mms_arr)
+
+        import os
+        fig_name = os.path.join(args.output_folder_name, 'mms_{}.pdf'.format(args.uniform_update_counter))
+        plt.savefig(fig_name)
 
         pref_mat = prefs_var.data
         return pref_mat

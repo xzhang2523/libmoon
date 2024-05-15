@@ -15,15 +15,16 @@ solution_eps = 1e-5
 
 nadir_point_dict = {
     'adult': array([0.6, 0.12]),
-    'compass': array([0.75, 0.35]),
+    'compass': array([1.2, 0.35]),
     'credit': array([0.52, 0.015]),
 }
 
 ideal_point_dict = {
     'adult': array([0.3, 0.01]),
     'compass': array([0.00, 0.00]),
-    'credit': array([0.39, 0.00]),
+    'credit': array([0.37, 0.00]),
 }
+
 
 def normalize_vec(x, problem ):
 

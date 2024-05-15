@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from torch.utils import data
-from libmoon.problem.mtl.loaders import ADULT
+from libmoon.problem.mtl.loaders import Adult, Credit, Compas
 from libmoon.problem.mtl.objectives import from_name
 from libmoon.problem.mtl.model_utils import model_from_dataset, dim_dict
 from libmoon.problem.mtl.settings import adult_setting, credit_setting, compass_setting
@@ -12,7 +12,6 @@ from tqdm import tqdm
 from libmoon.util_global.weight_factor import uniform_pref
 from libmoon.util_global.constant import agg_dict, color_arr
 from libmoon.util_global.grad_util import calc_gradients, flatten_grads
-
 
 
 
@@ -47,8 +46,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
     args.task_name = 'agg_{}'.format(args.agg) if args.solver == 'agg' else args.solver
     print('{} on {}'.format(args.task_name, args.dataset))
-    dataset = ADULT(split="train")
-    settings = adult_setting
+
+    dataset_dict = {'adult': Adult(split="train"), 'credit': Credit(split="train"), 'compass': Compas(split="train")}
+    dataset = dataset_dict[args.dataset]
+    setting_dict = {'adult': adult_setting, 'credit': credit_setting, 'compass': compass_setting}
+    settings = setting_dict[args.dataset]
+
     trainloader = data.DataLoader(dataset, batch_size=args.batch_size, num_workers=0)
     obj_arr = from_name(settings['objectives'], dataset.task_names())
 

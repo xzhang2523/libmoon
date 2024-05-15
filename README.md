@@ -14,9 +14,9 @@ A submission to NeurIPS 2024 DB track.
 > -- Li Bai
 
 ## Main Contributors
-- **Xiaoyuan Zhang** (Pareto set learning, gradient-based solver)
+- **Xiaoyuan Zhang** (Maintainer of Pareto set learning, gradient-based solver)
 - Ji Cheng
-- Liao Zhao  (MOBO)  
+- Liao Zhao  (Maintainer of MOBO)  
 - Weiduo Liao
 - Zhe Zhao
 - Xi Lin
@@ -26,15 +26,16 @@ A submission to NeurIPS 2024 DB track.
 
 
 ## Advisory Board
+- **Prof. Jingda Deng** (Xi'an Jiaotong University) (For advice of High-D hypervolume computation)
 - **Prof. Yifan Chen** (Hong Kong Baptist University) (For advice of OR)
 - **Prof. Zhichao Lu** (City University of Hong Kong) (For advice of ML problems)
-- **Prof. Ke Shang** (Shenzhen University) (For advice of hypervolume-based methods)
+- **Prof. Ke Shang** (Shenzhen University) (For advice of approximate hypervolume-based methods)
 - **Prof. Tao Qin** (Microsoft Research)   (For advice of industrial software)
 - **Prof. Han Zhao** (University of Illinois at Urbana-Champaign) (For advice of fariness classification)
 
 
 ## Correspondence
-For any inquiries, please contact **Prof. Qingfu Zhang** (City University of Hong Kong).
+The corresponding author is **Chair Prof. Qingfu Zhang** (FIEEE, City University of Hong Kong).
 
 ## Contact
 - **Xiaoyuan Zhang** (xzhang2523-c@my.cityu.edu.hk)

@@ -4,7 +4,6 @@ from libmoon.problem.mtl.loaders import Adult, Credit, Compas
 from libmoon.problem.mtl.objectives import from_name
 from libmoon.problem.mtl.model_utils import model_from_dataset, dim_dict
 from libmoon.problem.mtl.settings import adult_setting, credit_setting, compass_setting
-# To achieve discrete solutions.
 
 import argparse
 import torch
@@ -14,13 +13,17 @@ from libmoon.util_global.weight_factor import uniform_pref
 from libmoon.util_global.constant import agg_dict, color_arr, normalize_vec
 from libmoon.util_global.grad_util import calc_gradients, flatten_grads
 
+import os
+from libmoon.util_global.constant import root_name
+
+
 
 if __name__ == '__main__':
     if torch.cuda.is_available():
         print("CUDA is available")
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', type=str, default='compass')
+    parser.add_argument('--dataset', type=str, default='adult')
     parser.add_argument('--solver', type=str, default='uniform')
 
     parser.add_argument('--agg', type=str, default='tche')
@@ -29,7 +32,9 @@ if __name__ == '__main__':
     parser.add_argument('--n-sub', type=int, default=5)
     parser.add_argument('--lr', type=float, default=1e-3)
     parser.add_argument('--n-obj', type=int, default=2)
+
     parser.add_argument('--update-counter', type=int, default=0)
+    parser.add_argument('--uniform-update-counter', type=int, default=0)
     parser.add_argument('--uniform-update-iter', type=int, default=2000)
     # For pmgda
     parser.add_argument('--h-eps', type=float, default=1e-2)
@@ -37,33 +42,29 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, default=1)
 
 
-
     args = parser.parse_args()
+
     if args.solver == 'agg':
         args.task_name = 'agg_{}'.format(args.agg)
     else:
         args.task_name = args.solver
 
+    output_folder_name = os.path.join(root_name, 'output', 'mtl', args.task_name, args.dataset, '{}'.format(args.seed))
+    os.makedirs(output_folder_name, exist_ok=True)
+    args.output_folder_name = output_folder_name
+
     if args.solver == 'uniform':
         from libmoon.solver.gradient.methods.core_solver import CoreUniform
         core_uniform = CoreUniform()
-
-
     print( '{} on {}'.format(args.task_name, args.dataset) )
 
 
-    if args.dataset == 'adult':
-        dataset = Adult(split="train")
-    elif args.dataset == 'credit':
-        dataset = Credit(split="train")
-    elif args.dataset == 'compass':
-        dataset = Compas(split="train")
-    else:
-        raise ValueError("Unknown dataset {}".format(args.dataset))
+    dataset_dict = {'adult':Adult(split="train"), 'credit':Credit(split="train"), 'compass':Compas(split="train")}
+    dataset = dataset_dict[args.dataset]
+    setting_dict = {'adult':adult_setting, 'credit':credit_setting, 'compass':compass_setting}
+    settings = setting_dict[args.dataset]
 
 
-
-    settings = adult_setting
     trainloader = data.DataLoader(dataset, batch_size=args.batch_size, num_workers=0)
     obj_arr = from_name(settings['objectives'], dataset.task_names())
 
@@ -76,7 +77,6 @@ if __name__ == '__main__':
         pref_mat = torch.Tensor(uniform_pref(number=args.n_sub, clip_eps=1e-2))
 
     epoch_loss_pref = []
-
 
     # For seperate models, we have N independent models, each with its own optimizer.
     for _ in tqdm(range(args.epoch)):
@@ -114,7 +114,6 @@ if __name__ == '__main__':
                         core_pmgda = CorePMGDA(args)
                         alpha = core_pmgda.get_alpha(Jacobian, grad_h, h_val, args, return_coeff=True, Jhf=Jhf)
                         alpha = torch.Tensor( alpha )
-
                 if args.solver == 'agg':
                     agg_func = agg_dict[args.agg]
                     scalar_loss = torch.squeeze(agg_func(loss_vec.unsqueeze(0), pref.unsqueeze(0)))
@@ -135,18 +134,15 @@ if __name__ == '__main__':
 
             if args.solver == 'uniform':
                 if args.update_counter % args.uniform_update_iter == 0:
-                    pref_mat = core_uniform.update_pref_mat(pref_mat, loss_mat)
-
+                    pref_mat = core_uniform.update_pref_mat(pref_mat, loss_mat, args)
+                    pref_mat = torch.clamp(pref_mat, 1e-2, 1-1e-2)
 
         loss_batch = np.array(loss_batch)
         epoch_loss_pref.append( np.mean(loss_batch, axis=0) )
     epoch_loss_pref = np.array(epoch_loss_pref)
     epoch_loss_pref_final = epoch_loss_pref[-1,:,:]
 
-    import os
-    from libmoon.util_global.constant import root_name
-    output_folder_name = os.path.join(root_name, 'output', 'mtl', args.task_name, args.dataset, '{}'.format(args.seed))
-    os.makedirs(output_folder_name, exist_ok=True)
+
 
     fig = plt.figure()
     for idx in range(args.n_sub):
@@ -185,9 +181,6 @@ if __name__ == '__main__':
             f.write('{}: {}\n'.format(k, v))
         f.write('{}: {}\n'.format('counter', args.update_counter ))
     print('Saving indicators to', indicator_name)
-
-
-
 
     # Finally, save all information into pickle files.
     pickle_name = os.path.join(output_folder_name, 'res.pickle')

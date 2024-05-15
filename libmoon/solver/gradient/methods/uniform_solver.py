@@ -15,11 +15,12 @@ criterion = nn.MSELoss()
 
 from libmoon.util_global.weight_factor import uniform_pref
 from libmoon.metrics.metrics import compute_MMS
+import os
 
 
-def train_pfl_model(pfl_model, pfl_optimizer, criterion, y, prefs, use_plt_loss = False):
+def train_pfl_model(pfl_model, pfl_optimizer, criterion, y, prefs, args):
     loss_arr = []
-    for _ in range(100):
+    for _ in range(1000):
         y_hat = pfl_model(prefs)
         loss = criterion(y_hat, y)
         loss_arr.append(loss.item())
@@ -27,12 +28,16 @@ def train_pfl_model(pfl_model, pfl_optimizer, criterion, y, prefs, use_plt_loss 
         loss.backward()
         pfl_optimizer.step()
 
-    if use_plt_loss:
-        plt.plot(loss_arr)
-        plt.xlabel('Iteration')
-        plt.ylabel('PFL Loss')
-        plt.show()
-        assert False
+    # if use_plt_loss:
+    fig = plt.figure()
+    plt.plot(loss_arr)
+    plt.xlabel('Iteration')
+    plt.ylabel('PFL Loss')
+    # plt.show()
+    fig_name = os.path.join(args.output_folder_name, 'loss_{}.pdf'.format(args.uniform_update_counter) )
+    plt.savefig(fig_name)
+
+        # assert False
     return pfl_model
 
 

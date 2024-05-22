@@ -137,6 +137,7 @@ def compute_hv( sols ):
     hv_val = ind(sols)
     return hv_val
 
+
 def compute_indicators(objs):
     mms = -compute_MMS(objs)
     soft_mms = compute_soft_MMS(objs)

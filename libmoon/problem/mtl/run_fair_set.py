@@ -10,7 +10,7 @@ import torch
 import numpy as np
 from tqdm import tqdm
 from libmoon.util_global.weight_factor import uniform_pref
-from libmoon.util_global.constant import agg_dict, color_arr
+from libmoon.util_global.constant import agg_dict, color_arr, normalize_vec
 from libmoon.util_global.grad_util import calc_gradients, flatten_grads
 
 
@@ -37,11 +37,7 @@ if __name__ == '__main__':
     parser.add_argument('--pmtl-warmup-iter-counter', type=int, default=0)
 
     parser.add_argument('--update-counter', type=int, default=0)
-
-
     parser.add_argument('--seed', type=int, default=1)
-
-
 
     args = parser.parse_args()
     args.task_name = 'agg_{}'.format(args.agg) if args.solver == 'agg' else args.solver
@@ -78,6 +74,7 @@ if __name__ == '__main__':
                 for idx, obj in enumerate(obj_arr):
                     loss_vec[idx] = obj(**batch)
                 loss_vec = torch.stack(loss_vec)
+                loss_vec = normalize_vec(loss_vec, problem=args.dataset)
                 loss_mat.append(loss_vec)
 
             loss_mat = torch.stack(loss_mat)
@@ -124,7 +121,7 @@ if __name__ == '__main__':
 
     import os
     from libmoon.util_global.constant import root_name
-    output_folder_name = os.path.join(root_name, 'output', 'mtl', args.task_name, 'adult', '{}'.format(args.seed))
+    output_folder_name = os.path.join(root_name, 'output', 'mtl', args.task_name, args.dataset, '{}'.format(args.seed))
     os.makedirs(output_folder_name, exist_ok=True)
 
     fig = plt.figure()

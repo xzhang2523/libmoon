@@ -15,7 +15,7 @@ solution_eps = 1e-5
 
 nadir_point_dict = {
     'adult': array([0.6, 0.12]),
-    'compass': array([1.2, 0.35]),
+    'compass': array([0.52, 0.35]),
     'credit': array([0.52, 0.015]),
 }
 
@@ -164,13 +164,15 @@ beautiful_dict = {
     'mgda': 'MGDA',
     'pmgda': 'PMGDA',
     'agg-ls': 'AGG-LS',
-    'uniform': 'Uniform',
+    'uniform': 'UMOD',
     'agg_ls': 'Agg-LS',
     'agg_tche': 'Agg-Tche',
     'agg_pbi': 'Agg-PBI',
     'hvgrad': 'HVGrad',
     'pmtl': 'PMTL',
-
-
 }
+
+
+color_arr = ['blue', 'red', 'green', 'orange', 'purple', 'brown', 'pink', 'grey', 'black', 'yellow']
+marker_arr = ['o', 'x', '+', 'v', 's', 'p', 'D', 'h', '8', '1']
 

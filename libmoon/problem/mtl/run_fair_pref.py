@@ -30,14 +30,14 @@ if __name__ == '__main__':
     parser.add_argument('--epoch', type=int, default=10)
     parser.add_argument('--batch-size', type=int, default=256)
     parser.add_argument('--n-sub', type=int, default=5)
-    parser.add_argument('--lr', type=float, default=1e-3)
+    parser.add_argument('--lr', type=float, default=1e-2)
     parser.add_argument('--n-obj', type=int, default=2)
 
     parser.add_argument('--update-counter', type=int, default=0)
     parser.add_argument('--uniform-update-counter', type=int, default=0)
     parser.add_argument('--uniform-update-iter', type=int, default=2000)
     # For pmgda
-    parser.add_argument('--h-eps', type=float, default=1e-2)
+    parser.add_argument('--h-eps', type=float, default=5e-3)
     parser.add_argument('--sigma', type=float, default=0.8)
     parser.add_argument('--seed', type=int, default=1)
 
@@ -71,10 +71,13 @@ if __name__ == '__main__':
     model_arr = [model_from_dataset(args.dataset, dim=dim_dict[args.dataset]) for _ in range(args.n_sub)]
     optimizer_arr = [torch.optim.Adam(model.parameters(), lr=args.lr) for model in model_arr]
 
-    if args.solver == 'epo':
-        pref_mat = torch.Tensor(uniform_pref(number=args.n_sub, clip_eps=1e-1))
+    if args.dataset == 'compass':
+        pref_mat = torch.Tensor(uniform_pref(number=args.n_sub, clip_eps=0.05))
     else:
-        pref_mat = torch.Tensor(uniform_pref(number=args.n_sub, clip_eps=1e-2))
+        if args.solver == 'epo':
+            pref_mat = torch.Tensor(uniform_pref(number=args.n_sub, clip_eps=1e-1))
+        else:
+            pref_mat = torch.Tensor(uniform_pref(number=args.n_sub, clip_eps=1e-2))
 
     epoch_loss_pref = []
 

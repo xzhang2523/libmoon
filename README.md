@@ -28,9 +28,7 @@ A submission to NeurIPS 2024 DB track.
 ## Advisory Board
 - **Prof. Jingda Deng** (Xi'an Jiaotong University) (For advice of High-D hypervolume computation)
 - **Prof. Yifan Chen** (Hong Kong Baptist University) (For advice of OR)
-- **Prof. Zhichao Lu** (City University of Hong Kong) (For advice of ML problems)
 - **Prof. Ke Shang** (Shenzhen University) (For advice of approximate hypervolume-based methods)
-- **Prof. Tao Qin** (Microsoft Research)   (For advice of industrial software)
 - **Prof. Han Zhao** (University of Illinois at Urbana-Champaign) (For advice of fariness classification)
 
 
@@ -156,57 +154,18 @@ pip install libmoon==0.1.11
 
 Example code for a synthetic problem,
 ```
-from libmoon.solver.gradient import GradAggSolver
-from libmoon.util_global.constant import problem_dict
-from libmoon.util_global.weight_factor.funs import uniform_pref
-import torch
-import numpy as np
-from matplotlib import pyplot as plt
-import argparse
-from libmoon.visulization.view_res import vedio_res
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='example')
-    parser.add_argument('--n-partition', type=int, default=10)
-    parser.add_argument('--agg', type=str, default='tche')  # If solve is agg, then choose a specific agg method.
-    parser.add_argument('--solver', type=str, default='agg')
-    parser.add_argument('--problem-name', type=str, default='VLMOP2')
-    parser.add_argument('--iter', type=int, default=1000)
-    parser.add_argument('--step-size', type=float, default=1e-2)
-    parser.add_argument('--tol', type=float, default=1e-6)
-    args = parser.parse_args()
-    
-    
-    # Init the solver, problem and prefs. 
-    solver = GradAggSolver(args.step_size, args.iter, args.tol)
-    problem = problem_dict[args.problem_name]
-    prefs = uniform_pref(args.n_partition, problem.n_obj, clip_eps=1e-2)
-    args.n_prob = len(prefs)
-
-    # Initialize the initial solution 
-    if 'lbound' in dir(problem):
-        if args.problem_name == 'VLMOP1':
-            x0 = torch.rand(args.n_prob, problem.n_var) * 2 / np.sqrt(problem.n_var) - 1 / np.sqrt(problem.n_var)
-        else:
-            x0 = torch.rand(args.n_prob, problem.n_var)
-    else:
-        x0 = torch.rand( args.n_prob, problem.n_var )*20 - 10
 
 
-    # Solve results
-    res = solver.solve(problem, x=x0, prefs=prefs, args=args)
-    
-    # Visualize results
-    y_arr = res['y']
-    plt.scatter(y_arr[:,0], y_arr[:,1], s=50)
-    plt.xlabel('$f_1$', fontsize=20)
-    plt.ylabel('$f_2$', fontsize=20)
-    plt.show()
-    
-    # If use vedio
-    use_vedio=True
-    if use_vedio:
-        vedio_res(res, problem, prefs, args)     
+Four lines of code running on a synthetic problem.
+```python
+from libmoon.solver.gradient.methods import EPOSolver
+from libmoon.util_global.initialization import synthetic_init
+from libmoon.util_global.weight_factor import uniform_pref
+
+problem = get_problem(problem_name='ZDT1')
+prefs = uniform_pref(n_prob=5, n_obj = problem.n_obj, clip_eps=1e-2)
+solver = EPOSolver(problem, step_size=1e-2, n_iter=1000, tol=1e-2)
+res = solver.solve(x=synthetic_init(problem, prefs), prefs=prefs)
 ```
         
 Example of MTL

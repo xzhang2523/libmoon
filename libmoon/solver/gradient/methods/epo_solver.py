@@ -12,8 +12,13 @@ from pymoo.indicators.hv import HV
 
 import warnings
 warnings.filterwarnings("ignore")
-from libmoon.util_global.constant import solution_eps
+from libmoon.util_global.constant import solution_eps, get_hv_ref
+
+
 from libmoon.util_global.grad_util import get_moo_grad, get_moo_Jacobian
+
+
+
 
 
 class EPO_LP(object):
@@ -114,85 +119,76 @@ def adjustments(l, r=1):
 
 
 def solve_epo(grad_arr, losses, pref, epo_lp):
-
     '''
         input: grad_arr: (m,n).
         losses : (m,).
         pref: (m,) inv.
-
         return : gw: (n,). alpha: (m,)
-
     '''
 
     if type(pref) == torch.Tensor:
         pref = pref.cpu().numpy()
-
     pref = np.array(pref)
     G = grad_arr.detach().clone().cpu().numpy()
-
     if type(losses) == torch.Tensor:
         losses_np = losses.detach().clone().cpu().numpy().squeeze()
     else:
         losses_np = losses
-
     m = G.shape[0]
     n = G.shape[1]
     GG = G @ G.T
-
-    # epo_lp = EPO_LP(m=m, n=n, r=np.array(pref))
-
     alpha = epo_lp.get_alpha(losses_np, G=GG, C=True)
     if alpha is None:   # A patch for the issue in cvxpy
         alpha = pref / pref.sum()
     gw = alpha @ G
-
-    # return torch.Tensor(gw).unsqueeze(0)
     return torch.Tensor(gw), alpha
 
 
 
 
 class EPOSolver(GradBaseSolver):
-    def __init__(self, step_size, max_iter, tol):
-        super().__init__(step_size, max_iter, tol)
+    def __init__(self, problem, step_size, n_iter, tol):
+        self.problem = problem
+        super().__init__(step_size, n_iter, tol)
 
-
-    def solve(self, problem, x, prefs, args):
+    def solve(self,x, prefs):
+        n_obj, n_var, n_prob = self.problem.n_obj, self.problem.n_var, len(prefs)
         x = Variable(x, requires_grad=True)
-
-        epo_arr = [  EPO_LP(m=args.n_obj, n=args.n_var, r=np.array( 1/pref )) for pref in prefs ]
+        epo_arr = [  EPO_LP(m=n_obj, n=n_var, r=np.array( 1/pref )) for pref in prefs ]
         optimizer = SGD([x], lr=self.step_size)
-
-        ref_point = array([2.0, 2.0])
+        ref_point = get_hv_ref(self.problem.problem_name)
         ind = HV(ref_point=ref_point)
-        hv_arr = []
-        y_arr = []
 
-        for i in tqdm( range(self.max_iter) ):
-            y = problem.evaluate(x)
-            y_arr.append(y.detach().numpy())
+        hv_arr, y_arr, x_arr = [], [], []
 
-            alpha_arr = [0] * args.n_prob
-            for prob_idx in range( args.n_prob ):
-                Jacobian = torch.autograd.functional.jacobian(lambda ph: problem.evaluate(ph).squeeze(), x[prob_idx].unsqueeze(0) )
+        for i in tqdm( range(self.n_iter) ):
+            y = self.problem.evaluate(x)
+            y_np = y.detach().numpy()
+            y_arr.append( y.detach().numpy() )
+            x_arr.append(x.detach().numpy())
+            hv_arr.append( ind.do( y_np ) )
+
+            alpha_arr = [0] * n_prob
+            for prob_idx in range( n_prob ):
+                Jacobian = torch.autograd.functional.jacobian(lambda ph: self.problem.evaluate(ph).squeeze(), x[prob_idx].unsqueeze(0) )
                 Jacobian = torch.squeeze(Jacobian)
                 _, alpha = solve_epo(Jacobian, losses=y[prob_idx], pref=prefs[prob_idx], epo_lp=epo_arr[prob_idx])
                 alpha_arr[prob_idx] = alpha
-
-
 
             optimizer.zero_grad()
             alpha_arr = torch.Tensor( np.array(alpha_arr) )
             torch.sum(alpha_arr * y).backward()
             optimizer.step()
 
-            if 'lbound' in dir(problem):
-                x.data = torch.clamp(x.data, torch.Tensor(problem.lbound) + solution_eps, torch.Tensor(problem.ubound)-solution_eps )
-
+            if 'lbound' in dir(self.problem):
+                x.data = torch.clamp(x.data, torch.Tensor(self.problem.lbound) + solution_eps, torch.Tensor(self.problem.ubound)-solution_eps )
 
         res = {}
-        res['x'] = x.detach().numpy()
-        res['y'] = y.detach().numpy()
-        res['hv_arr'] = [0]
-        res['y_arr'] = y_arr
+
+        res['x_opt'] = x.detach().numpy()
+        res['y_opt'] = y.detach().numpy()
+        res['hv_history'] = np.array(hv_arr)
+        res['y_history'] = np.array( y_arr)
+        res['x_history'] = np.array(x_arr)
+
         return res

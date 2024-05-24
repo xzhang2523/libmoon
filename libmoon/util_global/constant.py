@@ -1,8 +1,7 @@
+import numpy as np
+
 from .scalarization import ls, mtche, tche, pbi, cosmos, invagg, soft_tche, soft_mtche
-from ..problem.synthetic import VLMOP1, VLMOP2, ZDT1, ZDT2, ZDT3, ZDT4, ZDT6
-from ..problem.synthetic import MAF1
-from ..problem.synthetic.dtlz import DTLZ1, DTLZ2, DTLZ3, DTLZ4
-from ..problem.synthetic.re import RE21, RE22, RE23, RE24, RE25, RE31, RE37, RE41, RE42
+from libmoon.util_global.problems import get_problem
 
 
 import os
@@ -11,7 +10,6 @@ import torch
 
 FONT_SIZE = 20
 solution_eps = 1e-5
-
 
 nadir_point_dict = {
     'adult': array([0.6, 0.12]),
@@ -25,17 +23,13 @@ ideal_point_dict = {
     'credit': array([0.37, 0.00]),
 }
 
-
 def normalize_vec(x, problem ):
-
     ideal = ideal_point_dict[problem]
     nadir = nadir_point_dict[problem]
-
     if type(x) == torch.Tensor:
         return (x - torch.Tensor(ideal)) / ( torch.Tensor(nadir) - torch.Tensor(ideal))
     else:
         return (x - ideal) / (nadir - ideal)
-
 
 agg_dict = {
     'ls' : ls,
@@ -46,7 +40,6 @@ agg_dict = {
     'invagg' : invagg,
     'softtche' : soft_tche,
     'softmtche': soft_mtche,
-
 }
 
 all_indicators = ['hv', 'igd', 'spacing', 'sparsity', 'uniform', 'soft uniform', 'maxgd']
@@ -75,42 +68,28 @@ scale_dict = {
     'soft uniform': 10,
 }
 
-def get_problem(problem, n_var=10):
-    problem_dict = {
-        'ZDT1': ZDT1(n_var=n_var),
-        'ZDT2': ZDT2(n_var=n_var),
-        'ZDT3': ZDT3(n_var=n_var),
-        'ZDT4': ZDT4(n_var=n_var),
-        'ZDT6': ZDT6(n_var=n_var),
-        'DTLZ1': DTLZ1(n_var=n_var),
-        'DTLZ2': DTLZ2(n_var=n_var),
-        'DTLZ3': DTLZ3(n_var=n_var),
-        'DTLZ4': DTLZ4(n_var=n_var),
-        'VLMOP1': VLMOP1(n_var=n_var),
-        'VLMOP2': VLMOP2(n_var=n_var),
-        'MAF1': MAF1(n_var=n_var),
-        'RE21': RE21(),
-        'RE22': RE22(),
-        'RE23': RE23(),
-        'RE24': RE24(),
-        'RE25': RE25(),
-        'RE31': RE31(),
-        'RE37': RE37(),
-        'RE41': RE41(),
-        'RE42': RE42(),
+
+
+def get_hv_ref(problem_name):
+    # return nadir_point_dict[problem_name] + 1e-2
+    hv_ref_dict = {
+        'VLMOP1': array([1.0, 1.0]),
+        'adult': array([2.0, 2.0]),
+        'VLMOP2': array([4.0, 4.0]),
+        'MAF1': array([2.0, 2.0, 2.0]),
+        'mnist': array([3.0, 3.0]),
+        'fmnist': array([3.0, 3.0]),
     }
-    problem_cls = problem_dict[problem]
-    return problem_cls
+
+    if problem_name in hv_ref_dict:
+        return hv_ref_dict[problem_name]
+    else:
+        problem = get_problem(problem_name)
+        n_obj = problem.n_obj
+        return np.ones(n_obj) * 2.0
 
 
-hv_ref_dict = {
-    'VLMOP1': array([1.0, 1.0]),
-    'adult': array([2.0, 2.0]),
-    'VLMOP2': array([4.0, 4.0]),
-    'MAF1': array([2.0, 2.0, 2.0]),
-    'mnist': array([3.0, 3.0]),
-    'fmnist': array([3.0, 3.0]),
-}
+
 
 def get_hv_ref_dict(problem_name):
     if problem_name.startswith('ZDT'):

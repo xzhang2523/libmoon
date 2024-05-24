@@ -22,18 +22,18 @@ def das_dennis_recursion(ref_dirs, ref_dir, n_partitions, beta, depth):
 
 
 
-def uniform_pref(number, n_obj=2, clip_eps=0, mode='uniform'):
+def uniform_pref(n_prob, n_obj=2, clip_eps=0, mode='uniform'):
 
     if n_obj == 2:
         # Just generate linear uniform preferences
-        pref_1 = np.linspace(clip_eps, 1-clip_eps, number)
+        pref_1 = np.linspace(clip_eps, 1-clip_eps, n_prob)
         pref_2 = 1 - pref_1
         prefs = np.stack((pref_1, pref_2), axis=1)
-
     else:
-        prefs = das_dennis(number, n_obj)
+        from pymoo.util.ref_dirs import get_reference_directions
+        prefs = get_reference_directions("energy", n_obj, n_prob, seed=1)
         prefs = np.clip(prefs, clip_eps, 1-clip_eps)
-        prefs = prefs / prefs.sum(axis=1, keepdims=True)
+        prefs = prefs / prefs.sum(axis=1)[:, None]
 
     return prefs
 

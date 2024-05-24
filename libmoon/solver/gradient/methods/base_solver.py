@@ -7,9 +7,9 @@ from tqdm import tqdm
 from pymoo.indicators.hv import HV
 
 class GradBaseSolver:
-    def __init__(self, step_size, max_iter, tol):
+    def __init__(self, step_size, n_iter, tol):
         self.step_size = step_size
-        self.max_iter = max_iter
+        self.n_iter = n_iter
         self.tol = tol
 
     def solve(self, problem, x, prefs, args):
@@ -24,8 +24,8 @@ class GradBaseSolver:
         raise NotImplementedError
 
 class GradAggSolver(GradBaseSolver):
-    def __init__(self, step_size, max_iter, tol):
-        super().__init__(step_size, max_iter, tol)
+    def __init__(self, step_size, n_iter, tol):
+        super().__init__(step_size, n_iter, tol)
 
     def solve(self, problem, x, prefs, args):
         x = Variable(x, requires_grad=True)
@@ -37,7 +37,7 @@ class GradAggSolver(GradBaseSolver):
         optimizer = SGD([x], lr=self.step_size)
         agg_func = agg_dict[args.agg]
         res = {}
-        for i in tqdm(range(self.max_iter)):
+        for i in tqdm(range(self.n_iter)):
             y = problem.evaluate(x)
             hv_arr.append(ind.do(y.detach().numpy()))
             agg_val = agg_func(y, prefs)

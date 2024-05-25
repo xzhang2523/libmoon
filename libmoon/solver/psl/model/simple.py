@@ -10,8 +10,8 @@ class SimplePSLModel(nn.Module):
         '''
         super().__init__()
         self.problem = problem
-        self.args = args
         self.hidden_size = 256
+
         self.n_obj = problem.n_obj
 
         if 'lbound' in dir(problem):

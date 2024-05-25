@@ -1,9 +1,13 @@
 import torch
 import numpy as np
-
 from libmoon.util_global.problems import get_problem
 
+
+
+
+
 def synthetic_init(problem, prefs):
+
     n_prob = len(prefs)
     if 'lbound' in dir(problem):
         if problem.problem_name == 'VLMOP1':
@@ -12,4 +16,5 @@ def synthetic_init(problem, prefs):
             x0 = torch.rand(n_prob, problem.n_var)
     else:
         x0 = torch.rand(n_prob, problem.n_var ) * 20 - 10
+
     return x0

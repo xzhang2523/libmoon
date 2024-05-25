@@ -56,6 +56,7 @@ class DTLZ2(mop):
                          ubound=ubound, )
         self.problem_name = 'DTLZ2'
 
+
     def _evaluate_torch(self, x):
         xm = x[:, 2:]
         g = torch.sum(torch.pow(xm - 0.5, 2), dim=1)

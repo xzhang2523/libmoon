@@ -2,7 +2,7 @@ from libmoon.solver.gradient.methods.base_solver import GradBaseSolver
 from torch.autograd import Variable
 from torch.optim import SGD
 from torch import Tensor
-from libmoon.util_global.constant import agg_dict, solution_eps, get_hv_ref_dict
+from libmoon.util_global.constant import get_agg_func, solution_eps, get_hv_ref_dict
 import torch
 from tqdm import tqdm
 from pymoo.indicators.hv import HV
@@ -59,7 +59,7 @@ class UniformSolver(GradBaseSolver):
         y_arr = []
         prefs = Tensor(prefs)
         optimizer = SGD([x], lr=self.step_size)
-        agg_func = agg_dict[args.agg]
+        agg_func = get_agg_func(args.agg)
         res = {}
 
 

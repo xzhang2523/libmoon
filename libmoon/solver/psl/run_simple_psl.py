@@ -1,4 +1,5 @@
 from libmoon.solver.psl.model import SimplePSLModel
+
 from libmoon.util_global.constant import get_problem, FONT_SIZE, agg_dict
 
 import argparse
@@ -8,6 +9,7 @@ import torch
 from libmoon.util_global.weight_factor import uniform_pref
 from matplotlib import pyplot as plt
 import os
+
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 from libmoon.fig_util.plot import get_psl_info
 from torch.autograd import Variable
@@ -58,7 +60,6 @@ if __name__ == '__main__':
 
 
     args.device = device
-
     problem = get_problem(args.problem, args.n_var)
     args.n_obj = problem.n_obj
 
@@ -75,6 +76,7 @@ if __name__ == '__main__':
         if args.solver == 'agg':
             if args.solver_ec == 'es':
                 # Part 1. Estimating term A.
+
                 agg_func = agg_dict[args.agg]
                 fs_var = Variable(fs, requires_grad=True)
                 g = agg_func(fs_var, prefs)
@@ -83,6 +85,7 @@ if __name__ == '__main__':
                 g.sum().backward()
                 termA = (fs_var.grad).unsqueeze(1)
                 # Part 2. Estimating term B.
+
                 termB = ES_gradient_estimation_batch(problem, xs.cpu().detach().numpy())
                 termB = torch.Tensor(termB).to(args.device)
                 xs = model(prefs)
@@ -143,7 +146,6 @@ if __name__ == '__main__':
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-`
         else:
             assert False, 'Not supported solver'
 

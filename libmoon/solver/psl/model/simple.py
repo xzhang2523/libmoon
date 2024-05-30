@@ -3,20 +3,19 @@ from torch import nn
 
 
 class SimplePSLModel(nn.Module):
-    def __init__(self, problem, args):
-        '''
-            :param dim: a 3d-array. [chanel, height, width]
-            :param
-        '''
+    def __init__(self, problem):
+
         super().__init__()
         self.problem = problem
         self.hidden_size = 256
 
-        self.n_obj = problem.n_obj
+        self.n_obj, self.n_var = problem.n_obj, problem.n_var
 
         if 'lbound' in dir(problem):
+
+            # The input is a preference vector.
             self.psl_model = nn.Sequential(
-                nn.Linear(self.problem.n_obj, self.hidden_size),
+                nn.Linear(self.n_obj, self.hidden_size),
                 nn.ReLU(),
                 nn.Linear(self.hidden_size, self.hidden_size),
                 nn.ReLU(),
@@ -24,12 +23,13 @@ class SimplePSLModel(nn.Module):
                 nn.ReLU(),
                 nn.Linear(self.hidden_size, self.hidden_size),
                 nn.ReLU(),
-                nn.Linear(self.hidden_size, self.args.n_var),
+                nn.Linear(self.hidden_size, self.n_var),
                 nn.Sigmoid()
             )
+
         else:
             self.psl_model = nn.Sequential(
-                nn.Linear(self.problem.n_obj, self.hidden_size),
+                nn.Linear(self.n_obj, self.hidden_size),
                 nn.ReLU(),
                 nn.Linear(self.hidden_size, self.hidden_size),
                 nn.ReLU(),
@@ -37,7 +37,7 @@ class SimplePSLModel(nn.Module):
                 nn.ReLU(),
                 nn.Linear(self.hidden_size, self.hidden_size),
                 nn.ReLU(),
-                nn.Linear(self.hidden_size, self.args.n_var),
+                nn.Linear(self.hidden_size, self.n_var),
             )
 
     def forward(self, pref):

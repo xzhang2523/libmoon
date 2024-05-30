@@ -41,9 +41,7 @@ if __name__ == '__main__':
     parser.add_argument('--sigma', type=float, default=0.8)
     parser.add_argument('--seed', type=int, default=1)
 
-
     args = parser.parse_args()
-
     if args.solver == 'agg':
         args.task_name = 'agg_{}'.format(args.agg)
     else:
@@ -79,10 +77,10 @@ if __name__ == '__main__':
         else:
             pref_mat = torch.Tensor(uniform_pref(number=args.n_sub, clip_eps=1e-2))
 
-    epoch_loss_pref = []
 
+    epoch_loss_pref = []
     # For seperate models, we have N independent models, each with its own optimizer.
-    for _ in tqdm(range(args.epoch)):
+    for _ in tqdm( range(args.epoch) ):
         loss_batch = []
         for b, batch in enumerate(trainloader):
             loss_mat = [0] * len(pref_mat)
@@ -93,22 +91,25 @@ if __name__ == '__main__':
                 loss_vec = [0] * 2
                 for idx, obj in enumerate(obj_arr) :
                     loss_vec[idx] = obj( **batch )
+
                 loss_vec = torch.stack(loss_vec)
                 loss_vec = normalize_vec(loss_vec, problem=args.dataset)
 
                 # Calc the gradient, and get the alpha.
                 if args.solver != 'agg':
                     gradients, obj_values = calc_gradients(batch, model_arr[pref_idx], obj_arr)
-                    Jacobian = torch.stack([flatten_grads(gradients[idx]) for idx in range(2)])
+                    Jacobian = torch.stack( [flatten_grads(gradients[idx]) for idx in range(2)] )
 
                     if args.solver == 'epo':
                         from libmoon.solver.gradient.methods.core_solver import CoreEPO
                         core_epo = CoreEPO(pref)
                         alpha = torch.Tensor( core_epo.get_alpha(Jacobian, loss_vec) )
+
                     elif args.solver == 'mgda':
                         from libmoon.solver.gradient.methods.core_solver import CoreMGDA
                         core_mgda = CoreMGDA()
                         alpha = torch.Tensor( core_mgda.get_alpha(Jacobian) )
+
                     elif args.solver == 'pmgda':
                         from libmoon.solver.gradient.methods.core_solver import CorePMGDA
                         from libmoon.solver.gradient.methods.pmgda_core import get_nn_pmgda_componets
@@ -117,22 +118,25 @@ if __name__ == '__main__':
                         core_pmgda = CorePMGDA(args)
                         alpha = core_pmgda.get_alpha(Jacobian, grad_h, h_val, args, return_coeff=True, Jhf=Jhf)
                         alpha = torch.Tensor( alpha )
+
                 if args.solver == 'agg':
                     agg_func = agg_dict[args.agg]
                     scalar_loss = torch.squeeze(agg_func(loss_vec.unsqueeze(0), pref.unsqueeze(0)))
+
                 elif args.solver == 'uniform':
                     agg_func = agg_dict['mtche']
                     scalar_loss = torch.squeeze(agg_func(loss_vec.unsqueeze(0), pref.unsqueeze(0)))
+
                 else:
                     scalar_loss = torch.sum(alpha * loss_vec)
+
                 optimizer_arr[pref_idx].zero_grad()
                 scalar_loss.backward()
                 optimizer_arr[pref_idx].step()     # Use a counter to
                 args.update_counter += 1
                 loss_mat[pref_idx] = loss_vec.detach().cpu().numpy()
 
-            # print()
-            loss_mat = np.array(loss_mat)
+            loss_mat = np.array( loss_mat )
             loss_batch.append( loss_mat )
 
             if args.solver == 'uniform':
@@ -142,6 +146,7 @@ if __name__ == '__main__':
 
         loss_batch = np.array(loss_batch)
         epoch_loss_pref.append( np.mean(loss_batch, axis=0) )
+
     epoch_loss_pref = np.array(epoch_loss_pref)
     epoch_loss_pref_final = epoch_loss_pref[-1,:,:]
 
@@ -162,6 +167,7 @@ if __name__ == '__main__':
     fig = plt.figure()
     plt.scatter(epoch_loss_pref_final[:,0], epoch_loss_pref_final[:,1], color='black', s=50)
     rho_max = np.max( np.linalg.norm(epoch_loss_pref_final, axis=1) )
+
     pref_mat_np = pref_mat.detach().cpu().numpy()
     pref_mat_np = pref_mat_np / np.linalg.norm(pref_mat_np, axis=1, keepdims=True) * rho_max
 

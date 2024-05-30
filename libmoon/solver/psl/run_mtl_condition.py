@@ -9,10 +9,7 @@ loss_func_arr = from_name( names=['CrossEntropyLoss', 'CrossEntropyLoss'], task_
 from model.mtl import HyperNet, LeNetTarget
 from libmoon.problem.mtl.loaders import MultiMNISTData
 from tqdm import tqdm
-
 from matplotlib import pyplot as plt
-
-
 
 if __name__ == '__main__':
     parse = argparse.ArgumentParser()
@@ -42,9 +39,7 @@ if __name__ == '__main__':
     optimizer = torch.optim.Adam(hnet.parameters(), lr=args.lr)
 
 
-
     loss_history = []
-
     for idx in tqdm(range( args.n_epoch)):
         for i, batch in enumerate(loader):
 

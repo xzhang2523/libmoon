@@ -11,7 +11,6 @@ from libmoon.util_global.constant import root_name
 
 
 def load_dataset(path, s_label):
-    # print()
     data = pd.read_csv(path)
     # Preprocessing taken from https://www.kaggle.com/islomjon/income-prediction-with-ensembles-of-decision-trees
     # replace missing values with majority class
@@ -110,10 +109,3 @@ class Adult(data.Dataset):
         return None
 
 
-
-if __name__ == "__main__":
-    dataset = ADULT(split="train")
-    trainloader = data.DataLoader(dataset, batch_size=256, num_workers=0)
-
-    for i, data in enumerate(trainloader):
-        print()

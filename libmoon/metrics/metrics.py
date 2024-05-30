@@ -3,67 +3,6 @@ import numpy as np
 from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting
 
 
-def angle2pref(angle, n_obj):
-    if n_obj ==3:
-        angle1 = angle[:,0]
-        angle2 = angle[:,1]
-
-        if type(angle) == torch.Tensor:
-            pref1 = torch.cos(angle1) ** 2
-            pref2 = torch.sin(angle1) ** 2 * torch.cos(angle2) ** 2
-            pref3 = torch.sin(angle1) ** 2 * torch.sin(angle2) ** 2
-            pref = torch.stack((pref1, pref2, pref3), dim=1)
-        else:
-            pref1 = np.cos(angle1) ** 2
-            pref2 = np.sin(angle1) ** 2 * np.cos(angle2) ** 2
-            pref3 = np.sin(angle1) ** 2 * np.sin(angle2) ** 2
-            pref = np.c_[pref1, pref2, pref3]
-    elif n_obj == 2:
-        if type(angle) == torch.Tensor:
-            pref1 = torch.cos(angle[:,0]) ** 2
-            pref2 = torch.sin(angle[:,0]) ** 2
-            pref = torch.stack((pref1, pref2), dim=1)
-        else:
-            pref1 = np.cos(angle[:,0]) ** 2
-            pref2 = np.sin(angle[:,0]) ** 2
-            pref = np.c_[pref1, pref2]
-    else:
-        assert False, 'n_obj should be 2 or 3'
-    return pref
-
-def pref2angle(pref, n_obj):
-    if n_obj == 3:
-        pref1 = pref[:,0]
-        pref2 = pref[:,1]
-
-        if type(pref) == torch.Tensor:
-            angle1 = torch.acos(torch.sqrt(pref1))
-            angle2 = torch.acos(torch.sqrt(pref2 / torch.sin(angle1) ** 2))
-            angle = torch.stack((angle1, angle2), dim=1)
-        else:
-
-            angle1 = np.arccos( np.sqrt(pref1) )
-            use_debug = False
-            if use_debug:
-                print('angle1', angle1)
-
-            angle2 = np.zeros_like(angle1)
-            for idx, ang1 in enumerate(angle1):
-                if ang1 != 0:
-                    cos_th = np.sqrt(pref2[idx] / (np.sin(ang1) ** 2) )
-                    cos_th = np.clip(cos_th, 0, 1)
-                    angle2[idx] = np.arccos( cos_th  )
-            angle = np.c_[angle1, angle2]
-    else:
-        if type(pref) == torch.Tensor:
-            angle1 = torch.acos(torch.sqrt(pref[:,0]))
-            angle = angle1.unsqueeze(1)
-        else:
-            angle1 = np.arccos(np.sqrt(pref[:,0]))
-            angle = np.c_[angle1]
-
-    return angle
-
 
 def adj_matrix(solutions):
     n = len(solutions)
@@ -138,16 +77,57 @@ def compute_hv( sols ):
     return hv_val
 
 
-def compute_indicators(objs):
+def compute_pbi(sols, prefs, coeff=8.0):
+    pbi_arr = []
+    for sol, pref in zip(sols, prefs):
+        d1 = np.dot(sol, pref)
+        d2 = np.linalg.norm(sol -  pref / np.linalg.norm(pref) * d1)
+        pbi_val = d1 + coeff * d2
+        pbi_arr.append(pbi_val)
+
+    return np.mean(pbi_arr)
+
+
+
+
+def compute_inner_product(sols, prefs):
+    sum_value = sols * prefs
+    ip_values_vec = np.sum(sum_value, axis=1)
+    return np.mean(ip_values_vec)
+
+
+def compute_cross_angle(sols, prefs):
+    arccos_value_arr = []
+    for sol, pref in zip(sols, prefs):
+        arccos_value = np.dot(sol, pref) / ( np.linalg.norm(sol) * np.linalg.norm(pref) )
+        arccos_value = np.clip(arccos_value, -1, 1)
+        angle = np.arccos(arccos_value) * 180 / np.pi
+        arccos_value_arr.append( angle )
+    return np.mean(arccos_value_arr)
+
+
+
+
+
+
+def compute_indicators(objs, prefs):
     mms = -compute_MMS(objs)
     soft_mms = compute_soft_MMS(objs)
     spacing = compute_spacing(objs)
     sparsity = compute_sparsity_mit(objs)
     hv = compute_hv(objs)
+
+    inner_product = compute_inner_product(objs, prefs)
+    cross_angle = compute_cross_angle(objs, prefs)
+    pbi = compute_pbi(objs, prefs)
+
     return {
         'uniform': mms,
         'soft uniform': soft_mms,
         'spacing': spacing,
         'sparsity': sparsity,
-        'hv': hv
+        'hv': hv,
+        'inner_product': inner_product,
+        'cross_angle': cross_angle,
+        'pbi': pbi
     }

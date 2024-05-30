@@ -29,7 +29,6 @@ class CrossEntropyLoss(torch.nn.CrossEntropyLoss):
         logits = kwargs[self.logits_name]
         labels = kwargs[self.label_name]
         res = super().__call__(logits, labels)
-        print()
         return res
 
 

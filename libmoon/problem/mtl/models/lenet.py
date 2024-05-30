@@ -25,7 +25,6 @@ class MultiLeNet(nn.Module):
         self.private_left = nn.Linear(50, 10)
         self.private_right = nn.Linear(50, 10)
 
-
     def forward(self, batch):
         x = batch['data']
         x = self.shared(x)

@@ -9,8 +9,7 @@ from numpy import array
 from torch import Tensor
 
 
-
-def get_nn_pmgda_componets(loss_vec, pref, args):
+def get_nn_pmgda_componets(loss_vec, pref):
     '''
         return: h_val, grad_h, J_hf
     '''
@@ -20,12 +19,8 @@ def get_nn_pmgda_componets(loss_vec, pref, args):
     h.backward()
     J_hf = loss_vec_var.grad
     h_val = h.detach().clone().item()
-
-
     # grad_h = J_hf @ Jacobian?
     return h_val, J_hf
-
-
 
 
 def solve_mgda_analy(grad_1, grad_2, return_coeff=False):
@@ -71,7 +66,7 @@ def pbi(f, lamb):
     return d1, d2
 
 
-def constraint(loss_arr, pref=Tensor([0, 1]), args=None):
+def constraint(loss_arr, pref=Tensor([0, 1])):
     '''
         # Just consider two types of constraints.
         # -- Type (1), the `exact' constraint.
@@ -94,7 +89,6 @@ def constraint(loss_arr, pref=Tensor([0, 1]), args=None):
     else:
         _, d2 = pbi(loss_arr, pref)
         d2 = d2.unsqueeze(0)
-
     return d2
 
 
@@ -115,7 +109,7 @@ def get_cosmos_Jhf(loss, pref):
     return Jhf
 
 
-def solve_pmgda(Jacobian, grad_h, h_val, args, return_coeff=False, Jhf=None):
+def solve_pmgda(Jacobian, grad_h, h_val, h_tol, sigma, return_coeff=False, Jhf=None):
     '''
         Input:
         Jacobian: (m,n)
@@ -134,29 +128,24 @@ def solve_pmgda(Jacobian, grad_h, h_val, args, return_coeff=False, Jhf=None):
     '''
 
     # Jacobian_np, grad_h_np = ts2np(Jacobian, grad_h)
-
     Jacobian_np = Jacobian.detach().clone().cpu().numpy()
     grad_h_np = grad_h.detach().clone().cpu().numpy()
-
     (m, n) = Jacobian_np.shape
     # Jacobian_np.shape : (m,n)
     # grad_h_np.shape : (1,n)
-
     G = np.squeeze(np.r_[Jacobian_np, np.expand_dims(grad_h_np, 0)])
     G_norm = np.linalg.norm(G, axis=1)
-
     # G_tilde.shape: (m+1, n)
     G_n = np.copy(G)
     for i in range(G_n.shape[0]):
         G_n[i] = G_n[i] / (np.linalg.norm(G_n[i]) + 1e-4)
-
     GG = G @ G.T
     GGn = G @ G_n.T
 
     # condition1 = args.constr_type == 'l2' and h_val < args.constr_rho+args.h_eps
     # condition2 = args.constr_type == 'linear' and h_val < args.h_eps
 
-    condition = h_val < args.h_eps
+    condition = h_val < h_tol
 
     if condition:
         # print('constraint satisfied')
@@ -182,9 +171,9 @@ def solve_pmgda(Jacobian, grad_h, h_val, args, return_coeff=False, Jhf=None):
         A_tmp[-1][0] = 0
         A1 = np.c_[A1, A_tmp]
         b1 = np.zeros(m + 1)
-        b1[-1] = - args.sigma * np.linalg.norm(grad_h)
+        b1[-1] = - sigma * np.linalg.norm(grad_h)
 
-        # A2 plus A3 are the simplex constraint, A2 is for non zero constraints.
+        # A2 plus A3 are the simplex constraint, A2 is for non-zero constraints.
         A2 = np.c_[-np.eye(m + 1), np.zeros((m + 1, 1))]
         b2 = -np.zeros(m + 1)
 
@@ -216,7 +205,7 @@ def solve_pmgda(Jacobian, grad_h, h_val, args, return_coeff=False, Jhf=None):
         # coeff, Eq. (18) in the main paper.
         if return_coeff:
             if Jhf is not None:
-                mu_prime = get_pmgda_DWA_coeff(args, mu, Jhf, G_norm)
+                mu_prime = get_pmgda_DWA_coeff(mu, Jhf, G_norm, m)
             else:
                 assert False, 'Jhf is None not implemented.'
 
@@ -226,15 +215,21 @@ def solve_pmgda(Jacobian, grad_h, h_val, args, return_coeff=False, Jhf=None):
         return Tensor(gw)
 
 
-def get_pmgda_DWA_coeff(args, mu, Jhf, G_norm):
+
+
+
+def get_pmgda_DWA_coeff(mu, Jhf, G_norm, m):
     '''
-        Please ref the Eq. (18) in the main paper.
+        This function is used to compute the coefficient of the dynamic weight adjustment.
+
+        Please ref the Eq. (18) for the formulation in the main paper.
     '''
-    m = args.n_obj
-    mu_prime = np.zeros(args.n_obj)
-    for i in range(args.n_obj):
+    mu_prime = np.zeros( m )
+    for i in range( m ):
         mu_prime[i] = mu[i] / G_norm[i] + mu[m] / G_norm[m] * Jhf[i]
     return mu_prime
+
+
 
 
 def solve_mgda_null(G_tilde):
@@ -329,9 +324,9 @@ def get_svgd_gradient(grad_1, grad_2, inputs, losses):
     return gradient
 
 
-def get_Jhf(f_arr, pref, args, return_h=False):
+def get_Jhf(f_arr, pref, return_h=False):
     f = Variable(f_arr, requires_grad=True)
-    h = constraint(f, pref=pref, args=args)
+    h = constraint(f, pref=pref)
     h.backward()
     Jhf = f.grad.detach().clone().cpu().numpy()
 

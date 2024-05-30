@@ -35,7 +35,7 @@ compass_setting = dict(
     alpha=.5,
 )
 
-multi_mnist = dict(
+mnist_setting = dict(
     dataset='multi_mnist',
     dim=(1, 36, 36),
     objectives=['CrossEntropyLoss', 'CrossEntropyLoss'],
@@ -43,7 +43,7 @@ multi_mnist = dict(
     alpha=1.2,
 )
 
-multi_fashion = dict(
+fashion_setting = dict(
     dataset='multi_fashion',
     dim=(1, 36, 36),
     objectives=['CrossEntropyLoss', 'CrossEntropyLoss'],
@@ -51,7 +51,7 @@ multi_fashion = dict(
     alpha=1.2,
 )
 
-multi_fashion_mnist = dict(
+fmnist_setting = dict(
     dataset='multi_fashion_mnist',
     dim=(1, 36, 36),
     objectives=['CrossEntropyLoss', 'CrossEntropyLoss'],

@@ -3,24 +3,34 @@ import numpy as np
 from .scalarization import ls, mtche, tche, pbi, cosmos, invagg, soft_tche, soft_mtche
 from libmoon.util_global.problems import get_problem
 
-
 import os
 from numpy import array
 import torch
 
 FONT_SIZE = 20
+FONT_SIZE_2D = 20
+FONT_SIZE_3D = 20
+
+
 solution_eps = 1e-5
 
 nadir_point_dict = {
     'adult': array([0.6, 0.12]),
-    'compass': array([0.52, 0.35]),
+    'compass': array([0.52, 0.34]),
     'credit': array([0.52, 0.015]),
+    'mnist': array([0.6, 0.6]),
+    'fashion': array([0.6, 0.6]),
+    'fmnist': array([0.6, 0.6]),
 }
 
 ideal_point_dict = {
     'adult': array([0.3, 0.01]),
-    'compass': array([0.00, 0.00]),
-    'credit': array([0.37, 0.00]),
+    'compass': array([0.04, 0.04]),
+    'credit': array([0.44, 0.003]),
+    'mnist': array([0.2, 0.2]),
+    'fashion': array([0.4, 0.4]),
+    'fmnist': array([0.2, 0.4]),
+
 }
 
 def normalize_vec(x, problem ):
@@ -31,16 +41,37 @@ def normalize_vec(x, problem ):
     else:
         return (x - ideal) / (nadir - ideal)
 
-agg_dict = {
-    'ls' : ls,
-    'mtche' : mtche,
-    'tche' : tche,
-    'pbi' : pbi,
-    'cosmos' : cosmos,
-    'invagg' : invagg,
-    'softtche' : soft_tche,
-    'softmtche': soft_mtche,
-}
+def get_agg_func(agg):
+    if agg == 'ls':
+        return ls
+    elif agg == 'mtche':
+        return mtche
+    elif agg == 'tche':
+        return tche
+    elif agg == 'pbi':
+        return pbi
+    elif agg == 'cosmos':
+        return cosmos
+    elif agg == 'invagg':
+        return invagg
+    elif agg == 'softtche':
+        return soft_tche
+    elif agg == 'softmtche':
+        return soft_mtche
+    else:
+        raise ValueError('Invalid agg function')
+
+# agg_dict = {
+#     'ls' : ls,
+#     'mtche' : mtche,
+#     'tche' : tche,
+#     'pbi' : pbi,
+#     'cosmos' : cosmos,
+#     'invagg' : invagg,
+#     'softtche' : soft_tche,
+#     'softmtche': soft_mtche,
+# }
+
 
 all_indicators = ['hv', 'igd', 'spacing', 'sparsity', 'uniform', 'soft uniform', 'maxgd']
 oracle_indicators = ['hv', 'spacing', 'sparsity', 'uniform', 'soft uniform']
@@ -88,9 +119,6 @@ def get_hv_ref(problem_name):
         n_obj = problem.n_obj
         return np.ones(n_obj) * 2.0
 
-
-
-
 def get_hv_ref_dict(problem_name):
     if problem_name.startswith('ZDT'):
         ref = array([1.0, 1.0])
@@ -106,7 +134,6 @@ def is_pref_based(mtd):
     else:
         return False
 
-
 def get_device():
     if torch.cuda.is_available():
         device = torch.device("cuda")
@@ -119,11 +146,9 @@ def get_device():
 def get_param_num(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
-
-color_arr = ['blue', 'red', 'green', 'orange', 'purple', 'brown', 'pink', 'grey', 'black', 'yellow']
+# color_arr = ['blue', 'red', 'green', 'orange', 'purple', 'brown', 'pink', 'grey', 'black', 'yellow'] * 100
 
 beautiful_dict = {
-    # For MOEA use.
     # ['MOEADURAW', 'MCEAD', 'LMPFE', 'nsga3', 'sms', 'moead', 'adjust']
     'MOEADURAW' : 'MOEA/D-URAW',
     'MCEAD' : 'MCEA/D',
@@ -137,7 +162,6 @@ beautiful_dict = {
     'adjust' : 'UMOEA/D',
     'Subset' : 'Subset',
     'awa': 'AWA',
-
     # For Gradient use.
     'epo': 'EPO',
     'mgda': 'MGDA',
@@ -146,12 +170,14 @@ beautiful_dict = {
     'uniform': 'UMOD',
     'agg_ls': 'Agg-LS',
     'agg_tche': 'Agg-Tche',
+    'agg_mtche': 'Agg-mTche',
     'agg_pbi': 'Agg-PBI',
     'hvgrad': 'HVGrad',
     'pmtl': 'PMTL',
 }
 
 
-color_arr = ['blue', 'red', 'green', 'orange', 'purple', 'brown', 'pink', 'grey', 'black', 'yellow']
+import seaborn as sns
+color_arr = sns.color_palette() + ['blue', 'red', 'green', 'orange', 'purple', 'brown', 'pink', 'grey', 'black', 'yellow']
 marker_arr = ['o', 'x', '+', 'v', 's', 'p', 'D', 'h', '8', '1']
 

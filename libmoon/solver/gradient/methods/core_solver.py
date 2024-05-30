@@ -38,11 +38,11 @@ class CoreHVGrad:
         return alpha_mat
 
 class CorePMGDA:
-    def __init__(self, args):
-        self.args = args
+    def __init__(self):
+        pass
 
-    def get_alpha(self, Jacobian, grad_h, h_val, args, return_coeff=True, Jhf=None):
-        _, alpha = solve_pmgda(Jacobian, grad_h, h_val, args, return_coeff=return_coeff, Jhf=Jhf)
+    def get_alpha(self, Jacobian, grad_h, h_val, h_tol, sigma, return_coeff=True, Jhf=None):
+        _, alpha = solve_pmgda(Jacobian, grad_h, h_val, h_tol, sigma, return_coeff=return_coeff, Jhf=Jhf)
         return alpha
         #     Input:
         #     Jacobian: (m,n), grad_h: (1,n), h_val: (1,), return_coeff: bool, Jhf: (m,) .
@@ -134,7 +134,6 @@ class CoreMOOSVGD:
 class CoreMGDA:
     def __init__(self):
         pass
-
     def get_alpha(self, G):
         # G.shape: (m,n). G is the shorthand for Jacobian matrix.
         _, alpha = solve_mgda(G, return_coeff=True)
@@ -145,7 +144,6 @@ class CoreUniform:
         # pass
         self.loss_mat_ts_arr = []
         self.pref_mat_ts_arr = []
-
 
     def update_pref_mat(self, pref_mat, loss_mat, args):
         args.uniform_update_counter += 1
@@ -161,6 +159,7 @@ class CoreUniform:
         # Update the prefs using the PFL model.
         prefs_var = Variable(pref_mat, requires_grad=True)
         prefs_optimizer = SGD([prefs_var], lr=5e-3)
+
         mms_arr = []
         for _ in range(1000):
             y_pred = pfl_model(prefs_var)

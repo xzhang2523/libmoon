@@ -1,21 +1,26 @@
 from libmoon.problem.mtl.models import MultiLeNet
 from libmoon.problem.mtl.models import FullyConnected
 
-def model_from_dataset(dataset, **kwargs):
-    if dataset == 'adult':
-        return FullyConnected(**kwargs)
-    elif dataset == 'credit':
-        return FullyConnected(**kwargs)
-    elif dataset == 'compass':
-        return FullyConnected(**kwargs)
-    elif dataset == 'multi_mnist' or dataset == 'multi_fashion_mnist' or dataset == 'multi_fashion':
+
+def model_from_dataset(dataset_name, architecture, **kwargs):
+    if dataset_name == 'adult':
+        return FullyConnected(architecture, **kwargs)
+    elif dataset_name == 'credit':
+        return FullyConnected(architecture, **kwargs)
+    elif dataset_name == 'compass':
+        return FullyConnected(architecture, **kwargs)
+    elif dataset_name in ['mnist','fashion','fmnist'] :
         return MultiLeNet(**kwargs)
     else:
-        raise ValueError("Unknown model name {}".format(dataset))
+        raise ValueError("Unknown model name {}".format(dataset_name))
+
 
 
 dim_dict = {
     'adult' : (88,),
     'credit' : (90,),
     'compass' : (20,),
+    'mnist' : (1,36,36),
+    'fashion' : (1,36,36),
+    'fmnist' : (1,36,36),
 }

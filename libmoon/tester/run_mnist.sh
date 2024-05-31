@@ -20,30 +20,28 @@
 #  done
 #done
 
-epoch=20
+epoch=30
 
-for solver in epo
+
+
+for seed in {1..5}
 do
-  for dataset in mnist fmnist fashion
+  for solver in pmgda epo
   do
-    for architecture in M1
+    for dataset in mnist fmnist fashion
     do
-      python run_mtl_clean.py --architecture $architecture --dataset $dataset --epoch $epoch --n-prob 5 --solver $solver --agg mtche
+      python run_mtl_clean.py --dataset $dataset --epoch $epoch --n-prob 5 --solver $solver --agg mtche --seed $seed
     done
   done
-done
 
-
-for agg in cosmos
-do
-  for dataset in mnist fmnist fashion
+  for agg in cosmos mtche
   do
-    for architecture in M1
+    for dataset in mnist fmnist fashion
     do
-      python run_mtl_clean.py --architecture $architecture --dataset $dataset --epoch $epoch --n-prob 5 --solver agg --agg $agg
+      python run_mtl_clean.py --dataset $dataset --epoch $epoch --n-prob 5 --solver agg --agg $agg --seed $seed
     done
   done
-done
 
+done
 
 sleep 100

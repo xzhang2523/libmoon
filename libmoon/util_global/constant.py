@@ -171,6 +171,7 @@ beautiful_dict = {
     'agg_ls': 'Agg-LS',
     'agg_tche': 'Agg-Tche',
     'agg_mtche': 'Agg-mTche',
+    'agg_cosmos': 'Agg-COSMOS',
     'agg_pbi': 'Agg-PBI',
     'hvgrad': 'HVGrad',
     'pmtl': 'PMTL',

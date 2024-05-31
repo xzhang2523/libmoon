@@ -59,7 +59,9 @@ if __name__ == '__main__':
         task_name = '{}_{}'.format(kwargs['solver'], kwargs['agg'])
     else:
         task_name = kwargs['solver']
-    print('Task name: {}'.format(task_name))
+
+    np.random.seed(kwargs['seed'])
+    print('Task name: {} on seed {}'.format(task_name, args.seed))
     print('Dataset:{}'.format(kwargs['dataset_name']))
     if torch.cuda.is_available():
         print('Using GPU')

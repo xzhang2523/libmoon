@@ -18,7 +18,7 @@ nadir_point_dict = {
     'adult': array([0.6, 0.12]),
     'compass': array([0.52, 0.34]),
     'credit': array([0.52, 0.015]),
-    'mnist': array([0.6, 0.6]),
+    'mnist': array([0.36, 0.36]),
     'fashion': array([0.6, 0.6]),
     'fmnist': array([0.6, 0.6]),
 }

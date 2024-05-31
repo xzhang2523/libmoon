@@ -44,15 +44,7 @@ secrets.txt
 *.bak
 #*.mp4
 
-
-
 # Ignore documentation and build artifacts
 docs/
 build/
 dist/
-
-
-# Ignore running shells
-*.sh
-
-

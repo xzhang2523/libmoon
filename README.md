@@ -116,9 +116,9 @@ is the first open-source code that supports MTL.
 | [HVGrad](https://arxiv.org/abs/2102.04523) [WangHao](https://link.springer.com/chapter/10.1007/978-3-319-54157-0_44) [code](https://github.com/timodeist/multi_objective_learning) | It is a gradient-based HV method.                                      | 2/3                | Y       | CEC 2023     | $O(m^2 n K^2 )$ |   
 
 Here, $m$ is the number of objectives, $K$ is the number of samples, and $n$ is the number of decision variables.
-For neural network based methods, $n$ is the number of parameters; hence $n$ is very large (>10000), K is also large (
+For neural network based methods, $n$ is the number of parameters; hence $n$ is very large (>10000), $K$ is also large (
 e.g., 20-50), while $m$ is small (2.g., 2-4).
-As a result, m^2 is not a big problem. n^2 is a big problem. K^2 is a big problem.
+As a result, $m^2$ is not a big problem. $n^2$ is a big problem. $K^2$ is a big problem.
 
 Time complexity of gradient based methods are as follows,
 

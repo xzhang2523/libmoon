@@ -1,8 +1,6 @@
-### Moon: A Standardized/Flexible Framework for MultiObjective OptimizatioN
-
-<img src="img/moon.png" alt="Moon" width="200">
-
 # LibMOON: A Gradient-based MultiObjective OptimizatioN Library in PyTorch
+
+<img src="img/moon.png" alt="Moon" width="200"></img>
 
 ## Introduction
 
@@ -11,7 +9,7 @@ optimization. It aims to enhance the understanding of optimization problems and 
 algorithms.
 A submission to NeurIPS 2024 DB track.
 
-<img src="img/Libmoon.png" width="500">
+<img src="img/Libmoon.png" width="500"></img>
 
 
 > "I raise my cup to invite the moon.  
@@ -91,10 +89,9 @@ references:
 LibMOON includes a variety of solvers tailored for different needs as img below shows. The following solvers are
 currently:
 
+<img src="img/supported_methods.png" width="500"></img>
 
-<img src="img/supported_methods.png" width="500">
-
-**Gradient-based MOO Solver**.
+## Gradient-based MOO Solver
 
 - GradAggSolver
 - EPOSolver
@@ -108,8 +105,8 @@ currently:
 is the first open-source code that supports MTL.
 
 | Method                                                                                                                                                                             | Property                                                               | #Obj               | Support | Published    | Complexity      |
-    |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|--------------------|---------|--------------|-----------------|
-| Aggregation fun. based, e.g. Tche,mTche,LS,PBI,...                                                                                                                                 | Pareto solution with aggregations.                                     | Any                | Y       |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|--------------------|---------|--------------|-----------------|
+| Aggregation fun. based, e.g. Tche,mTche,LS,PBI,...                                                                                                                                 | Pareto solution with aggregations.                                     | Any                | Y       |              |                 |
 | [COSMOS](https://arxiv.org/pdf/2103.13392.pdf) [code](https://github.com/ruchtem/cosmos)                                                                                           | Approximated exact solution.                                           | Any                | Y       | ICDM 2021    | $O(m n K )$     |
 | [EPO](https://proceedings.mlr.press/v119/mahapatra20a/mahapatra20a.pdf) [code](https://github.com/dbmptr/EPOSearch)                                                                | Exact solution.                                                        | Any                | Y       | ICML 2020    | $O(m^2 n K )$   |
 | [MOO-SVGD](https://openreview.net/pdf?id=S2-j0ZegyrE) [code](https://github.com/gnobitab/MultiObjectiveSampling)                                                                   | A set of diverse Pareto solution.                                      | Any                | Y       | NeurIPS 2021 | $O(m^2 n K^2 )$ |
@@ -118,32 +115,29 @@ is the first open-source code that supports MTL.
 | [PMTL](https://proceedings.neurips.cc/paper_files/paper/2019/file/685bfde03eb646c27ed565881917c71c-Paper.pdf) [code](https://github.com/Xi-L/ParetoMTL)                            | Pareto solutions in sectors.                                           | 2. 3 is difficult. | Y       | NeurIPS 2019 | $O(m^2 n K^2 )$ |
 | [HVGrad](https://arxiv.org/abs/2102.04523) [WangHao](https://link.springer.com/chapter/10.1007/978-3-319-54157-0_44) [code](https://github.com/timodeist/multi_objective_learning) | It is a gradient-based HV method.                                      | 2/3                | Y       | CEC 2023     | $O(m^2 n K^2 )$ |   
 
-
 Here, $m$ is the number of objectives, $K$ is the number of samples, and $n$ is the number of decision variables.
-For neural network based methods, $n$ is the number of parameters; hence $n$ is very large (>10000), K is also large (e.g., 20-50), while $m$ is small (2.g., 2-4).
-
+For neural network based methods, $n$ is the number of parameters; hence $n$ is very large (>10000), K is also large (
+e.g., 20-50), while $m$ is small (2.g., 2-4).
 As a result, m^2 is not a big problem. n^2 is a big problem. K^2 is a big problem.
 
 Time complexity of gradient based methods are as follows,
+
 1. Tier 1. GradAggSolver.
-2. Tier 2. MGDASolver, EPOSolver, PMTLSolver. 
-3. Tier 3. GradHVSolver 
+2. Tier 2. MGDASolver, EPOSolver, PMTLSolver.
+3. Tier 3. GradHVSolver
 4. Tier 4. MOOSVGDSolver
 
-[//]: # (Current support:)
-[//]: # (        GradAggSolver, MGDASolver, EPOSolver, MOO-SVGDSolver, HVGradSolver, PMTLSolver.)
-
 Important things to notice:
-        The original code MOO-SVGD does not offer a MTL implement. Our code is the first open source code for MTL MOO-SVGD.
+The original code MOO-SVGD does not offer a MTL implement. Our code is the first open source code for MTL MOO-SVGD.
 
 ## Pareto set learning(PSL) Solvers
 
 LibMOON supports various models of PSL solvers, categorized as follows:
 
-- EPO-based PSL 
-- Agg-based PSL 
-- PMGDA-based PSL 
-- Evolutionary-based PSL 
+- EPO-based PSL
+- Agg-based PSL
+- PMGDA-based PSL
+- Evolutionary-based PSL
 
 ## MultiObjective Bayesian Optimization (MOBO) Solvers
 
@@ -161,8 +155,6 @@ Libmoon is available on PyPI. You can install it using pip:
 
 ```bash
 pip install libmoon==0.1.11
-
-Example code for a synthetic problem,
 ```
 
 - **Example1**: Finding a size-K (K=5) Pareto solutions with four lines of code.
@@ -180,18 +172,18 @@ res = solver.solve(x=synthetic_init(problem, prefs), prefs=prefs)
 ```
 
 - **Example2**: PSL in a problem with three lines of solving problem and two lines of
-evaluating the results.
+  evaluating the results.
 
 ```python
-from libmoon.solver. psl . core_psl import AggPSLSolver
+from libmoon.solver.psl.core_psl import AggPSLSolver
 from libmoon.util_global import get_problem
 from libmoon.util_global.weight_factor import uniform_pref
 from torch import Tensor
 
-problem = get_problem( problem_name='ZDT1')
+problem = get_problem(problem_name='ZDT1')
 # agg list [ ’ls ’, ’tche ’, ’mtche ’, ’pbi ’, ... ]
 prefs = uniform_pref(n_prob=100, n_obj=problem.n_obj, clip_eps=1e-2)
-solver = AggPSLSolver (problem, agg='ls')
+solver = AggPSLSolver(problem, agg='ls')
 model = solver.solve()
 eval_y = problem.evaluate(model(Tensor(prefs).cuda()))
 

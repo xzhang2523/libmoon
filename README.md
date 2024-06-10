@@ -1,9 +1,10 @@
-<<<<<<< HEAD
 # LibMOON: A Gradient-based MultiObjective OptimizatioN Library in PyTorch
 
 <img src="img/moon.png" alt="Moon" width="200"></img>
 
 ## Introduction
+
+test git
 
 **LibMOON** is a multiobjective optimization framework that spans from single-objective optimization to multiobjective
 optimization. It aims to enhance the understanding of optimization problems and facilitate fair comparisons between MOO

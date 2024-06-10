@@ -26,7 +26,6 @@ logs/
 libmoon/problem/mtl/mtl_data/multimnist/
 *.log
 *.out
-*.csv
 *.pickle
 *.pkl
 *.pdf

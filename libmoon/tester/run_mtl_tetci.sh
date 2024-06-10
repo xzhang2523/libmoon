@@ -3,9 +3,9 @@ nprob=10
 PaperName=TETCI
 
 
-for dataset in adult compass credit
+for dataset in compass credit adult
   do
-    for seed in 4 5
+    for seed in 1 2
     do
       for agg in mtche cosmos
       do

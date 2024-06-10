@@ -16,16 +16,28 @@ from torch import nn
 from libmoon.solver.gradient.methods.uniform_solver import train_pfl_model
 from torch.autograd import Variable
 from torch.optim import SGD
-
 from libmoon.metrics.metrics import compute_MMS
+from libmoon.util_global.constant import root_name
+
+from libmoon.util_mtl.util import pref2angle, angle2pref, get_angle_range
+
+# from libmoon.util_global.constant import
+from tqdm import tqdm
+
+
+
+
+
+import os
+
 
 class CoreHVGrad:
     '''
         Conventions used in this paper. Use _vec to denote a vec, and use _mat to denote a matrix.
     '''
-    def __init__(self, args):
-        self.args = args
-        self.hv_solver = HvMaximization(args.n_sub, args.n_obj, get_hv_ref_dict(args.dataset) )
+
+    def __init__(self, n_prob, n_obj, dataset_name):
+        self.hv_solver = HvMaximization(n_prob, n_obj, get_hv_ref_dict(dataset_name) )
 
     def get_alpha(self, loss_mat):
         '''
@@ -101,15 +113,13 @@ def kernel_functional_rbf(losses):
 
 
 class CoreMOOSVGD:
-    def __init__(self, args):
+    def __init__(self, n_prob):
         # pass
-        self.args = args
-        self.n_sub = args.n_sub
+        self.n_prob = n_prob
+        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 
     def get_alpha(self, Jacobian_arr, loss_mat):
-        # Jacobian_arr.shape: (n_sub, n_obj, n_var)
-        # loss_mat.shape: (n_sub, n_obj)
         Jacobian_arr = torch.stack(Jacobian_arr)
         n_sub = len(Jacobian_arr)
         mgda_alpha_mat = [0] * n_sub
@@ -118,16 +128,16 @@ class CoreMOOSVGD:
             mgda_alpha_mat[idx] = alpha
 
         mgda_alpha_mat = np.array(mgda_alpha_mat)   # shape: (n_sub, n_obj)
-        mgda_alpha_mat_ts = torch.Tensor(mgda_alpha_mat)
+        mgda_alpha_mat_ts = torch.Tensor(mgda_alpha_mat).to(self.device)  # shape: (n_sub, n_obj)
 
         loss_mat_var = Variable(loss_mat, requires_grad=True)
-        kernel = kernel_functional_rbf(loss_mat_var)    # shape: (n_sub, n_sub)
+        kernel = kernel_functional_rbf(loss_mat_var).to(self.device)    # shape: (n_sub, n_sub)
         # term_A = kernel.detach().mm(g_mgda)  # shape: (n_sub, n_var)
 
         term_A = kernel.detach() @ mgda_alpha_mat_ts # shape: (n_sub, n_obj)
         term_B = - 0.5 * torch.autograd.grad(kernel.sum(), loss_mat_var, allow_unused=True)[0]  # (n_prob, n_obj)
 
-        alpha_mat = (term_A - term_B) / self.n_sub
+        alpha_mat = (term_A - term_B) / self.n_prob
         return alpha_mat
 
 
@@ -140,45 +150,94 @@ class CoreMGDA:
         return alpha
 
 class CoreUniform:
-    def __init__(self):
-        # pass
+    def __init__(self, device, folder_name, dataset_name, uniform_pref_update):
+
+        self.device = device
         self.loss_mat_ts_arr = []
         self.pref_mat_ts_arr = []
+        self.folder_name = folder_name
+        self.pfl_model = PFLModel(n_obj=2).to(self.device)
+        self.dataset_name = dataset_name
+        self.uniform_pref_update = uniform_pref_update
 
-    def update_pref_mat(self, pref_mat, loss_mat, args):
-        args.uniform_update_counter += 1
+
+
+    def visualize(self, pref_history, loss_history, update_idx):
+        pref = np.linspace(0, 1, 100)
+        pref = np.stack([pref, 1-pref], axis=1)
+        pref = torch.Tensor(pref).to(self.device)
+
+        # pref_angle = pref2angle(pref)
+
+        predict = self.pfl_model(pref)
+
+        fig = plt.figure()
+        predict_np = predict.detach().cpu().numpy()
+        pref_np = pref.detach().cpu().numpy()
+
+
+        fig = plt.figure()
+        for pref_elem, predict_elem in zip(pref_np, predict_np):
+            plt.plot([pref_elem[0], predict_elem[0]], [pref_elem[1], predict_elem[1]], color='black', linestyle='--')
+
+        plt.scatter(pref_np[:, 0], pref_np[:, 1], color='red')
+        plt.scatter(predict_np[:, 0], predict_np[:, 1], color='blue')
+
+        pref_history_np = torch.cat(pref_history).detach().cpu().numpy()
+        loss_history_np = torch.cat(loss_history).detach().cpu().numpy()
+
+        plt.scatter(pref_history_np[:, 0], pref_history_np[:, 1], color='green', s=100)
+        plt.scatter(loss_history_np[:, 0], loss_history_np[:, 1], color='yellow', s=100)
+
+        plt.xlabel('$L_1$')
+        plt.ylabel('$L_2$')
+        fig_name = os.path.join(self.folder_name, 'pref_loss_{}.pdf'.format(update_idx) )
+        plt.savefig(fig_name)
+        print('Save fig to {}'.format(fig_name))
+
+
+
+
+    def update_pref_mat(self, pref_mat, loss_mat, pref_history, loss_history, update_idx):
+        '''
+            Input: pref_mat: (m,n), loss_mat: (m,n)
+            Output: pref_mat: (m,n)
+        '''
+        print('update_idx: ', update_idx)
+
+        print('len pref history', len(pref_history))
+        print('len loss_history', len(loss_history))
+
+        pref_history_ts = torch.cat(pref_history).to(self.device)
+        loss_history_ts = torch.cat(loss_history).to(self.device)
         criterion = nn.MSELoss()
-        loss_mat_ts = torch.Tensor(loss_mat)
-        self.loss_mat_ts_arr.append(loss_mat_ts)
-        self.pref_mat_ts_arr.append(pref_mat)
+        pfl_optimizer = torch.optim.Adam(self.pfl_model.parameters(), lr=0.01)
+        pfl_model = train_pfl_model(self.folder_name, update_idx, self.pfl_model, pfl_optimizer, criterion,
+                                    pref_history_ts, loss_history_ts )
 
-        pfl_model = PFLModel(n_obj=2)
-        pfl_optimizer = torch.optim.Adam(pfl_model.parameters(), lr=0.01)
-        pfl_model = train_pfl_model(pfl_model, pfl_optimizer, criterion, torch.cat(self.loss_mat_ts_arr), torch.cat(self.pref_mat_ts_arr), args)
-
-        # Update the prefs using the PFL model.
-        prefs_var = Variable(pref_mat, requires_grad=True)
-        prefs_optimizer = SGD([prefs_var], lr=5e-3)
+        angle_lower, angle_upper = get_angle_range(self.dataset_name)
+        pref_mat_angle = pref2angle(pref_mat)
+        prefs_angle_var = Variable(pref_mat_angle, requires_grad=True)
+        prefs_optimizer = SGD([prefs_angle_var], lr=1e-4)
 
         mms_arr = []
-        for _ in range(1000):
-            y_pred = pfl_model(prefs_var)
+
+        print('Preference updating...')
+        for _ in tqdm(range(self.uniform_pref_update)):
+            y_pred = pfl_model(prefs_angle_var)
             mms_val = compute_MMS(y_pred)
             prefs_optimizer.zero_grad()
             mms_val.backward()
             prefs_optimizer.step()
-            prefs_var.data = torch.clamp(prefs_var.data, 0, 1)
-            prefs_var.data = prefs_var.data / torch.sum(prefs_var.data, axis=1, keepdim=True)
+            prefs_angle_var.data = torch.clamp(prefs_angle_var.data, angle_lower, angle_upper)
             mms_arr.append( mms_val.item() )
 
         fig = plt.figure()
         plt.plot(mms_arr)
-
-        import os
-        fig_name = os.path.join(args.output_folder_name, 'mms_{}.pdf'.format(args.uniform_update_counter))
+        fig_name = os.path.join(self.folder_name, 'mms_{}.pdf'.format(update_idx) )
         plt.savefig(fig_name)
 
-        pref_mat = prefs_var.data
+        pref_mat = angle2pref(prefs_angle_var.data)
         return pref_mat
 
 
@@ -189,7 +248,7 @@ class CoreGrad:
 class CoreEPO(CoreGrad):
     def __init__(self, pref):
         self.pref = pref
-        self.epo_lp = EPO_LP(m=len(pref), n=1, r=1/np.array(pref))
+        self.epo_lp = EPO_LP(m=len(pref), n=1, r=1/np.array( self.pref.cpu() ) )
 
     def get_alpha(self, G, losses):
         '''
@@ -222,9 +281,9 @@ class CoreAgg(CoreGrad):
 
 
 class CorePMTL(CoreGrad):
-    def __init__(self, args, pref_mat):
+    def __init__(self, pref_mat):
         self.pref_mat = pref_mat.cpu().numpy().copy()
-        self.args = args
+        self.n_prob = pref_mat.shape[0]
 
     def get_alpha(self, Jacobian_arr, loss_mat, is_warmup=True):
         '''
@@ -238,21 +297,17 @@ class CorePMTL(CoreGrad):
             loss_mat = loss_mat.detach().cpu().numpy().copy()
 
         if is_warmup:
-            alpha_mat = [ get_d_paretomtl_init(Jacobian_arr[i], loss_mat[i], self.pref_mat, i) for i in range(self.args.n_sub) ]
+            alpha_mat = [ get_d_paretomtl_init(Jacobian_arr[i], loss_mat[i], self.pref_mat, i) for i in range(self.n_prob) ]
         else:
-            alpha_mat = [ get_d_paretomtl(Jacobian_arr[i], loss_mat[i], self.pref_mat, i) for i in range(self.args.n_sub) ]
+            alpha_mat = [ get_d_paretomtl(Jacobian_arr[i], loss_mat[i], self.pref_mat, i) for i in range(self.n_prob) ]
 
         return np.array(alpha_mat)
 
 
 
+
+
 if __name__ == '__main__':
-    # agg = CoreAgg( pref=np.array([1, 0]) )
-    # x = torch.rand(10, 1)
-    # res = median(x)
-    # loss_mat = torch.rand(10, 3)
-    # kernel = kernel_functional_rbf(loss_mat)
-    # print()
-    pass
+    print()
 
 

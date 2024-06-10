@@ -12,6 +12,8 @@ FONT_SIZE_2D = 20
 FONT_SIZE_3D = 20
 
 
+PaperName = 'NeurIPS'
+
 solution_eps = 1e-5
 
 nadir_point_dict = {
@@ -61,21 +63,9 @@ def get_agg_func(agg):
     else:
         raise ValueError('Invalid agg function')
 
-# agg_dict = {
-#     'ls' : ls,
-#     'mtche' : mtche,
-#     'tche' : tche,
-#     'pbi' : pbi,
-#     'cosmos' : cosmos,
-#     'invagg' : invagg,
-#     'softtche' : soft_tche,
-#     'softmtche': soft_mtche,
-# }
-
 
 all_indicators = ['hv', 'igd', 'spacing', 'sparsity', 'uniform', 'soft uniform', 'maxgd']
 oracle_indicators = ['hv', 'spacing', 'sparsity', 'uniform', 'soft uniform']
-
 
 max_indicators = {'hv', 'uniform', 'soft uniform'}
 
@@ -177,6 +167,7 @@ beautiful_dict = {
     'pmtl': 'PMTL',
 }
 
+all_mtd_arr = ['epo', 'pmgda', 'agg_ls', 'agg_tche', 'agg_mtche', 'agg_cosmos', 'agg_pbi', 'hvgrad', 'uniform', 'pmtl']
 
 import seaborn as sns
 color_arr = sns.color_palette() + ['blue', 'red', 'green', 'orange', 'purple', 'brown', 'pink', 'grey', 'black', 'yellow']

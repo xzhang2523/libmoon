@@ -23,11 +23,13 @@ vendor/
 
 # Ignore log files and output
 logs/
+libmoon/problem/mtl/mtl_data/multimnist/
 *.log
 *.out
 *.csv
 *.pickle
-
+*.pkl
+*.pdf
 
 # Ignore OS and editor-specific files
 .DS_Store

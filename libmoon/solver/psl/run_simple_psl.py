@@ -1,6 +1,6 @@
 from libmoon.solver.psl.model import SimplePSLModel
 
-from libmoon.util_global.constant import get_problem, FONT_SIZE, agg_dict
+from libmoon.util_global.constant import get_problem, FONT_SIZE, get_agg_func
 
 import argparse
 from tqdm import tqdm
@@ -63,7 +63,7 @@ if __name__ == '__main__':
     problem = get_problem(args.problem, args.n_var)
     args.n_obj = problem.n_obj
 
-    model = SimplePSLModel(problem, args).to(args.device)
+    model = SimplePSLModel(problem).to(args.device)
 
 
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
@@ -77,7 +77,7 @@ if __name__ == '__main__':
             if args.solver_ec == 'es':
                 # Part 1. Estimating term A.
 
-                agg_func = agg_dict[args.agg]
+                agg_func = get_agg_func(args.agg)
                 fs_var = Variable(fs, requires_grad=True)
                 g = agg_func(fs_var, prefs)
                 loss_g = torch.mean(g)
@@ -95,7 +95,7 @@ if __name__ == '__main__':
                 loss.backward()
                 optimizer.step()
             else:
-                agg_func = agg_dict[args.agg]
+                agg_func = get_agg_func(args.agg)
                 g = agg_func(fs, prefs)
                 loss = torch.mean(g)
                 loss_history.append(loss.cpu().detach().numpy())
@@ -168,6 +168,9 @@ if __name__ == '__main__':
 
     pref, x, y = get_psl_info(args, model, problem)
     plt.scatter(y[:, 0], y[:, 1], marker='o', color='tomato', facecolors='none', label='Predict')
+
+    import pickle
+
 
     plt.scatter(pref[:, 0], pref[:, 1], marker='o', color='skyblue', label='Pref')
     plt.plot([0,1], [1,0], color='skyblue')

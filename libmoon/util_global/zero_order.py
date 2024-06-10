@@ -1,6 +1,6 @@
 import numpy as np
 
-from libmoon.util_global.constant import get_problem, FONT_SIZE, agg_dict
+from libmoon.util_global.constant import get_problem, FONT_SIZE, get_agg_func
 def ES_gradient_estimation_batch(problem, x0_batch, sigma=0.1, P=20):
     g_arr = [ES_gradient_estimation(problem, x0[np.newaxis, :], sigma, P) for x0 in x0_batch]
     res = np.stack(g_arr, axis=0)

@@ -46,6 +46,7 @@ def get_d_paretomtl(grads, value, weights, i):
 
 def get_d_paretomtl_init(grads, value, weights, i):
     # calculate the gradient direction for Pareto MTL initialization
+    grads = grads.cpu()
     nobj, dim = grads.shape
     # check active constraints
     normalized_current_weight = weights[i] / np.linalg.norm(weights[i])

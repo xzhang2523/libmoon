@@ -171,7 +171,7 @@ def solve_pmgda(Jacobian, grad_h, h_val, h_tol, sigma, return_coeff=False, Jhf=N
         A_tmp[-1][0] = 0
         A1 = np.c_[A1, A_tmp]
         b1 = np.zeros(m + 1)
-        b1[-1] = - sigma * np.linalg.norm(grad_h)
+        b1[-1] = - sigma * np.linalg.norm(grad_h_np)
 
         # A2 plus A3 are the simplex constraint, A2 is for non-zero constraints.
         A2 = np.c_[-np.eye(m + 1), np.zeros((m + 1, 1))]

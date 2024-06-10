@@ -17,27 +17,32 @@ from libmoon.util_global.weight_factor import uniform_pref
 from libmoon.metrics.metrics import compute_MMS
 import os
 
+from libmoon.util_mtl.util import pref2angle, angle2pref
 
-def train_pfl_model(pfl_model, pfl_optimizer, criterion, y, prefs, args):
+
+
+def train_pfl_model(folder_name, update_idx, pfl_model, pfl_optimizer, criterion, prefs, y):
+
+    prefs_angle = pref2angle(prefs)
+    # prefs_angle = prefs_angle.unsqueeze(1)
+
     loss_arr = []
     for _ in range(1000):
-        y_hat = pfl_model(prefs)
+        y_hat = pfl_model(prefs_angle)
         loss = criterion(y_hat, y)
         loss_arr.append(loss.item())
         pfl_optimizer.zero_grad()
         loss.backward()
         pfl_optimizer.step()
 
-    # if use_plt_loss:
     fig = plt.figure()
     plt.plot(loss_arr)
     plt.xlabel('Iteration')
     plt.ylabel('PFL Loss')
-    # plt.show()
-    fig_name = os.path.join(args.output_folder_name, 'loss_{}.pdf'.format(args.uniform_update_counter) )
+
+    fig_name = os.path.join(folder_name, 'loss_{}.pdf'.format(update_idx) )
     plt.savefig(fig_name)
 
-        # assert False
     return pfl_model
 
 
@@ -64,8 +69,7 @@ class UniformSolver(GradBaseSolver):
 
 
         pfl_model = PFLModel(n_obj=problem.n_obj)
-        pfl_optimizer = torch.optim.Adam(pfl_model.parameters(), lr=0.01)
-
+        pfl_optimizer = torch.optim.Adam(pfl_model.parameters(), lr=1e-3)
 
         for _ in range(5):
             for i in tqdm(range(self.max_iter)):
@@ -84,7 +88,7 @@ class UniformSolver(GradBaseSolver):
 
             # Update the prefs using the PFL model.
             prefs_var = Variable(prefs, requires_grad=True)
-            prefs_optimizer = SGD([prefs_var], lr=5e-3)
+            prefs_optimizer = SGD([prefs_var], lr=1e-4)
 
 
             mms_arr = []

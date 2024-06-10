@@ -1,0 +1,16 @@
+batch_size: 512
+lr: 0.001
+epoch: 100
+solver: epo
+dataset_name: adult
+obj_normalization: False
+n_prob: 10
+sigma: 0.5
+h_tol: 0.001
+device: cuda
+uniform_update_iter: 67500
+uniform_pref_update: 8000
+architecture: M2
+agg: ls
+seed: 3
+folder_name: D:\pycharm_project\libmoon\TETCI\epo\M2\adult\seed_3\epoch_100

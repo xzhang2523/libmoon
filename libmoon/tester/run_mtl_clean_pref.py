@@ -28,7 +28,10 @@ if __name__ == '__main__':
     parser.add_argument('--agg', type=str, default='ls')
     parser.add_argument('--epoch', type=int, default=20)
     parser.add_argument('--seed', type=int, default=0)
+
     parser.add_argument('--n-prob', type=int, default=5)
+    parser.add_argument('--sigma', type=float, default=0.5)
+
 
     # Adult dataset has 335 iterations. So 400 epoch has 4 uniform update.
     # Compass dataset has 210 iterations.
@@ -51,7 +54,8 @@ if __name__ == '__main__':
     if args.dataset_name in ['mnist', 'fashion', 'fmnist']:
         sigma = 0.6
     else:
-        sigma = 0.3
+        sigma = args.sigma
+
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     kwargs = {

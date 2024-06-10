@@ -77,9 +77,10 @@ def compute_hv( sols ):
     return hv_val
 
 
-def compute_pbi(sols, prefs, coeff=8.0):
+def compute_pbi(sols, prefs, coeff=5.0):
+    pref_l2 = prefs / np.linalg.norm(prefs, axis=1, keepdims=True)
     pbi_arr = []
-    for sol, pref in zip(sols, prefs):
+    for sol, pref in zip(sols, pref_l2):
         d1 = np.dot(sol, pref)
         d2 = np.linalg.norm(sol -  pref / np.linalg.norm(pref) * d1)
         pbi_val = d1 + coeff * d2

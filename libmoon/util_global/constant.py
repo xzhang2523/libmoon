@@ -118,6 +118,8 @@ def get_hv_ref_dict(problem_name):
 
 root_name = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
+# print('root_name:', root_name)
+
 def is_pref_based(mtd):
     if mtd in ['epo', 'mgda', 'agg', 'pmgda']:
         return True

@@ -11,8 +11,6 @@ from libmoon.problem.mtl.loaders import MultiMNISTData
 from tqdm import tqdm
 from matplotlib import pyplot as plt
 
-
-
 '''
    This script is used to the Pareto set learning by the COSMOS model. 
 '''
@@ -49,16 +47,20 @@ if __name__ == '__main__':
     for idx in tqdm(range( args.n_epoch)):
         for i, batch in enumerate(loader):
 
-            ray = torch.from_numpy(
-                np.random.dirichlet((1, 1), 1).astype(np.float32).flatten()
-            ).to(args.device)  # ray.shape (1,2)
+
 
             batch_ = {}
             for k, v in batch.items():
                 batch_[k] = v.to(args.device)
 
             hnet.train()
+
+            ray = torch.from_numpy(
+                np.random.dirichlet((1, 1), 1).astype(np.float32).flatten()
+            ).to(args.device)  # ray.shape (1,2)
             weights = hnet( ray )
+
+
             logits_l, logits_r = net(batch_['data'], weights)
 
             batch_['logits_l'] = logits_l

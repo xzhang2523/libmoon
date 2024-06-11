@@ -66,13 +66,10 @@ def compute_spacing( sols ):
     return np.std(sp_arr)
 
 
-def compute_hv( sols ):
+def compute_hv( sols, ref_point=np.array([1.0,1.0])):
     n,m = sols.shape
     from pymoo.indicators.hv import HV
-
-    ref_point = 1.2 * np.ones(m)
     ind = HV(ref_point=ref_point)
-    # print("HV", ind(A))
     hv_val = ind(sols)
     return hv_val
 

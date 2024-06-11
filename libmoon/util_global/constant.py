@@ -19,7 +19,7 @@ solution_eps = 1e-5
 nadir_point_dict = {
     'adult': array([0.6, 0.12]),
     'compass': array([0.52, 0.34]),
-    'credit': array([0.52, 0.015]),
+    'credit': array([0.52, 0.016]),
     'mnist': array([0.36, 0.36]),
     'fashion': array([0.6, 0.6]),
     'fmnist': array([0.6, 0.6]),
@@ -28,7 +28,7 @@ nadir_point_dict = {
 ideal_point_dict = {
     'adult': array([0.3, 0.01]),
     'compass': array([0.04, 0.04]),
-    'credit': array([0.44, 0.003]),
+    'credit': array([0.32, 0.002]),
     'mnist': array([0.2, 0.2]),
     'fashion': array([0.4, 0.4]),
     'fmnist': array([0.2, 0.4]),
@@ -43,7 +43,7 @@ def normalize_vec(x, problem ):
     else:
         return (x - ideal) / (nadir - ideal)
 
-def get_agg_func(agg):
+def get_agg_func(agg, cosmos_hp=1.0):
     if agg == 'ls':
         return ls
     elif agg == 'mtche':
@@ -53,7 +53,8 @@ def get_agg_func(agg):
     elif agg == 'pbi':
         return pbi
     elif agg == 'cosmos':
-        return cosmos
+        cosmos_func = lambda f_arr, w, z=0: cosmos(f_arr, w, cosmos_hp, z)
+        return cosmos_func
     elif agg == 'invagg':
         return invagg
     elif agg == 'softtche':

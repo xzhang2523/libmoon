@@ -5,7 +5,7 @@ solver: pmgda
 dataset_name: compass
 obj_normalization: False
 n_prob: 10
-sigma: 0.5
+sigma: 0.4
 h_tol: 0.001
 device: cuda
 uniform_update_iter: 2100

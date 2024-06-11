@@ -59,10 +59,8 @@ def get_mtl_prefs(dataset, n_prob, obj_normalization=True):
         th1 = np.arctan2(p1[1], p1[0])
         th2 = np.arctan2(p2[1], p2[0])
         theta_arr = np.linspace(th1, th2, n_prob)
-
     prefs = np.c_[np.cos(theta_arr), np.sin(theta_arr)]
     prefs = prefs / np.sum(prefs, axis=1)[:, None]
-
     return prefs
 
 

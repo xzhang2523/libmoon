@@ -13,4 +13,4 @@ uniform_pref_update: 8000
 architecture: M2
 agg: ls
 seed: 1
-folder_name: C:\Users\xzhang2523\Documents\GitHub\libmoon\TETCI\epo\M2\compass\seed_1\epoch_100
+folder_name: /home/a/xiaoyuanzh/libmoon/TETCI/epo/M2/compass/seed_1/epoch_100

@@ -139,7 +139,7 @@ class MTL_Set_Solver:
 
 class MTL_Pref_Solver:
     def __init__(self, folder_name, n_prob, batch_size, lr, epoch, solver, dataset_name,
-                 architecture, obj_normalization, agg, seed, device, uniform_update_iter=4000, uniform_pref_update=2000, h_tol=5e-3, sigma=0.8):
+                 architecture, obj_normalization, agg, seed, device, cosmos_hp=1.0, uniform_update_iter=4000, uniform_pref_update=2000, h_tol=5e-3, sigma=0.8):
 
         print('Batch size: {}'.format(batch_size))
         print('Learning rate: {}'.format(lr))
@@ -185,7 +185,7 @@ class MTL_Pref_Solver:
 
         self.uniform_pref_history = []
         self.uniform_loss_history = []
-
+        self.cosmos_hp = cosmos_hp
 
 
     def solve(self, pref_mat):
@@ -227,7 +227,7 @@ class MTL_Pref_Solver:
                         scalar_loss = torch.sum(alpha * loss_vec)
 
                     elif self.solver in ['agg', 'uniform']:
-                        agg_func = get_agg_func(self.agg)
+                        agg_func = get_agg_func(self.agg, cosmos_hp=self.cosmos_hp)
                         scalar_loss = torch.squeeze(agg_func(loss_vec.unsqueeze(0), pref.unsqueeze(0)))
 
                     else:

@@ -20,10 +20,8 @@ done
 #    done
 #  done
 #done
-
 epoch=800
 nprob=5
-
 
 for dataset in adult compass credit
   do

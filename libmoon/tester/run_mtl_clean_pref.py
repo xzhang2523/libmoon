@@ -2,15 +2,12 @@ import numpy as np
 
 from libmoon.problem.mtl.core.pref_set_mtl import MTL_Pref_Solver
 from libmoon.util_mtl.util import get_mtl_prefs
-
 from matplotlib import pyplot as plt
 import os
 import argparse
 import torch
-
 from libmoon.metrics.metrics import compute_inner_product, compute_cross_angle
 from libmoon.metrics.metrics import compute_indicators, compute_hv
-
 from libmoon.util_global.weight_factor import uniform_pref
 from libmoon.util_global import color_arr
 from libmoon.util_global.constant import beautiful_dict
@@ -19,18 +16,19 @@ import pickle
 from libmoon.util_global.constant import root_name
 
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--architecture', type=str, default='M1')
+    parser.add_argument('--architecture', type=str, default='M2')
     parser.add_argument('--dataset-name', type=str, default='credit')
     parser.add_argument('--PaperName', type=str, default='TETCI')
     parser.add_argument('--solver', type=str, default='agg')       # Valid solvers: ['PMTL', 'MOOSVGD', 'HVGrad'].
-    parser.add_argument('--agg', type=str, default='ls')
+    parser.add_argument('--agg', type=str, default='cosmos')
     parser.add_argument('--epoch', type=int, default=20)
     parser.add_argument('--seed', type=int, default=0)
-
-    parser.add_argument('--n-prob', type=int, default=5)
+    parser.add_argument('--n-prob', type=int, default=10)
     parser.add_argument('--sigma', type=float, default=0.5)
+    parser.add_argument('--cosmos-hp', type=float, default=20.0)
 
 
     # Adult dataset has 335 iterations. So 400 epoch has 4 uniform update.
@@ -45,9 +43,12 @@ if __name__ == '__main__':
 
     parser.add_argument('--uniform-pref-update', type=int, default=8000)
     parser.add_argument('--batch-size', type=int, default=512)
+
     parser.add_argument('--lr', type=float, default=1e-3)
     args = parser.parse_args()
     # Here, we should calculate how many update per epoch we have.
+    if args.dataset_name == 'credit':
+        args.batch_size=128
 
     args.uniform_update_iter = uniform_update_iter_dict[args.dataset_name]
 
@@ -99,6 +100,7 @@ if __name__ == '__main__':
     mtl_solver = MTL_Pref_Solver(**kwargs)
     pref_mat = get_mtl_prefs(args.dataset_name, kwargs['n_prob'],
                              obj_normalization=kwargs['obj_normalization'])
+
     res, res_history, pref_mat = mtl_solver.solve(pref_mat)
 
     pref_mat = pref_mat.cpu().numpy()

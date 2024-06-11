@@ -4,13 +4,14 @@ import numpy as np
 # from util_global.constant import get_device
 from libmoon.problem.mtl.objectives import from_name
 from libmoon.util_global.constant import get_device
+
 loss_func_arr = from_name( names=['CrossEntropyLoss', 'CrossEntropyLoss'], task_names=['l', 'r'] )
+
 from model.mtl import HyperNet, LeNetTarget
 from libmoon.problem.mtl.loaders import MultiMNISTData
 from tqdm import tqdm
 from matplotlib import pyplot as plt
 from libmoon.util_global.constant import get_agg_func
-
 import pickle
 
 

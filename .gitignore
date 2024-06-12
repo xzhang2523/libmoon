@@ -48,3 +48,6 @@ secrets.txt
 docs/
 build/
 dist/
+#ignore papers
+tetci/
+icml_fig/

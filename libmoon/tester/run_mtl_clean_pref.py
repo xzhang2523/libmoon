@@ -18,7 +18,6 @@ from libmoon.util_global.constant import root_name
 
 
 if __name__ == '__main__':
-
     parser = argparse.ArgumentParser()
     parser.add_argument('--architecture', type=str, default='M1')
     parser.add_argument('--dataset-name', type=str, default='credit')

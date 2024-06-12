@@ -133,11 +133,11 @@ def solve_pmgda(Jacobian, grad_h, h_val, h_tol, sigma, return_coeff=False, Jhf=N
     Jacobian_ts = Jacobian.detach().clone()
     grad_h_np = grad_h.detach().clone().cpu().numpy()
 
-    G_ts = torch.cat((Jacobian, grad_h.unsqueeze(0)), dim=0)
+    G_ts = torch.cat((Jacobian, grad_h.unsqueeze(0)), dim=0).detach()
     # GG = (G_ts @ G_ts.T).detach().clone().cpu().numpy()
     G_norm = torch.norm(G_ts, dim=1, keepdim=True)
     G_n = G_ts / (G_norm + 1e-4)
-    GGn = (G_ts @ G_n.T).detach().clone().cpu().numpy()
+    GGn = (G_ts @ G_n.T).clone().cpu().numpy()
 
     (m, n) = Jacobian_ts.shape
     # Jacobian_np.shape : (m,n)

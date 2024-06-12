@@ -40,7 +40,8 @@ def solve_mgda_analy(grad_1, grad_2, return_coeff=False):
     if v1v2 >= v2v2:
         gamma = 0.001
 
-    coeff = array([gamma, 1 - gamma])
+    coeff = torch.Tensor([gamma, 1 - gamma])
+
     gw = coeff[0] * grad_1 + coeff[1] * grad_2
     if return_coeff:
         return gw, coeff
@@ -126,43 +127,46 @@ def solve_pmgda(Jacobian, grad_h, h_val, h_tol, sigma, return_coeff=False, Jhf=N
         else:
             gw: (n,)
     '''
-
     # Jacobian_np, grad_h_np = ts2np(Jacobian, grad_h)
-    Jacobian_np = Jacobian.detach().clone().cpu().numpy()
+
+    # Jacobian_np = Jacobian.detach().clone().cpu().numpy()
+    Jacobian_ts = Jacobian.detach().clone()
     grad_h_np = grad_h.detach().clone().cpu().numpy()
-    (m, n) = Jacobian_np.shape
+
+    G_ts = torch.cat((Jacobian, grad_h.unsqueeze(0)), dim=0)
+    # GG = (G_ts @ G_ts.T).detach().clone().cpu().numpy()
+    G_norm = torch.norm(G_ts, dim=1, keepdim=True)
+    G_n = G_ts / (G_norm + 1e-4)
+    GGn = (G_ts @ G_n.T).detach().clone().cpu().numpy()
+
+    (m, n) = Jacobian_ts.shape
     # Jacobian_np.shape : (m,n)
     # grad_h_np.shape : (1,n)
-    G = np.squeeze(np.r_[Jacobian_np, np.expand_dims(grad_h_np, 0)])
-    G_norm = np.linalg.norm(G, axis=1)
-    # G_tilde.shape: (m+1, n)
-    G_n = np.copy(G)
-    for i in range(G_n.shape[0]):
-        G_n[i] = G_n[i] / (np.linalg.norm(G_n[i]) + 1e-4)
-    GG = G @ G.T
-    GGn = G @ G_n.T
-
+    # G = np.squeeze(np.r_[Jacobian_np, np.expand_dims(grad_h_np, 0)])
+    # G_norm = np.linalg.norm(G, axis=1)
+    # # G_tilde.shape: (m+1, n)
+    # G_n = np.copy(G)
+    # for i in range(G_n.shape[0]):
+    #     G_n[i] = G_n[i] / (np.linalg.norm(G_n[i]) + 1e-4)
+    # GG = G @ G.T
+    # GGn = G @ G_n.T
     # condition1 = args.constr_type == 'l2' and h_val < args.constr_rho+args.h_eps
     # condition2 = args.constr_type == 'linear' and h_val < args.h_eps
-
     condition = h_val < h_tol
 
     if condition:
-        # print('constraint satisfied')
-        # Do the prediction step.
         if m == 2:  # Only has a close-form for m=2.
             if return_coeff:
-                gw, mu_prime = solve_mgda_analy(Jacobian_np[0], Jacobian_np[1], return_coeff)
+                gw, mu_prime = solve_mgda_analy(Jacobian_ts[0], Jacobian_ts[1], return_coeff)
             else:
-                gw = solve_mgda_analy(Jacobian_np[0], Jacobian_np[1], return_coeff)
+                gw = solve_mgda_analy(Jacobian_ts[0], Jacobian_ts[1], return_coeff)
         else:
             if return_coeff:
-                gw, mu_prime = solve_mgda(Jacobian_np, return_coeff)
+                gw, mu_prime = solve_mgda(Jacobian_ts, return_coeff)
             else:
-                gw = solve_mgda(Jacobian_np, return_coeff)
+                gw = solve_mgda(Jacobian_ts, return_coeff)
 
         mu_prime = np.ones(m) / m  # The coeff is uniform just for simplicity.
-
     else:
         # Do the correction step. Eq. (20) in the main paper.
         # The total optimization number is m+2. A is the constraint matrix, and b is the constraint vector.
@@ -172,11 +176,9 @@ def solve_pmgda(Jacobian, grad_h, h_val, h_tol, sigma, return_coeff=False, Jhf=N
         A1 = np.c_[A1, A_tmp]
         b1 = np.zeros(m + 1)
         b1[-1] = - sigma * np.linalg.norm(grad_h_np)
-
         # A2 plus A3 are the simplex constraint, A2 is for non-zero constraints.
         A2 = np.c_[-np.eye(m + 1), np.zeros((m + 1, 1))]
         b2 = -np.zeros(m + 1)
-
         # A3, A4 are for the sum-equal-one constraint
         A3 = np.ones((1, m + 2))
         A3[0][-1] = 0.0
@@ -200,8 +202,7 @@ def solve_pmgda(Jacobian, grad_h, h_val, h_tol, sigma, return_coeff=False, Jhf=N
         res = np.array(sol['x']).squeeze()
 
         mu, coeff = res[:-1], res[-1]
-        gw = G_n.T @ mu
-
+        gw = G_n.T @ torch.Tensor(mu).to(G_n.device)
         # coeff, Eq. (18) in the main paper.
         if return_coeff:
             if Jhf is not None:
@@ -210,9 +211,9 @@ def solve_pmgda(Jacobian, grad_h, h_val, h_tol, sigma, return_coeff=False, Jhf=N
                 assert False, 'Jhf is None not implemented.'
 
     if return_coeff:
-        return Tensor(gw), mu_prime
+        return gw, mu_prime
     else:
-        return Tensor(gw)
+        return gw
 
 
 

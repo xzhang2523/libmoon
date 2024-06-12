@@ -108,7 +108,7 @@ class MTL_Solver:
                             alpha = torch.Tensor(alpha)
                         scalar_loss = torch.sum(alpha * loss_vec)
                     elif self.solver == 'agg':
-                        agg_func = get_agg_func(self.agg)
+                        agg_func = get_agg_func(self.agg, self.co)
                         scalar_loss = torch.squeeze(agg_func(loss_vec.unsqueeze(0), pref.unsqueeze(0)))
                     elif self.solver == 'uniform':
                         agg_func = get_agg_func('mtche')

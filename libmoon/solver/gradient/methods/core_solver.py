@@ -149,6 +149,7 @@ class CoreMGDA:
         _, alpha = solve_mgda(G, return_coeff=True)
         return alpha
 
+
 class CoreUniform:
     def __init__(self, device, folder_name, dataset_name, uniform_pref_update):
 

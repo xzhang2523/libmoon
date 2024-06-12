@@ -6,8 +6,7 @@ from libmoon.problem.mtl.model_utils import model_from_dataset, dim_dict
 from libmoon.problem.mtl.settings import adult_setting, credit_setting, compass_setting, mnist_setting, fashion_setting, fmnist_setting
 
 from libmoon.solver.gradient.methods.core_solver import CoreUniform
-
-
+from libmoon.solver.gradient.methods.core_solver import CoreMGDA
 
 
 import argparse
@@ -214,15 +213,15 @@ class MTL_Pref_Solver:
                             core_epo = CoreEPO(pref)
                             alpha = torch.Tensor(core_epo.get_alpha(Jacobian, loss_vec))
                         elif self.solver == 'mgda':
-                            from libmoon.solver.gradient.methods.core_solver import CoreMGDA
                             core_mgda = CoreMGDA()
                             alpha = torch.Tensor(core_mgda.get_alpha(Jacobian))
                         elif self.solver == 'pmgda':
                             h_val, Jhf = get_nn_pmgda_componets(loss_vec, pref)
-                            grad_h = torch.Tensor(Jhf) @ Jacobian
+                            grad_h = Jhf @ Jacobian
                             core_pmgda = CorePMGDA()
                             alpha = core_pmgda.get_alpha(Jacobian, grad_h, h_val, self.h_tol, self.sigma, return_coeff=True, Jhf=Jhf)
                             alpha = torch.Tensor(alpha)
+
                         alpha = alpha.to(self.device)
                         scalar_loss = torch.sum(alpha * loss_vec)
 

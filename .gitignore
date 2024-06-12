@@ -4,8 +4,11 @@
 .idea/
 script/
 output/
-tetci/
+
+TETCI/
 NeurIPS/
+
+
 
 *.iml
 *.ipynb_checkpoints/

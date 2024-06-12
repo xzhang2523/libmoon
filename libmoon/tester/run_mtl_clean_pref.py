@@ -18,18 +18,18 @@ from libmoon.util_global.constant import root_name
 
 
 if __name__ == '__main__':
+
     parser = argparse.ArgumentParser()
-    parser.add_argument('--architecture', type=str, default='M2')
+    parser.add_argument('--architecture', type=str, default='M1')
     parser.add_argument('--dataset-name', type=str, default='credit')
     parser.add_argument('--PaperName', type=str, default='TETCI')
-    parser.add_argument('--solver', type=str, default='agg')       # Valid solvers: ['PMTL', 'MOOSVGD', 'HVGrad'].
+    parser.add_argument('--solver', type=str, default='pmgda')       # Valid solvers: ['PMTL', 'MOOSVGD', 'HVGrad'].
     parser.add_argument('--agg', type=str, default='cosmos')
     parser.add_argument('--epoch', type=int, default=20)
     parser.add_argument('--seed', type=int, default=0)
     parser.add_argument('--n-prob', type=int, default=10)
     parser.add_argument('--sigma', type=float, default=0.5)
     parser.add_argument('--cosmos-hp', type=float, default=20.0)
-
 
     # Adult dataset has 335 iterations. So 400 epoch has 4 uniform update.
     # Compass dataset has 210 iterations.
@@ -46,6 +46,8 @@ if __name__ == '__main__':
 
     parser.add_argument('--lr', type=float, default=1e-3)
     args = parser.parse_args()
+
+    print('cosmos-hp: {}'.format(args.cosmos_hp))
     # Here, we should calculate how many update per epoch we have.
     if args.dataset_name == 'credit':
         args.batch_size=128

@@ -37,18 +37,13 @@ def calc_gradients(batch, model, objectives):
     gradients = []
     obj_values = []
     for i, objective in enumerate(objectives):
-        # zero grad
         model.zero_grad()
-
         logits = model(batch)
         batch.update(logits)
-
         output = objective(**batch)
         output.backward()
-
         obj_values.append(output.item())
         gradients.append({})
-
         private_params = model.private_params() if hasattr(model, 'private_params') else []
         for name, param in model.named_parameters():
             not_private = all([p not in name for p in private_params])

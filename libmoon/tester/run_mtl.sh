@@ -13,8 +13,6 @@
 
 
 
-epoch=20
-
 #for agg in mtche
 #do
 #  for dataset in credit
@@ -26,17 +24,40 @@ epoch=20
 #  done
 #done
 
+epoch=800
+nprob=5
 
-for solver in pmgda
-do
-  for dataset in credit
+
+for dataset in credit
+  do
+
+#  for solver in uniform
+#  do
+#    for architecture in M1
+#    do
+#      python run_mtl_clean.py --architecture $architecture --dataset $dataset --epoch $epoch --n-prob $nprob --solver $solver
+#    done
+#  done
+
+  for agg in cosmos mtche pbi
   do
     for architecture in M1
     do
-      python run_mtl_clean.py --architecture $architecture --dataset $dataset --epoch $epoch --n-prob 10 --solver $solver
+      python run_mtl_clean.py --architecture $architecture --dataset $dataset --epoch $epoch --n-prob $nprob --solver agg --agg $agg
     done
   done
+
+  for solver in pmgda epo
+  do
+    for architecture in M1
+    do
+      python run_mtl_clean.py --architecture $architecture --dataset $dataset --epoch $epoch --n-prob $nprob --solver $solver
+    done
+  done
+
 done
+
+
 
 
 sleep 100

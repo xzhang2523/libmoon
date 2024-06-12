@@ -1,0 +1,16 @@
+batch_size: 512
+lr: 0.001
+epoch: 100
+solver: agg
+dataset_name: compass
+obj_normalization: False
+n_prob: 10
+sigma: 0.5
+h_tol: 0.001
+device: cuda
+uniform_update_iter: 2100
+uniform_pref_update: 8000
+architecture: M2
+agg: mtche
+seed: 2
+folder_name: /home/a/xiaoyuanzh/libmoon/TETCI/agg_mtche/M2/compass/seed_2/epoch_100

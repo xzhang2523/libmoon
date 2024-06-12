@@ -29,18 +29,11 @@ if __name__ == '__main__':
     parser.add_argument('--batch-size', type=int, default=512)
     args = parser.parse_args()
 
-    # if args.dataset_name in ['mnist', 'fashion', 'fmnist']:
-    #     lr = 1e-2
-    # else:
-    #     lr = 1e-3
     lr = 1e-3
-
     if args.dataset_name in ['mnist', 'fashion', 'fmnist']:
         sigma = 0.6
     else:
         sigma = 0.6
-
-
 
     kwargs = {
         'batch_size' : args.batch_size,

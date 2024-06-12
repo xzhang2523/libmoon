@@ -9,7 +9,7 @@ from numpy import array
 import numpy as np
 from cvxopt import matrix, solvers
 solvers.options['show_progress'] = False
-
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 def solve_mgda_analy(grad_1, grad_2, return_coeff = False):
     '''
         Noted that, solve_mgda_analy only support 2-objective case.
@@ -28,7 +28,8 @@ def solve_mgda_analy(grad_1, grad_2, return_coeff = False):
     else:
         gamma = -1.0 * ((v1v2 - v2v2) / (v1v1 + v2v2 - 2 * v1v2))
 
-    coeff = array([gamma, 1-gamma])
+
+    coeff = torch.Tensor([gamma, 1 - gamma] )
     gw = coeff[0] * grad_1 + coeff[1] * grad_2
     if return_coeff:
         return gw, coeff
@@ -42,8 +43,8 @@ def solve_mgda(G, return_coeff=False):
         output gw (n,).
         comments: This function is used to solve the dual MGDA problem. It can handle m>2.
     '''
-    if type(G) == torch.Tensor:
-        G = G.detach().cpu().numpy().copy()
+    # if type(G) == torch.Tensor:
+    #     G = G.detach().cpu().numpy().copy()
 
 
     m = G.shape[0]

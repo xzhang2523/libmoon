@@ -22,7 +22,7 @@ A submission to NeurIPS 2024 DB track.
 
 - **Xiaoyuan Zhang** (Maintainer of Pareto set learning, gradient-based solver)
 - Ji Cheng
-- Liao Zhao  (Maintainer of MOBO)
+- Liang Zhao  (Maintainer of MOBO)
 - Weiduo Liao
 - Zhe Zhao
 - Xi Lin
@@ -383,5 +383,3 @@ eval_y = problem.evaluate(model(Tensor(prefs).cuda()))
 ```
 
     
-
->>>>>>> 0015b44b439a27f80ef3305d8ab20bac0042fc3d

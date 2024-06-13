@@ -19,7 +19,10 @@ A submission to NeurIPS 2024 DB track.
 ## Main Contributors
 
 - **Xiaoyuan Zhang** (Maintainer of Pareto set learning, gradient-based solver)
+<<<<<<< HEAD
 - Liao Zhao  (Maintainer of MOBO)
+- Ji Cheng
+=======
 - Ji Cheng
 - Liang Zhao  (Maintainer of MOBO)
 >>>>>>> bcaa50590e767365f13021ccc40c97b615adee54

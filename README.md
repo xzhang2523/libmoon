@@ -4,8 +4,6 @@
 
 ## Introduction
 
-xxx
-
 **LibMOON** is a multiobjective optimization framework that spans from single-objective optimization to multiobjective
 optimization. It aims to enhance the understanding of optimization problems and facilitate fair comparisons between MOO
 algorithms.
@@ -21,14 +19,18 @@ A submission to NeurIPS 2024 DB track.
 ## Main Contributors
 
 - **Xiaoyuan Zhang** (Maintainer of Pareto set learning, gradient-based solver)
-- Ji Cheng
 - Liao Zhao  (Maintainer of MOBO)
+- Ji Cheng
 - Weiduo Liao
 - Zhe Zhao
 - Xi Lin
 - Cheng Gong
 - Longcan Chen
-- YingYing Yu
+- Yingying Yu
+
+
+## Supporters
+- Hongzong Li (For the non-local search)
 
 ## Advisory Board
 
@@ -36,6 +38,8 @@ A submission to NeurIPS 2024 DB track.
 - **Prof. Yifan Chen** (Hong Kong Baptist University) (For advice of OR)
 - **Prof. Ke Shang** (Shenzhen University) (For advice of approximate hypervolume-based methods)
 - **Prof. Han Zhao** (University of Illinois at Urbana-Champaign) (For advice of fariness classification)
+
+
 
 ## Correspondence
 

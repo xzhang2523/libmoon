@@ -1,5 +1,4 @@
 import numpy as np
-
 from libmoon.problem.mtl.core.pref_set_mtl import MTL_Pref_Solver
 from libmoon.util_mtl.util import get_mtl_prefs
 from matplotlib import pyplot as plt
@@ -13,14 +12,13 @@ from libmoon.util_global import color_arr
 from libmoon.util_global.constant import beautiful_dict
 import pandas as pd
 import pickle
-from libmoon.util_global.constant import root_name
-
+from libmoon.util_global.constant import root_name, get_param_num
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--architecture', type=str, default='M1')
-    parser.add_argument('--dataset-name', type=str, default='credit')
+    parser.add_argument('--dataset-name', type=str, default='compass')
     parser.add_argument('--PaperName', type=str, default='TETCI')
     parser.add_argument('--solver', type=str, default='pmgda')       # Valid solvers: ['PMTL', 'MOOSVGD', 'HVGrad'].
     parser.add_argument('--agg', type=str, default='cosmos')

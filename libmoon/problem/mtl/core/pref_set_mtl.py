@@ -2,9 +2,7 @@ import matplotlib.pyplot as plt
 from torch.utils import data
 from libmoon.problem.mtl.objectives import from_name
 from libmoon.problem.mtl.model_utils import model_from_dataset, dim_dict
-
 from libmoon.problem.mtl.settings import adult_setting, credit_setting, compass_setting, mnist_setting, fashion_setting, fmnist_setting
-
 from libmoon.solver.gradient.methods.core_solver import CoreUniform
 from libmoon.solver.gradient.methods.core_solver import CoreMGDA
 
@@ -174,6 +172,9 @@ class MTL_Pref_Solver:
         self.obj_arr = from_name( self.settings['objectives'], self.dataset.task_names() )
         self.model_arr = [model_from_dataset(self.dataset_name, self.architecture, dim=dim_dict[self.dataset_name]).to(self.device)
                           for _ in range( n_prob )]
+
+        from libmoon.util_global.constant import get_param_num
+        print('Model: {}'.format( get_param_num(self.model_arr[0]) ))
 
         self.optimizer_arr = [torch.optim.Adam(model.parameters(), lr=self.lr)
                                for model in self.model_arr]

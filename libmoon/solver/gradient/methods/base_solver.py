@@ -23,33 +23,45 @@ class GradBaseSolver:
         # The abstract class cannot be implemented directly.
         raise NotImplementedError
 
+
 class GradAggSolver(GradBaseSolver):
-    def __init__(self, step_size, n_iter, tol):
+    def __init__(self, problem, step_size, n_iter, tol, agg):
+        self.agg = agg
+        self.problem = problem
+
         super().__init__(step_size, n_iter, tol)
 
-    def solve(self, problem, x, prefs, args):
+
+    def solve(self, x, prefs):
         x = Variable(x, requires_grad=True)
-        # ref_point = array([2.0, 2.0])
-        ind = HV(ref_point = get_hv_ref_dict(args.problem_name))
+        ind = HV(ref_point = get_hv_ref_dict(self.problem.problem_name))
+
         hv_arr = []
         y_arr = []
+        x_arr = []
+
+
         prefs = Tensor(prefs)
         optimizer = SGD([x], lr=self.step_size)
-        agg_func = get_agg_func(args.agg)
+        agg_func = get_agg_func(self.agg)
         res = {}
         for i in tqdm(range(self.n_iter)):
-            y = problem.evaluate(x)
+            y = self.problem.evaluate(x)
             hv_arr.append(ind.do(y.detach().numpy()))
             agg_val = agg_func(y, prefs)
             optimizer.zero_grad()
             torch.sum(agg_val).backward()
             optimizer.step()
             y_arr.append(y.detach().numpy())
-            if 'lbound' in dir(problem):
-                x.data = torch.clamp(x.data, torch.Tensor(problem.lbound) + solution_eps, torch.Tensor(problem.ubound)-solution_eps)
+
+            if 'lbound' in dir(self.problem):
+                x.data = torch.clamp(x.data, torch.Tensor(self.problem.lbound) + solution_eps, torch.Tensor(self.problem.ubound)-solution_eps)
+
 
         res['x'] = x.detach().numpy()
         res['y'] = y.detach().numpy()
         res['hv_arr'] = hv_arr
         res['y_arr'] = y_arr
+        res['x_arr'] = y_arr
+
         return res

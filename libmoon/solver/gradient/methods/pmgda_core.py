@@ -9,6 +9,8 @@ from numpy import array
 from torch import Tensor
 
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 def get_nn_pmgda_componets(loss_vec, pref):
     '''
         return: h_val, grad_h, J_hf
@@ -130,7 +132,8 @@ def solve_pmgda(Jacobian, grad_h, h_val, h_tol, sigma, return_coeff=False, Jhf=N
     # Jacobian_np, grad_h_np = ts2np(Jacobian, grad_h)
 
     # Jacobian_np = Jacobian.detach().clone().cpu().numpy()
-    Jacobian_ts = Jacobian.detach().clone()
+    Jacobian_ts = Jacobian.detach().clone().to(device)
+
     grad_h_np = grad_h.detach().clone().cpu().numpy()
 
     G_ts = torch.cat((Jacobian, grad_h.unsqueeze(0)), dim=0).detach()
@@ -264,7 +267,7 @@ def solve_mgda(G, return_coeff=False):
         comments: This function is used to solve the dual MGDA problem. It can handle m>2.
     '''
     m = G.shape[0]
-    Q = G @ G.T
+    Q = (G @ G.T).clone().cpu()
 
     Q = matrix(np.float64(Q))
     p = np.zeros(m)
@@ -282,7 +285,7 @@ def solve_mgda(G, return_coeff=False):
     sol = solvers.qp(Q, p, G_cvx, h, A, b)
 
     res = np.array(sol['x']).squeeze()
-    res = res / sum(res)  # important
+    res = torch.Tensor(res / sum(res)).to(device)  # important
     gw = res @ G
     if return_coeff:
         return gw, res

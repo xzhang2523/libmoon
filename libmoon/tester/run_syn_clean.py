@@ -1,17 +1,13 @@
 import argparse
 import numpy as np
 from libmoon.util_global import synthetic_init, get_problem, uniform_pref
-
 from libmoon.solver.gradient.methods import EPOSolver
 from libmoon.solver.gradient.methods.pmgda_solver import PMGDASolver
 from libmoon.solver.gradient.methods.base_solver import GradAggSolver
-
-
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 from matplotlib import pyplot as plt
 from libmoon.util_global.constant import FONT_SIZE_2D, FONT_SIZE_3D, color_arr, beautiful_dict, root_name
-
 
 
 if __name__ == '__main__':
@@ -19,18 +15,20 @@ if __name__ == '__main__':
     parser.add_argument( '--n-partition', type=int, default=10 )
     # Inv agg not very work
     parser.add_argument( '--agg', type=str, default='tche')  # If solve is agg, then choose a specific agg method.
-    parser.add_argument('--solver', type=str, default='epo')
-    parser.add_argument( '--problem-name', type=str, default='ZDT1')
+    parser.add_argument('--solver', type=str, default='pmgda')
+    parser.add_argument( '--problem-name', type=str, default='MAF1')
+
     parser.add_argument('--step-size', type=float, default=1e-2)
-    parser.add_argument('--tol', type=float, default=1e-6)
+    parser.add_argument('--tol', type=float, default=1e-2)
     parser.add_argument('--plt-pref-flag', type=str, default='N')
     parser.add_argument('--use-plt', type=str, default='Y')
     parser.add_argument('--PaperName', type=str, default='TETCI')
     # For PMGDA.
-    parser.add_argument('--h-tol', type=float, default=1e-2)
+    parser.add_argument('--h-tol', type=float, default=1e-3)
     parser.add_argument('--sigma', type=float, default=0.8)
-    parser.add_argument('--n-prob', type=int, default=5 )
-    parser.add_argument('--n-iter', type=int, default=5000 )
+
+    parser.add_argument('--n-prob', type=int, default=8 )
+    parser.add_argument('--n-iter', type=int, default=2000 )
     parser.add_argument('--seed-idx', type=int, default=0)
     args = parser.parse_args()
 
@@ -46,12 +44,14 @@ if __name__ == '__main__':
     np.random.seed(args.seed_idx)
     problem = get_problem(problem_name=args.problem_name, n_var=30)
     prefs = uniform_pref(n_prob=args.n_prob, n_obj = problem.n_obj, clip_eps=1e-2)
+
     if args.solver == 'epo':
-        solver = EPOSolver(problem, step_size=1e-2, n_iter=args.n_iter, tol=1e-2)
+        solver = EPOSolver(problem, step_size=1e-2, n_iter=args.n_iter, tol=args.tol )
     elif args.solver == 'pmgda':
-        solver = PMGDASolver(problem, step_size=1e-2, n_iter=args.n_iter, tol=1e-2, sigma=args.sigma, h_tol=args.h_tol)
+        solver = PMGDASolver(problem, step_size=1e-2, n_iter=args.n_iter, tol=args.tol, sigma=args.sigma, h_tol=args.h_tol)
     elif args.solver == 'agg':
-        solver = GradAggSolver(problem, step_size=1e-2, n_iter=args.n_iter, tol=1e-2, agg=args.agg)
+        solver = GradAggSolver(problem, step_size=1e-2, n_iter=args.n_iter, tol=args.tol, agg=args.agg)
+
 
     res = solver.solve( x=synthetic_init(problem, prefs), prefs=prefs )
     res['pref_mat'] = prefs
@@ -90,7 +90,7 @@ if __name__ == '__main__':
 
     fig_folder_name = os.path.join(root_name, args.PaperName, args.problem_name, '{}'.format(args.seed_idx))
     os.makedirs(fig_folder_name, exist_ok=True)
-    fig_name = os.path.join(fig_folder_name, '{}.pdf'.format(args.solver) )
+    fig_name = os.path.join(fig_folder_name, '{}.pdf'.format(args.task_name) )
     plt.savefig( fig_name )
     print('Save fig to {}'.format(fig_name) )
     plt.title( beautiful_dict[args.task_name] )

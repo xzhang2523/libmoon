@@ -43,7 +43,7 @@ def normalize_vec(x, problem ):
     else:
         return (x - ideal) / (nadir - ideal)
 
-def get_agg_func(agg, cosmos_hp=1.0):
+def get_agg_func(agg, cosmos_hp=8.0):
     if agg == 'ls':
         return ls
     elif agg == 'mtche':
@@ -108,14 +108,14 @@ def get_hv_ref(problem_name):
     else:
         problem = get_problem(problem_name)
         n_obj = problem.n_obj
-        return np.ones(n_obj) * 2.0
+        return np.ones(n_obj) * 1.2
 
-def get_hv_ref_dict(problem_name):
-    if problem_name.startswith('ZDT'):
-        ref = array([1.0, 1.0])
-    else:
-        ref = nadir_point_dict[problem_name]
-    return ref + 1e-2
+# def get_hv_ref_dict(problem_name):
+#     if problem_name.startswith('ZDT'):
+#         ref = array([1.0, 1.0])
+#     else:
+#         ref = nadir_point_dict[problem_name]
+#     return ref + 1e-2
 
 root_name = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 

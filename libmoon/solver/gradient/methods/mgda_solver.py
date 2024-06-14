@@ -7,7 +7,7 @@ from torch.optim import SGD
 from tqdm import tqdm
 from torch import Tensor
 import numpy as np
-from libmoon.util_global.constant import solution_eps, get_hv_ref_dict
+from libmoon.util_global.constant import solution_eps, get_hv_ref
 from pymoo.indicators.hv import HV
 
 
@@ -27,7 +27,7 @@ class MGDASolver(GradBaseSolver):
         x = Variable(x, requires_grad=True)
         optimizer = SGD([x], lr=self.step_size)
 
-        ind = HV(ref_point=get_hv_ref_dict(args.problem_name))
+        ind = HV(ref_point=get_hv_ref(args.problem_name))
         hv_arr = []
         y_arr = []
 

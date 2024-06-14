@@ -2,7 +2,7 @@ from libmoon.solver.gradient.methods.base_solver import GradBaseSolver
 from torch.autograd import Variable
 from torch.optim import SGD
 from torch import Tensor
-from libmoon.util_global.constant import get_agg_func, solution_eps, get_hv_ref_dict
+from libmoon.util_global.constant import get_agg_func, solution_eps, get_hv_ref
 import torch
 from tqdm import tqdm
 from pymoo.indicators.hv import HV
@@ -59,7 +59,7 @@ class UniformSolver(GradBaseSolver):
     def solve(self, problem, x, prefs, args):
         x = Variable(x, requires_grad=True)
         # ref_point = array([2.0, 2.0])
-        ind = HV(ref_point = get_hv_ref_dict(args.problem_name))
+        ind = HV(ref_point = get_hv_ref(args.problem_name))
         hv_arr = []
         y_arr = []
         prefs = Tensor(prefs)

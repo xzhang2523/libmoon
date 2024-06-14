@@ -11,7 +11,7 @@ from torch.autograd import Variable
 
 from tqdm import tqdm
 from pymoo.indicators.hv import HV
-from libmoon.util_global.constant import solution_eps, get_hv_ref_dict
+from libmoon.util_global.constant import solution_eps, get_hv_ref
 
 """
 The class HvMaximization is based on the algorithm described by
@@ -86,12 +86,12 @@ class GradHVSolver(GradBaseSolver):
         if args.n_obj != 2:
             assert False, 'hvgrad only supports 2 obj problem'
 
-        hv_maximizer = HvMaximization(args.n_prob, args.n_obj, get_hv_ref_dict(args.problem_name))
+        hv_maximizer = HvMaximization(args.n_prob, args.n_obj, get_hv_ref(args.problem_name))
 
 
         x = Variable(x, requires_grad=True)
         optimizer = torch.optim.SGD([x,], lr=self.step_size)
-        hv_ind = HV(ref_point=get_hv_ref_dict(args.problem_name))
+        hv_ind = HV(ref_point=get_hv_ref(args.problem_name))
         hv_arr = [0] * self.max_iter
         y_arr=[]
         for iter_idx in tqdm(range(self.max_iter)):

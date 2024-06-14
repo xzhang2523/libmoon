@@ -4,7 +4,7 @@ from libmoon.solver.gradient.methods.mgda_core import solve_mgda
 from libmoon.solver.gradient.methods.epo_solver import EPO_LP
 import torch
 from libmoon.solver.gradient.methods.gradhv import HvMaximization
-from libmoon.util_global.constant import get_hv_ref_dict
+from libmoon.util_global.constant import get_hv_ref
 from libmoon.solver.gradient.methods.pmgda_core import solve_pmgda
 from libmoon.solver.gradient.methods.pmtl import get_d_paretomtl_init, get_d_paretomtl
 import math
@@ -37,7 +37,7 @@ class CoreHVGrad:
     '''
 
     def __init__(self, n_prob, n_obj, dataset_name):
-        self.hv_solver = HvMaximization(n_prob, n_obj, get_hv_ref_dict(dataset_name) )
+        self.hv_solver = HvMaximization(n_prob, n_obj, get_hv_ref(dataset_name) )
 
     def get_alpha(self, loss_mat):
         '''

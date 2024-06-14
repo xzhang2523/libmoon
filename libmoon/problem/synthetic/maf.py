@@ -11,6 +11,9 @@ class MAF1(mop):
         '''
             n_obj can be set as any number. For simlicity, we set it as 3.
         '''
+        lbound = np.zeros(n_var)
+        ubound = np.ones(n_var)
+
         super().__init__(n_var=n_var,
                          n_obj=n_obj,
                          lbound=lbound,
@@ -23,13 +26,9 @@ class MAF1(mop):
             f1 = (1 - x[:,0] * x[:,1]) * (1 + g)
             f2 = (1 - x[:,0] * (1 - x[:,1]) ) * (1 + g)
             f3 = x[:,0] * (1 + g)
-
-            return torch.stack((f1, f2, f3), dim=1)
-
+            return torch.stack((f1, f2, f3), dim=1)/2
         else:
             assert False
-
-
 
     def get_pf(self):
         return array([[0.0, 0.0, 0.0]])

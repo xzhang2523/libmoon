@@ -4,7 +4,7 @@ niter=2000
 
 for seed in 0 1 2 3 4
   do
-  for problem_name in MAF1 ZDT1 DTLZ2
+  for problem_name in VLMOP1 VLMOP2
   do
       for solver in pmgda epo
       do

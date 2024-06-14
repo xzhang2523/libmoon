@@ -55,6 +55,8 @@ class GradAggSolver(GradBaseSolver):
             y_arr.append(y.detach().numpy())
             if 'lbound' in dir(self.problem):
                 x.data = torch.clamp(x.data, torch.Tensor(self.problem.lbound) + solution_eps, torch.Tensor(self.problem.ubound)-solution_eps)
+
+
         res['x'] = x.detach().numpy()
         res['y'] = y.detach().numpy()
         res['hv_history'] = np.array(hv_arr)

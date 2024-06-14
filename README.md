@@ -387,3 +387,15 @@ eval_y = problem.evaluate(model(Tensor(prefs).cuda()))
 ```
 
     
+If you find our code useful, please cite our paper:
+
+```bibtex
+@software{libmoon_2024,
+  author = {Xiaoyuan Zhang, Liang Zhao, Yingying Yu, Xi Lin, Yifan Chen, Han Zhao and Qingfu Zhang},
+  title = {{LibMOON: A Gradient-based MultiObjective
+OptimizatioN Library in PyTorch}},
+  url = {https://github.com/xzhang2523/libmoon},
+  version = {2.0.4},
+  year = {2024}
+}
+```

@@ -391,7 +391,7 @@ If you find our code useful, please cite our paper:
 
 ```bibtex
 @software{libmoon_2024,
-  author = {Xiaoyuan Zhang, Liang Zhao, Yingying Yu, Xi Lin, Yifan Chen, Han Zhao and Qingfu Zhang},
+  author = {Zhang, Xiaoyuan and Zhao, Liang and Yu, Yingying and Lin, Xi and Chen, Yifan and Zhao, Han and Zhang, Qingfu},
   title = {{LibMOON: A Gradient-based MultiObjective
 OptimizatioN Library in PyTorch}},
   url = {https://github.com/xzhang2523/libmoon},

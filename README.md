@@ -36,7 +36,8 @@ A submission to NeurIPS 2024 DB track.
 - **Prof. Ke Shang** (Shenzhen University) (For advice of approximate hypervolume-based methods)
 - **Prof. Han Zhao** (University of Illinois at Urbana-Champaign) (For advice of fariness classification)
 - **Hongzong Li** (For the non-local search)
-- **Prof. Zhenkun Wang** (For the non-local search)
+- **Prof. Zhenkun Wang** (SusTech)
+- **Prof. Tao Qin** (MSRA)
 
 
 ## Correspondence

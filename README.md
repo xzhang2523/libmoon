@@ -34,6 +34,7 @@ A submission to NeurIPS 2024 DB track.
 - **Prof. Jingda Deng** (Xi'an Jiaotong University) (For advice of High-D hypervolume computation)
 - **Prof. Yifan Chen** (Hong Kong Baptist University) (For advice of OR)
 - **Prof. Ke Shang** (Shenzhen University) (For advice of approximate hypervolume-based methods)
+- **Prof. Genghui Li** (Shenzhen University) (For advice of MOEAs)
 - **Prof. Han Zhao** (University of Illinois at Urbana-Champaign) (For advice of fariness classification)
 - **Hongzong Li** (CityUHK) (For local search)
 - **Prof. Zhenkun Wang** (SusTech)

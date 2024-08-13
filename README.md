@@ -1,5 +1,4 @@
-# LibMoon: A Gradient-based MultiObjective
-OptimizatioN Library in PyTorch
+# LibMoon: A Gradient-based MultiObjective OptimizatioN Library in PyTorch
 
 [![Documentation Status](https://readthedocs.org/projects/libmtl/badge/?version=latest)](https://libmoondocs.readthedocs.io/en/latest/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/xzhang2523/libmoon/blob/main/LICENSE)

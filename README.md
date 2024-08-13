@@ -1,69 +1,61 @@
-# LibMoon
+# LibMoon: A Gradient-based MultiObjective
+OptimizatioN Library in PyTorch
 
-[![Documentation Status](https://readthedocs.org/projects/libmtl/badge/?version=latest)](https://libmtl.readthedocs.io/en/latest/?badge=latest) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/median-research-group/LibMTL/blob/main/LICENSE) [![PyPI version](https://badge.fury.io/py/LibMTL.svg)](https://badge.fury.io/py/LibMTL) [![Supported Python versions](https://img.shields.io/pypi/pyversions/LibMTL.svg?logo=python&logoColor=FFE873)](https://github.com/median-research-group/LibMTL) [![CodeFactor](https://www.codefactor.io/repository/github/median-research-group/libmtl/badge/main)](https://www.codefactor.io/repository/github/median-research-group/libmtl/overview/main) [![paper](https://img.shields.io/badge/Accepted%20by-JMLR-b31b1b.svg)](https://www.jmlr.org/papers/v24/22-0347.html) [![coverage](./tests/coverage.svg)](https://github.com/median-research-group/LibMTL) [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fmedian-research-group%2FLibMTL&count_bg=%23763DC8&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=visitors&edge_flat=false)](https://hits.seeyoufarm.com) [![Made With Friends](https://img.shields.io/badge/Made%20With-Love-orange.svg)](https://github.com/xzhang2523/libmoon) 
+[![Documentation Status](https://readthedocs.org/projects/libmtl/badge/?version=latest)](https://libmoondocs.readthedocs.io/en/latest/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/xzhang2523/libmoon/blob/main/LICENSE)
+[![PyPI version](https://badge.fury.io/py/LibMTL.svg)](https://badge.fury.io/py/LibMTL)
+[![Supported Python versions](https://img.shields.io/pypi/pyversions/LibMTL.svg?logo=python&logoColor=FFE873)](https://github.com/xzhang2523/libmoon)[![CodeFactor](https://www.codefactor.io/repository/github/median-research-group/libmtl/badge/main)](https://www.codefactor.io/repository/github/median-research-group/libmtl/overview/main) [![paper](https://img.shields.io/badge/Accepted%20by-JMLR-b31b1b.svg)](https://www.jmlr.org/papers/v24/22-0347.html)
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fmedian-research-group%2FLibMTL&count_bg=%23763DC8&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=visitors&edge_flat=false)](https://hits.seeyoufarm.com) [![Made With Friends](https://img.shields.io/badge/Made%20With-Love-orange.svg)](https://github.com/xzhang2523/libmoon) 
+
 
 ``LibMoon`` is an open-source library built on [PyTorch](https://pytorch.org/) for gradient-based MultiObjective (MOO). See the [latest documentation](https://libmtl.readthedocs.io/en/latest/) for detailed introductions and API instructions.
 
+Star and fork us on GitHub — it motivates us a lot!
 
 
-Star us on GitHub — it motivates us a lot!
+[//]: # (## News)
 
-## News
 
-# LibMOON: A Gradient-based MultiObjective OptimizatioN Library in PyTorch
+[//]: # (<p align="center">)
 
-<img src="img/moon.png" alt="Moon" width="200"></img>
+[//]: # (  <img src="img/moon.png" alt="Moon" width="200">)
 
-## Introduction
-
-**LibMOON** is a multiobjective optimization framework that spans from single-objective optimization to multiobjective
-optimization. It aims to enhance the understanding of optimization problems and facilitate fair comparisons between MOO
-algorithms.
-A submission to NeurIPS 2024 DB track.
-
-<img src="img/Libmoon.png" width="500"></img>
+[//]: # (</p>)
 
 ## Main Contributors
 
-- Xiaoyuan Zhang (CityUHK) (Pareto set learning, gradient-based solver, project lead)
-- Liang Zhao (CityUHK)  (MOBO)
-- Yingying Yu (CityUHK) (Software design)
-- Xi Lin (CityUHK) (Software design)
+| **Name**           | **Institution** | **Role**                              |
+|--------------------|-----------------|---------------------------------------|
+| **Xiaoyuan Zhang** | CityUHK         | Pareto set learning, gradient-based solver, project lead |
+| **Liang Zhao**     | CityUHK         | MOBO                                  |
+| **Yingying Yu**    | CityUHK         | Software design                       |
+| **Xi Lin**         | CityUHK         | Software design                       |
+
 
 ## Advisory Board
-- **Xuehai Pan** (PKU) (For software design)
-- **Hongzong Li** (CityUHK) (For local search)
-- **Prof. Jingda Deng** (Xi'an Jiaotong University) (For advice of High-D hypervolume computation)
-- **Prof. Yifan Chen** (Hong Kong Baptist University) (For advice of OR)
-- **Prof. Ke Shang** (Shenzhen University) (For advice of approximate hypervolume-based methods)
-- **Prof. Genghui Li** (Shenzhen University) (For advice of MOEAs)
-- **Prof. Han Zhao** (University of Illinois at Urbana-Champaign) (For advice of fariness classification)
-- **Prof. Zhenkun Wang** (SusTech) (Paper writing and maintance of community)
-- **Prof. Tao Qin** (MSRA) (Industry)
+| **Name**               | **Affiliation**                                 | **Role**                                            |
+|------------------------|-------------------------------------------------|-----------------------------------------------------|
+| **Xuehai Pan**         | PKU                                             | For software design                                 |
+| **Hongzong Li**        | CityUHK                                         | For local search                                    |
+| **Prof. Jingda Deng**  | Xi'an Jiaotong University                       | For advice on High-D hypervolume computation        |
+| **Prof. Yifan Chen**   | Hong Kong Baptist University                    | For advice on OR                                    |
+| **Prof. Ke Shang**     | Shenzhen University                             | For advice on approximate hypervolume-based methods |
+| **Prof. Genghui Li**   | Shenzhen University                             | For advice on MOEAs                                 |
+| **Prof. Han Zhao**     | University of Illinois at Urbana-Champaign      | For advice on fairness classification               |
+| **Prof. Zhenkun Wang** | SusTech                                         | Paper writing and maintenance of community          |
+| **Prof. Tao Qin**      | MSRA                                            | Industry application                                |
+| **Prof. Qingfu Zhang** | CityUHK                                         | Corresponding                                       |
 
-
-## Correspondence
-
-The corresponding author is **Chair Prof. Qingfu Zhang** (FIEEE, City University of Hong Kong).
 
 ## Contact
-
-- **Xiaoyuan Zhang** (xzhang2523-c@my.cityu.edu.hk)
+- Xiaoyuan Zhang [xzhang2523-c@my.cityu.edu.hk]
 - QQ group:
-- <img src="img/qq.jpg" alt="Moon" width="200">
 
-## Resources
 
-For more information on methodologies, please visit
-our [GitHub repository](https://github.com/xzhang2523/awesome-moo-ml-papers). Contributions and stars are welcome!
+ <p align="center">
+  <img src="img/qq.jpg" alt="Moon" width="200">
+</p>
 
-(1) A standardlized gradient based framework.
-
-# Optimization Problem Classes
-
-## **Problem Class Details**
-
-For more information on problem specifics, please refer to the `Readme_problem.md` file.
 
 ### Synthetic Problems
 
@@ -195,53 +187,6 @@ model = solver.solve()
 eval_y = problem.evaluate(model(Tensor(prefs).cuda()))
 
 ```
-=======
-# LibMOON: A Gradient-based MultiObjective OptimizatioN Library in PyTorch
-
-<img src="img/moon.png" alt="Moon" width="200"></img>
-
-## Introduction
-
-**LibMOON** is a multiobjective optimization framework that spans from single-objective optimization to multiobjective
-optimization. It aims to enhance the understanding of optimization problems and facilitate fair comparisons between MOO
-algorithms.
-A submission to NeurIPS 2024 DB track.
-
-<img src="img/Libmoon.png" width="500"></img>
-
-
-> "I raise my cup to invite the moon.  
-> With my shadow we become three from one."  
-> -- Li Bai
-
-## Main Contributors
-
-- **Xiaoyuan Zhang** (Maintainer of Pareto set learning, gradient-based solver)
-- Ji Cheng
-- Liao Zhao  (Maintainer of MOBO)
-- Weiduo Liao
-- Zhe Zhao
-- Xi Lin
-- Cheng Gong
-- Longcan Chen
-- YingYing Yu
-
-## Advisory Board
-
-- **Prof. Jingda Deng** (Xi'an Jiaotong University) (For advice of High-D hypervolume computation)
-- **Prof. Yifan Chen** (Hong Kong Baptist University) (For advice of OR)
-- **Prof. Ke Shang** (Shenzhen University) (For advice of approximate hypervolume-based methods)
-- **Prof. Han Zhao** (University of Illinois at Urbana-Champaign) (For advice of fariness classification)
-
-## Correspondence
-
-The corresponding author is **Chair Prof. Qingfu Zhang** (FIEEE, City University of Hong Kong).
-
-## Contact
-
-- **Xiaoyuan Zhang** (xzhang2523-c@my.cityu.edu.hk)
-- QQ group:
-- <img src="img/qq.jpg" alt="Moon" width="200">
 
 ## Resources
 
@@ -338,14 +283,10 @@ LibMOON supports various models of PSL solvers, categorized as follows:
 - Evolutionary-based PSL
 
 ## MultiObjective Bayesian Optimization (MOBO) Solvers
-
 - PSL-MONO
 - PSL-DirHV-EI
 - DirHV-EGO
 
-## ML Pretrained Methods
-
-- HV Net, a model for handling high-volume data, available [here](https://arxiv.org/abs/2203.02185).
 
 ## Installation
 

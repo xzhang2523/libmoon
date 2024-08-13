@@ -4,7 +4,9 @@ OptimizatioN Library in PyTorch
 [![Documentation Status](https://readthedocs.org/projects/libmtl/badge/?version=latest)](https://libmoondocs.readthedocs.io/en/latest/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/xzhang2523/libmoon/blob/main/LICENSE)
 [![PyPI version](https://badge.fury.io/py/LibMTL.svg)](https://badge.fury.io/py/LibMTL)
-[![Supported Python versions](https://img.shields.io/pypi/pyversions/LibMTL.svg?logo=python&logoColor=FFE873)](https://github.com/xzhang2523/libmoon)[![CodeFactor](https://www.codefactor.io/repository/github/median-research-group/libmtl/badge/main)](https://www.codefactor.io/repository/github/median-research-group/libmtl/overview/main) [![paper](https://img.shields.io/badge/Accepted%20by-JMLR-b31b1b.svg)](https://www.jmlr.org/papers/v24/22-0347.html)
+[![Supported Python versions](https://img.shields.io/pypi/pyversions/LibMTL.svg?logo=python&logoColor=FFE873)](https://github.com/xzhang2523/libmoon)
+[![CodeFactor](https://www.codefactor.io/repository/github/median-research-group/libmtl/badge/main)](https://www.codefactor.io/repository/github/median-research-group/libmtl/overview/main)
+[//]: # ([![paper]&#40;https://img.shields.io/badge/Accepted%20by-JMLR-b31b1b.svg&#41;]&#40;https://www.jmlr.org/papers/v24/22-0347.html&#41;)
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fmedian-research-group%2FLibMTL&count_bg=%23763DC8&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=visitors&edge_flat=false)](https://hits.seeyoufarm.com) [![Made With Friends](https://img.shields.io/badge/Made%20With-Love-orange.svg)](https://github.com/xzhang2523/libmoon) 
 
 

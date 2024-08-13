@@ -9,7 +9,6 @@ OptimizatioN Library in PyTorch
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fxzhang2523%2Flibmoon&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 [![Made With Friends](https://img.shields.io/badge/Made%20With-Love-orange.svg)](https://github.com/xzhang2523/libmoon) 
 
-
 ``LibMoon`` is an open-source library built on [PyTorch](https://pytorch.org/) for gradient-based MultiObjective (MOO). See the [latest documentation](https://libmtl.readthedocs.io/en/latest/) for detailed introductions and API instructions.
 
 Star and fork us on GitHub — it motivates us a lot!
@@ -137,10 +136,6 @@ LibMOON supports various models of PSL solvers, categorized as follows:
 - PSL-DirHV-EI
 - DirHV-EGO
 
-## ML Pretrained Methods
-
-- HV Net, a model for handling high-volume data, available [here](https://arxiv.org/abs/2203.02185).
-
 ## Installation
 
 Libmoon is available on PyPI. You can install it using pip:
@@ -180,46 +175,6 @@ model = solver.solve()
 eval_y = problem.evaluate(model(Tensor(prefs).cuda()))
 
 ```
-
-## Resources
-
-For more information on methodologies, please visit
-our [GitHub repository](https://github.com/xzhang2523/awesome-moo-ml-papers). Contributions and stars are welcome!
-
-(1) A standardlized gradient based framework.
-
-# Optimization Problem Classes
-
-## **Problem Class Details**
-
-For more information on problem specifics, please refer to the `Readme_problem.md` file.
-
-### Synthetic Problems
-
-Here's a list of synthetic problems along with relevant research papers and project/code links:
-
-| Problem | Paper                                                                | Project/Code                                         |
-|---------|----------------------------------------------------------------------|------------------------------------------------------|
-| ZDT     | [Paper](https://ieeexplore.ieee.org/document/996017)                 | [Project](https://pymoo.org/problems/multi/zdt.html) |
-| DTLZ    | [Paper](https://ieeexplore.ieee.org/document/996017)                 | [Project](https://pymoo.org/problems/many/dtlz.html) |
-| MAF     | [Paper](https://link.springer.com/article/10.1007/s40747-017-0039-7) | [Project](https://pymoo.org/problems/multi/maf.html) |
-| WFG     | [Paper](https://ieeexplore.ieee.org/document/996017)                 | [Code](https://github.com/sample-repo/wfg-code)      |
-| Fi's    | [Paper](https://ieeexplore.ieee.org/document/996017)                 | [Code](https://github.com/sample-repo/fis-code)      |
-| RE      | [Paper](https://arxiv.org/abs/2009.12867)                            | [Code](https://github.com/ryojitanabe/reproblems)    |
-
-### Multitask Learning Problems
-
-This section details problems related to multitask learning, along with their corresponding papers and project/code
-references:
-
-| Problem                 | Paper                                                                                                                | Project/Code                                           |
-|-------------------------|----------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------|
-| MO-MNISTs               | [PMTL](https://proceedings.neurips.cc/paper_files/paper/2019/file/685bfde03eb646c27ed565881917c71c-Paper.pdf)        | [COSMOS](https://github.com/ruchtem/cosmos)            |
-| Fairness Classification | [COSMOS](https://arxiv.org/pdf/2103.13392.pdf)                                                                       | [COSMOS](https://github.com/ruchtem/cosmos)            |
-| Federated Learning      | [Federal MTL](https://proceedings.neurips.cc/paper_files/paper/2023/file/7cb2c2a8d35576c00078b6591ec26a7d-Paper.pdf) | [COSMOS](https://github.com/ruchtem/cosmos)            |
-| Synthetic (DST, FTS...) | [Envelop](https://proceedings.neurips.cc/paper_files/paper/2019/file/4a46fbfca3f1465a27b210f4bdfe6ab3-Paper.pdf)     | [Project](https://github.com/sample-repo/envelop-code) |
-| Robotics (MO-MuJoCo...) | [PGMORL](http://proceedings.mlr.press/v119/xu20h/xu20h.pdf)                                                          | [Code](https://github.com/mit-gfx/PGMORL)              |
-
 ## Current Supported Solvers
 
 LibMOON includes a variety of solvers tailored for different needs as img below shows. The following solvers are

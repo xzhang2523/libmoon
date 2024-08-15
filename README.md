@@ -47,6 +47,7 @@ Star and fork us on GitHub — it motivates us a lot!
   <img src="img/qq.jpg" alt="Moon" width="200">
 </p>
 
+- Slack: https://cityu-hiv5987.slack.com/archives/C07GU3N2H2S
 
 ### Synthetic Problems
 

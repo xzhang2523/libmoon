@@ -1,9 +1,6 @@
 PSL solver is largely based on **conditional** models. Some represative models are listed below.
 
 
-
-FILM. 
-
 It seems that, for only PSL only work for preference based method. 
 
 |      Method      |                        Paper                        | Code |

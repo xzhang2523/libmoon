@@ -29,9 +29,9 @@ if __name__ == '__main__':
     parse.add_argument('--dataset', type=str, default='fashion')
     parse.add_argument('--solver', type=str, default='agg')
     parse.add_argument('--agg', type=str, default='ls')
+    parse.add_argument('--device', type=str, default='cpu')
     parse.add_argument('--ray-hidden', type=int, default=100)
     args = parse.parse_args()
-
     agg_func = get_agg_func(args.agg)
     if args.solver == 'agg':
         args.task_name = '{}_{}'.format(args.solver, args.agg)
@@ -41,6 +41,8 @@ if __name__ == '__main__':
     print('Training...')
     print('Task name: {}'.format(args.task_name))
     print('Dataset:{}'.format(args.dataset))
+    print('Device:{}'.format(args.device))
+
 
     dataset = MultiMNISTData(args.dataset, 'train')
     loader = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size, shuffle=True,
@@ -49,7 +51,10 @@ if __name__ == '__main__':
     loader_test = torch.utils.data.DataLoader(dataset_test, batch_size=args.batch_size, shuffle=True,
                                               num_workers=0)
 
-    args.device = torch.device("cuda")
+    if args.device == 'cpu':
+        args.device = torch.device("cpu")
+    else:
+        args.device = torch.device("cuda")
 
 
     if args.model == 'lenet':

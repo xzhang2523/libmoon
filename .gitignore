@@ -38,3 +38,4 @@ secrets.txt
 *.tmp
 *.bak
 
+*.ref

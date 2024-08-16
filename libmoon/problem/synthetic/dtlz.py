@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+
 from libmoon.problem.synthetic.mop import BaseMOP
 
 

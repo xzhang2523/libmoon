@@ -21,7 +21,6 @@ vendor/
 
 # Ignore log files and output
 logs/
-libmoon/problem/mtl/mtl_data/multimnist/
 *.log
 *.out
 *.pickle

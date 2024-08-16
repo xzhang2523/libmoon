@@ -1,12 +1,12 @@
 import numpy as np
 import torch
 from torch import Tensor
-
 '''
     numpy evaluation may have some problems, please check. 
     Here, an interesting thing is that, PBI and COSMOS are not MOO agg functions.
     I.e., the optimas may not be Pareto optimal.
 '''
+
 def soft_tche(f_arr, w, mu=0.1, z=0, normalization=False):
     inner = w * (f_arr - z) / mu
 

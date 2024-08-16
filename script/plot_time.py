@@ -8,15 +8,11 @@ if __name__ == '__main__':
 
     plt.xticks(fontsize=15)
     plt.yticks(fontsize=15)
-
     plt.xlabel('Device', fontsize=20)
     plt.ylabel('Time (min)', fontsize=20)
-
     plt.bar_label(bars, fontsize=18)
     # plt.title('Time to train 10 epochs', fontsize=20)
-
     # plt.legend()
     plt.savefig('time.pdf', bbox_inches='tight')
     plt.savefig('time.svg', bbox_inches='tight')
-
     plt.show()

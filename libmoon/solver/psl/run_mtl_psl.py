@@ -18,7 +18,7 @@ from time import time
 
 if __name__ == '__main__':
     parse = argparse.ArgumentParser()
-    parse.add_argument('--n-epoch', type=int, default=10)
+    parse.add_argument('--n-epoch', type=int, default=100)
     parse.add_argument('--batch-size', type=int, default=128)
     parse.add_argument('--lr', type=float, default=1e-3)
     parse.add_argument('--n-obj', type=int, default=2)

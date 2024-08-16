@@ -22,6 +22,7 @@ Star and fork us on GitHub — it motivates us a lot!
 | **Yingying Yu**    | CityUHK         | Software design                       |
 | **Xi Lin**         | CityUHK         | Software design                       |
 
+The first three authors contribute equally to this work.
 
 ## Advisory Board
 | **Name**               | **Affiliation**                                 | **Role**                                            |

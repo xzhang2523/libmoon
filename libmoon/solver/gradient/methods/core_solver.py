@@ -45,37 +45,6 @@ class CorePMGDA:
     def get_alpha(self, Jacobian, grad_h, h_val, h_tol, sigma, return_coeff=True, Jhf=None):
         _, alpha = solve_pmgda(Jacobian, grad_h, h_val, h_tol, sigma, return_coeff=return_coeff, Jhf=Jhf)
         return alpha
-        #     Input:
-        #     Jacobian: (m,n), grad_h: (1,n), h_val: (1,), return_coeff: bool, Jhf: (m,) .
-        #     Output:
-        #     if use_coeff:
-        #         gw: (n,)
-        #         coeff: (m,)
-        #     else:
-        #         gw: (n,)
-
-
-
-
-
-# from libmoon.solver.gradient.methods.moosvgd import solve_moo_svgd
-
-
-# def kernel_functional_rbf(losses):
-#     '''
-#         input losses: (n_prob, n_obj)
-#         output kernel_matrix: (n_prob, n_prob)
-#         comments: This function is used to compute the kernel matrix for SVGD.
-#     '''
-#     n = losses.shape[0]
-#     # losses shape : (10,) * (3,)
-#     pairwise_distance = torch.norm(losses[:, None] - losses, dim=2).pow(2)
-#     h = median(pairwise_distance) / math.log(n)
-#     A = 5e-6  # Noted, this bandwith parameter is important.
-#     kernel_matrix = torch.exp(-pairwise_distance / A*h)  # 5e-6 for zdt1,2,3, zxy, Dec 5, 2023
-#     return kernel_matrix
-
-
 
 def median(tensor):
     """

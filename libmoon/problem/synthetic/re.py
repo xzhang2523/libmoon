@@ -1,18 +1,16 @@
 
 import numpy as np
 import torch
-from libmoon.problem.synthetic.mop import mop
-
+from libmoon.problem.synthetic.mop import BaseMOP
 from numpy import array
 
 
-class RE21(mop):
+class RE21(BaseMOP):
     def __init__(self, n_var=4, n_obj=2, lbound=np.zeros(4), ubound=np.ones(4)):
         self.problem_name = 'RE21'
         self.n_var = n_var
         self.n_obj = n_obj
         self.n_cons = 0
-
         self.n_original_constraints = 0
         self.ideal = array([1237.8414230005742, 0.002761423749158419])
         self.nadir = np.array([2886.3695604236013, 0.039999999999998245])
@@ -25,7 +23,6 @@ class RE21(mop):
         self.lbound[1] = np.sqrt(2.0) * tmp_val
         self.lbound[2] = np.sqrt(2.0) * tmp_val
         self.lbound[3] = tmp_val
-
 
     def _evaluate_numpy(self, x):
         n_sub = len(x)
@@ -58,12 +55,10 @@ class RE21(mop):
         x2 = x[:, 1]
         x3 = x[:, 2]
         x4 = x[:, 3]
-
         F = 10.0
         sigma = 10.0
         E = 2.0 * 1e5
         L = 200.0
-
         f1 = L * ( (2 * x1) + np.sqrt(2.0) * x2 + torch.sqrt(x3) + x4 )
         f2 = ((F * L) / E) * ((2.0 / x1) + (2.0 * np.sqrt(2.0) / x2) - (2.0 * np.sqrt(2.0) / x3) + (2.0 / x4))
         f_arr = torch.stack((f1, f2), dim=1)
@@ -72,11 +67,9 @@ class RE21(mop):
         return f_arr_norm
 
 
-class RE22(mop):
+class RE22(BaseMOP):
     def __init__(self, n_var=3, n_obj=2, lbound=np.zeros(30),
                  ubound=np.ones(30)):
-
-
         self.n_var=n_var
         self.n_obj=n_obj
         self.problem_name = 'RE22'
@@ -110,7 +103,6 @@ class RE22(mop):
 
     def _evaluate_numpy(self, x):
         n_sub = len(x)
-
         f = np.zeros( (n_sub, self.n_obj) )
         g = np.zeros( (n_sub, self.n_original_constraints)  )
         # Reference: getNearestValue_sample2.py (https://gist.github.com/icchi-h/1d0bb1c52ebfdd31f14b3e811328390a)
@@ -118,7 +110,6 @@ class RE22(mop):
         x1 = array([self.feasible_vals[idx] for idx in idx_arr])
         x2 = x[:,1]
         x3 = x[:,2]
-
         # First original objective function
         f[:,0] = (29.4 * x1) + (0.6 * x2 * x3)
         # Original constraint functions
@@ -128,14 +119,13 @@ class RE22(mop):
         f[:,1] = g[:,0] + g[:,1]
         f_norm = (f - self.ideal) / (self.nadir - self.ideal)
         f_norm[:, 0] = 0.5 * f_norm[:, 0]
-
         return f_norm
 
     def _evaluate_torch(self, x):
         pass
 
 
-class RE23(mop):
+class RE23(BaseMOP):
     def __init__(self, n_var=4, n_obj=2, lbound=np.zeros(2),
                  ubound=np.ones(2)):
         self.problem_name = 'RE23'
@@ -159,75 +149,54 @@ class RE23(mop):
         self.ubound[3] = 240
 
     def _evaluate_numpy(self, x):
-
         f = np.zeros( (len(x), self.n_obj) )
         g = np.zeros( (len(x), self.n_original_constraints))
-
         x1 = 0.0625 * np.round(x[:,0]).astype(np.int32)
         x2 = 0.0625 * np.round(x[:,1]).astype(np.int32)
-
         x3 = x[:,2]
         x4 = x[:,3]
-
         # First original objective function
         f[:,0] = (0.6224 * x1 * x3 * x4) + (1.7781 * x2 * x3 * x3) + (3.1661 * x1 * x1 * x4) + (19.84 * x1 * x1 * x3)
-
         # Original constraint functions
         g[:,0] = x1 - (0.0193 * x3)
         g[:,1] = x2 - (0.00954 * x3)
         g[:,2] = (np.pi * x3 * x3 * x4) + ((4.0 / 3.0) * (np.pi * x3 * x3 * x3)) - 1296000
         g = np.where(g < 0, -g, 0)
         f[:,1] = g[:,0] + g[:,1] + g[:,2]
-
         f_norm = (f - self.ideal) / (self.nadir - self.ideal)
-
         return f_norm
 
 
-
-
-
-class RE24(mop):
+class RE24(BaseMOP):
     def __init__(self, n_var=2, n_obj=2, lbound=np.zeros(2),
                  ubound=np.ones(2)):
         super().__init__(n_var=n_var,
                          n_obj=n_obj,
                          lbound=lbound,
                          ubound=ubound, )
-
         self.problem_name = 'RE24'
         self.n_obj = 2
         self.n_var = 2
-
         self.n_cons = 0
         self.n_original_constraints = 4
-
         self.ubound = np.zeros(self.n_var)
         self.lbound = np.zeros(self.n_var)
-
         self.lbound[0] = 0.5
         self.lbound[1] = 0.5
-
         self.ubound[0] = 4
         self.ubound[1] = 50
-
         self.ideal = np.array([60.5, 0.0])
         self.nadir = np.array([481.608088535, 44.2819047619])
-
-
 
 
     def _evaluate_numpy(self, x):
         n_sub = len(x)
         # f = np.zeros(self.n_objectives)
         g = np.zeros( (n_sub, self.n_original_constraints) )
-
         x1 = x[:,0]
         x2 = x[:,1]
-
         # First original objective function
         f1 = x1 + (120 * x2)
-
         E = 700000
         sigma_b_max = 700
         tau_max = 450
@@ -236,17 +205,14 @@ class RE24(mop):
         sigma_b = 4500 / (x1 * x2)
         tau = 1800 / x2
         delta = (56.2 * 10000) / (E * x1 * x2 * x2)
-
         g[:,0] = 1 - (sigma_b / sigma_b_max)
         g[:,1] = 1 - (tau / tau_max)
         g[:,2] = 1 - (delta / delta_max)
         g[:,3] = 1 - (sigma_b / sigma_k)
         g = np.where(g < 0, -g, 0)
         f2 = g[:,0] + g[:,1] + g[:,2] + g[:,3]
-
         f_arr = np.stack((f1, f2), axis=1)
         f_norm = (f_arr - self.ideal) / (self.nadir - self.ideal)
-
         return f_norm
 
 
@@ -254,7 +220,7 @@ class RE24(mop):
         pass
 
 
-class RE25(mop):
+class RE25(BaseMOP):
     def __init__(self, n_var=3, n_obj=2):
         self.problem_name = 'RE25'
         self.n_obj = n_obj
@@ -327,7 +293,7 @@ class RE25(mop):
         pass
 
 
-class RE31(mop):
+class RE31(BaseMOP):
     def __init__(self, n_obj=3, n_var=3):
         self.problem_name = 'RE31'
         self.n_obj = n_obj
@@ -376,7 +342,7 @@ class RE31(mop):
         pass
 
 
-class RE37(mop):
+class RE37(BaseMOP):
     def __init__(self, n_obj=3, n_var=4):
         self.problem_name = 'RE37'
         self.n_obj = n_obj
@@ -426,7 +392,7 @@ class RE37(mop):
 
 
 
-class RE41(mop):
+class RE41(BaseMOP):
     def __init__(self, n_obj=4, n_var=7):
         self.problem_name = 'RE41'
         self.n_obj = n_obj
@@ -499,15 +465,13 @@ class RE41(mop):
         pass
 
 
-class RE42(mop):
+class RE42(BaseMOP):
     def __init__(self):
         self.problem_name = 'RE42'
-
         self.n_obj = 4
         self.n_var = 6
         self.n_cons = 0
         self.n_original_constraints = 9
-
         self.lbound = np.zeros(self.n_var )
         self.ubound = np.zeros(self.n_var )
         self.lbound[0] = 150.0
@@ -522,10 +486,8 @@ class RE42(mop):
         self.ubound[3] = 11.71
         self.ubound[4] = 18.0
         self.ubound[5] = 0.75
-
         self.ideal = np.array([-2756.2590400638524, 3962.557843228888, 1947.880856925791, 0.0])
         self.nadir = np.array([-1010.5229595219643, 13827.138456300128, 2611.9668107424536, 12.437669929732023 ])
-
 
 
     def _evaluate_numpy(self, x):

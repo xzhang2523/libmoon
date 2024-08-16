@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 
-class mop():
+class BaseMOP():
     def __init__(self,
                  n_var: int,
                  n_obj: int,
@@ -13,10 +13,8 @@ class mop():
         self.n_var = n_var
         self.n_obj = n_obj
         self.n_cons = n_cons
-
         self.lbound=lbound
         self.ubound=ubound
-
 
     @property
     def get_number_variable(self) -> int:
@@ -60,7 +58,6 @@ class mop():
             ValueError
                 wrong type of x
         """
-
         if type(x) == torch.Tensor:
             return self._evaluate_torch(torch.atleast_2d(x))
         elif isinstance(x, np.ndarray):
@@ -87,7 +84,7 @@ class mop():
 
 
 
-class mop_noCons(mop):
+class mop_noCons(BaseMOP):
 
     def __init__(self, n_var: int, n_obj: int, lbound: np.ndarray, ubound: np.ndarray, n_cons: int = 0) -> None:
         super().__init__(n_var, n_obj, lbound, ubound, n_cons)

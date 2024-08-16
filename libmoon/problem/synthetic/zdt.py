@@ -10,9 +10,10 @@ Reference
 import numpy as np
 import torch
 from matplotlib import pyplot as plt
-from libmoon.problem.synthetic.mop import mop
+from libmoon.problem.synthetic.mop import BaseMOP
 
-class ZDT1(mop):
+
+class ZDT1( BaseMOP ):
 
     def __init__(self, n_var=30, n_obj=2):
         lbound = np.zeros(n_var)
@@ -48,8 +49,7 @@ class ZDT1(mop):
         return np.stack((f1, f2), axis=1)
 
 
-class ZDT2(mop):
-
+class ZDT2( BaseMOP ):
     def __init__(self, n_var=30, n_obj=2):
         lbound = np.zeros(n_var)
         ubound = np.ones(n_var)
@@ -78,15 +78,13 @@ class ZDT2(mop):
         return np.stack((f1, f2), axis=1)
 
 
-class ZDT3(mop):
-
+class ZDT3( BaseMOP ):
     def __init__(self, n_var=30, n_obj=2, lbound=np.zeros(30), ubound=np.ones(30)):
         super().__init__(n_var=n_var,
                          n_obj=n_obj,
                          lbound=lbound,
                          ubound=ubound, )
         self.problem_name = 'ZDT3'
-
 
     def _evaluate_torch(self, x: torch.Tensor):
         f1 = x[:, 0]
@@ -110,7 +108,7 @@ class ZDT3(mop):
         return np.stack((f1, f2), axis=1)
 
 
-class ZDT4(mop):
+class ZDT4( BaseMOP ):
 
     def __init__(self, n_var=10, n_obj=2, lbound=-5*np.ones(10), ubound=5*np.ones(10)):
         lbound[0] = 0
@@ -141,7 +139,7 @@ class ZDT4(mop):
         return np.stack((f1, f2), axis=1)
 
 
-class ZDT6(mop):
+class ZDT6( BaseMOP ):
 
     def __init__(self, n_var=30, n_obj=2, lbound=np.zeros(30), ubound=np.ones(30) ) -> None:
         super().__init__(n_var=n_var,

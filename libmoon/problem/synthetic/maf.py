@@ -1,11 +1,15 @@
-
 from numpy import array
 import torch
 import numpy as np
-from libmoon.problem.synthetic.mop import mop
+from libmoon.problem.synthetic.mop import BaseMOP
 
 
-class MAF1(mop):
+'''
+    Reference: 
+'''
+
+
+class MAF1(BaseMOP):
     def __init__(self, n_var=30, n_obj=3, lbound=np.zeros(30),
                  ubound=np.ones(30)):
         '''

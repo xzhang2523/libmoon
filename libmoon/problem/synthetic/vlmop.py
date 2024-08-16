@@ -1,12 +1,10 @@
 import matplotlib.pyplot as plt
 import torch
 import numpy as np
-
-from libmoon.problem.synthetic.mop import mop
-
+from libmoon.problem.synthetic.mop import BaseMOP
 
 
-class VLMOP1(mop):
+class VLMOP1(BaseMOP):
     def __init__( self, n_var=10, n_obj=2, lbound=-np.ones(10), ubound=np.ones(10) ):
         super().__init__(n_var=n_var,
                          n_obj=n_obj,
@@ -34,7 +32,7 @@ class VLMOP1(mop):
 
 
 
-class VLMOP2(mop):
+class VLMOP2(BaseMOP):
     def __init__(self, n_var=10, n_obj=2, lbound=-np.ones(10), ubound=np.ones(10)):
         super().__init__(n_var=n_var,
                          n_obj=n_obj,
@@ -57,6 +55,8 @@ class VLMOP2(mop):
         x = torch.tile(x.unsqueeze(1), (1, self.n_var))
         with torch.no_grad():
             return self._evaluate_torch(x).numpy()
+
+
 
 
 if __name__ == '__main__':

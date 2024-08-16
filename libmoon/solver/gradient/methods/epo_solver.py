@@ -113,7 +113,6 @@ def adjustments(l, r=1):
     rl = r * l
     l_hat = rl / rl.sum()
     mu_rl = mu(l_hat, normed=True)
-
     eps = 1e-3   # clipping by eps is to avoid log(0), zxy Dec. 5.
     a = r * ( np.log( np.clip(l_hat * m, eps, np.inf) ) - mu_rl)
     return rl, mu_rl, a
@@ -126,7 +125,6 @@ def solve_epo(grad_arr, losses, pref, epo_lp):
         pref: (m,) inv.
         return : gw: (n,). alpha: (m,)
     '''
-
     if type(pref) == torch.Tensor:
         pref = pref.cpu().numpy()
     pref = np.array(pref)

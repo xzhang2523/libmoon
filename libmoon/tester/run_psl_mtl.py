@@ -3,6 +3,10 @@ from matplotlib import pyplot as plt
 import os
 import argparse
 import torch
+
+import sys
+sys.path.append('D:\\pycharm_project\\libmoon')
+
 from libmoon.metrics.metrics import compute_inner_product, compute_cross_angle
 from libmoon.metrics.metrics import compute_indicators, compute_hv
 from libmoon.util_global.weight_factor import uniform_pref
@@ -12,7 +16,6 @@ from libmoon.util_global.constant import beautiful_dict
 import pandas as pd
 import pickle
 from libmoon.util_global.constant import PaperName, root_name
-
 
 
 if __name__ == '__main__':

@@ -13,7 +13,6 @@ from matplotlib import pyplot as plt
 from libmoon.util_global.constant import FONT_SIZE_2D, FONT_SIZE_3D, color_arr, beautiful_dict, root_name
 from libmoon.util_global.constant import plt_2d_pickle_size, plt_2d_marker_size
 
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser( description= 'example script' )
     parser.add_argument( '--agg', type=str, default='mtche')  # If solve is agg, then choose a specific agg method.
@@ -30,7 +29,6 @@ if __name__ == '__main__':
     parser.add_argument('--n-iter', type=int, default=10 )
     parser.add_argument('--seed-idx', type=int, default=0)
     args = parser.parse_args()
-
 
     if args.solver=='agg':
         args.task_name = '{}_{}'.format(args.solver, args.agg)

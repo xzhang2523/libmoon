@@ -7,12 +7,15 @@ from tqdm import tqdm
 from pymoo.indicators.hv import HV
 import numpy as np
 
+
+
 class GradBaseSolver:
     def __init__(self, step_size, n_iter, tol):
         self.step_size = step_size
         self.n_iter = n_iter
         self.tol = tol
-    def solve(self, problem, x, prefs, args):
+
+    def solve(self, problem, x, prefs):
         '''
             :param problem:
             :param x:

@@ -1,7 +1,7 @@
 import numpy as np
-
 from libmoon.problem.mtl.loaders import Adult, Credit, Compas, MultiMNISTData
 from libmoon.util_global.constant import nadir_point_dict, ideal_point_dict
+
 
 def get_dataset(dataset_name):
     if dataset_name == 'adult':
@@ -20,11 +20,9 @@ def get_dataset(dataset_name):
         raise ValueError('Invalid dataset name')
     return dataset_
 
-
 def get_angle_range(dataset, return_degrees=False):
     p1 = [nadir_point_dict[dataset][0], ideal_point_dict[dataset][1]]
     p2 = [ideal_point_dict[dataset][0], nadir_point_dict[dataset][1]]
-
     th1 = np.arctan2(p1[1], p1[0])
     th2 = np.arctan2(p2[1], p2[0])
     if return_degrees:
@@ -42,13 +40,11 @@ def pref2angle(pref):
         angle = np.arctan2(pref[:,0], pref[:,1])
     return angle
 
-
 def angle2pref(angle):
     if type(angle) == torch.Tensor:
         return torch.squeeze(torch.stack([torch.cos(angle), torch.sin(angle)], dim=1))
     else:
         return np.stack([np.cos(angle), np.sin(angle)], axis=1)
-
 
 def get_mtl_prefs(dataset, n_prob, obj_normalization=True):
     if obj_normalization:

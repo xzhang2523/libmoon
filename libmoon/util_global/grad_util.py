@@ -1,7 +1,5 @@
 
 import torch
-
-
 def get_moo_grad(x, y, n_obj):
     grad_arr = [0] * n_obj
     for obj_idx in range(n_obj):
@@ -19,18 +17,11 @@ def get_moo_Jacobian(x, y, n_obj):
         y[obj_idx].backward(retain_graph=True)
         grad_arr[obj_idx] = x.grad.clone()
         x.grad.zero_()
-
     grad_arr = torch.stack(grad_arr)
     return grad_arr
 
-
-
-
 def flatten_grads(grads_dict):
     return torch.cat( [v.view(-1) for _, v in grads_dict.items()] )
-
-
-
 
 def calc_gradients(batch, model, objectives):
     # store gradients and objective values
@@ -49,7 +40,14 @@ def calc_gradients(batch, model, objectives):
             not_private = all([p not in name for p in private_params])
             if not_private and param.requires_grad and param.grad is not None:
                 gradients[i][name] = param.grad.data.detach().clone()
-
     return gradients, obj_values
+
+
+
+def numel(model):
+    if type(model) == dict:
+        return sum(p.numel() for p in model.values() if p.requires_grad)
+    else:
+        return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 

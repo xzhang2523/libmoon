@@ -12,7 +12,6 @@
 
 Star and fork us on GitHub — it motivates us a lot!
 
-
 ## Main Contributors
 
 | **Name**           | **Institution** | **Role**                              |
@@ -84,14 +83,13 @@ currently:
 <img src="img/supported_methods.png" width="500"></img>
 
 ## Gradient-based MOO Solver
-
-- GradAggSolver
-- EPOSolver
-- MOO-SVGDSolver (*)
-- MGDASolver
-- PMGDASolver
-- PMTLSolver
-- HVGradSolver
+  - GradAggSolver
+  - EPOSolver
+  - MOO-SVGDSolver (*)
+  - MGDASolver
+  - PMGDASolver
+  - PMTLSolver
+  - HVGradSolver
 
 (*) The original MOO-SVGD code does not include an implementation for Multitask Learning (MTL). Our release of MOO-SVGD
 is the first open-source code that supports MTL.

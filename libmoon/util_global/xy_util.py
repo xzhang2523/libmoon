@@ -1,7 +1,5 @@
-
 from libmoon.util_global.constant import max_indicators
 import numpy as np
-
 
 
 def set_indicators_rank(Indicators, indicator_dict_dict_saved, mtd_arr):
@@ -14,7 +12,6 @@ def set_indicators_rank(Indicators, indicator_dict_dict_saved, mtd_arr):
 
         for idx, mtd in enumerate(mtd_arr):
             indicator_dict_dict_saved[mtd]['{}_rank'.format(indicator)] = arg_sort.tolist().index(idx)
-
 
 def get_indicator(problem_name, mtd_name, num_seed, use_save=False):
 

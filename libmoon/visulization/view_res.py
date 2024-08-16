@@ -4,6 +4,8 @@ from libmoon.util_global.constant import FONT_SIZE, root_name
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 
+
+
 def vis_res(res, problem, prefs, args):
     if args.n_obj == 2:
         fig = plt.figure(figsize=(8, 20))
@@ -133,6 +135,11 @@ def vedio_res(res, problem, prefs, args):
 
     if args.use_plt=='Y':
         plt.show()
+
+
+
+if __name__ == '__main__':
+    pass
 
 
 

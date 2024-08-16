@@ -3,9 +3,6 @@ from torch import nn
 from libmoon.util_global.constant import get_param_num
 import torch.nn.functional as F
 
-
-
-
 class HyperNet(nn.Module):
     def __init__(self,
         kernel_size,
@@ -180,4 +177,3 @@ if __name__ == '__main__':
     model_num = get_param_num(hyper_model)   #model num: 3,186,850. It is too large, unacceptable.
     print('model_num', model_num)
     out_dict = hyper_model(prefs)
-    # print()

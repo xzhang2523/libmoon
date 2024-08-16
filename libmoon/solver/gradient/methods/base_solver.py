@@ -7,8 +7,6 @@ from tqdm import tqdm
 from pymoo.indicators.hv import HV
 import numpy as np
 
-
-
 class GradBaseSolver:
     def __init__(self, step_size, n_iter, tol):
         self.step_size = step_size
@@ -25,6 +23,8 @@ class GradBaseSolver:
         '''
         # The abstract class cannot be implemented directly.
         raise NotImplementedError
+
+
 
 class GradAggSolver(GradBaseSolver):
     def __init__(self, problem, step_size, n_iter, tol, agg):

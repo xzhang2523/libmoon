@@ -14,11 +14,8 @@ class RE21(mop):
         self.n_cons = 0
 
         self.n_original_constraints = 0
-
         self.ideal = array([1237.8414230005742, 0.002761423749158419])
-        # self.nadir = array([2086.36956042, 0.00341421356237])
         self.nadir = np.array([2886.3695604236013, 0.039999999999998245])
-
         F = 10.0
         sigma = 10.0
         tmp_val = F / sigma

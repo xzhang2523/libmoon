@@ -8,16 +8,14 @@ from tqdm import tqdm
 from pymoo.indicators.hv import HV
 from matplotlib import pyplot as plt
 import numpy as np
-
 from libmoon.solver.pfl.model.simple import PFLModel
 from torch import nn
 criterion = nn.MSELoss()
-
 from libmoon.util_global.weight_factor import uniform_pref
-from libmoon.metrics.metrics import compute_MMS
+from libmoon.metrics.metrics import compute_lmin
 import os
-
 from libmoon.util_mtl.util import pref2angle, angle2pref
+
 
 
 

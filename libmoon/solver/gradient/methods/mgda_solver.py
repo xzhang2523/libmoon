@@ -17,8 +17,7 @@ from pymoo.indicators.hv import HV
     2. Sener, Ozan, and Vladlen Koltun. "Multi-task learning as multimnist-objective optimization." Advances in neural information processing systems 31 (2018).
 '''
 
-
-class MGDASolver(GradBaseSolver):
+class MGDAUBSolver(GradBaseSolver):
     def __init__(self, step_size, max_iter, tol):
         super().__init__(step_size, max_iter, tol)
 

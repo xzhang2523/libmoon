@@ -145,12 +145,11 @@ def solve_epo(grad_arr, losses, pref, epo_lp):
     return torch.Tensor(gw), alpha
 
 
-
-
 class EPOSolver(GradBaseSolver):
     def __init__(self, problem, step_size, n_iter, tol):
         self.problem = problem
         super().__init__(step_size, n_iter, tol)
+
     def solve(self, x, prefs):
         n_obj, n_var, n_prob = self.problem.n_obj, self.problem.n_var, len(prefs)
         x = Variable(x, requires_grad=True)

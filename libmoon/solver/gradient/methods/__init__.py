@@ -1,5 +1,5 @@
 from libmoon.solver.gradient.methods.base_solver import GradAggSolver
-from libmoon.solver.gradient.methods.mgda_solver import MGDASolver
+from libmoon.solver.gradient.methods.mgda_solver import MGDAUBSolver
 from libmoon.solver.gradient.methods.gradhv import GradHVSolver
 from libmoon.solver.gradient.methods.pmtl import PMTLSolver
 from libmoon.solver.gradient.methods.epo_solver import EPOSolver

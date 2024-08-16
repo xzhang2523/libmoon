@@ -1,5 +1,5 @@
 """
-The class HvMaximization is based on the algorithm described by
+The class HVMaxSolver is based on the algorithm described by
 Wang, Hao, et al.
 "Hypervolume metrics gradient ascent multimnist-objective optimization."
 International conference on evolutionary multimnist-criterion optimization. Springer, Cham, 2017.
@@ -14,7 +14,7 @@ from pymoo.indicators.hv import HV
 from libmoon.util_global.constant import solution_eps, get_hv_ref
 
 """
-The class HvMaximization is based on the algorithm described by
+The class HVMaxSolver is based on the algorithm described by
 Wang, Hao, et al.
 "Hypervolume metrics gradient ascent multi-objective optimization."
 International conference on evolutionary multi-criterion optimization. Springer, Cham, 2017.
@@ -27,7 +27,7 @@ from libmoon.solver.gradient.methods.hv_grad.functions_evaluation import fastNon
 from libmoon.solver.gradient.methods.hv_grad.functions_hv_grad_3d import grad_multi_sweep_with_duplicate_handling
 
 
-class HvMaximization(object):
+class HVMaxSolver(object):
     """
     Mo optimizer for calculating dynamic weights using higamo style hv maximization
     based on Hao Wang et al.'s HIGA-MO
@@ -35,7 +35,7 @@ class HvMaximization(object):
     """
 
     def __init__(self, n_mo_sol, n_mo_obj, ref_point, obj_space_normalize=True):
-        super(HvMaximization, self).__init__()
+        super(HVMaxSolver, self).__init__()
         self.name = 'hv_maximization'
         self.ref_point = np.array(ref_point)
         self.n_mo_sol = n_mo_sol
@@ -86,7 +86,7 @@ class GradHVSolver(GradBaseSolver):
         if args.n_obj != 2:
             assert False, 'hvgrad only supports 2 obj problem'
 
-        hv_maximizer = HvMaximization(args.n_prob, args.n_obj, get_hv_ref(args.problem_name))
+        hv_maximizer = HVMaxSolver(args.n_prob, args.n_obj, get_hv_ref(args.problem_name))
 
 
         x = Variable(x, requires_grad=True)

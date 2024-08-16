@@ -32,7 +32,8 @@ def compute_soft_lmin(solutions):
         sp = - np.log( np.sum( np.exp( -K * off_diag ) ) ) / K
     return sp
 
-def compute_sparsity_mit( objs ):
+
+def compute_sparsity( objs ):
     '''
         objs: objective arrays
     '''
@@ -97,7 +98,7 @@ def compute_indicators(objs, prefs):
     lmin = compute_lmin(objs)
     soft_lmin = compute_soft_lmin(objs)
     spacing = compute_spacing(objs)
-    sparsity = compute_sparsity_mit(objs)
+    sparsity = compute_sparsity(objs)
     hv = compute_hv(objs)
     inner_product = compute_inner_product(objs, prefs)
     cross_angle = compute_cross_angle(objs, prefs)

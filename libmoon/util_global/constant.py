@@ -176,3 +176,7 @@ import seaborn as sns
 color_arr = sns.color_palette() + ['blue', 'red', 'green', 'orange', 'purple', 'brown', 'pink', 'grey', 'black', 'yellow']
 marker_arr = ['o', 'x', '+', 'v', 's', 'p', 'D', 'h', '8', '1']
 
+
+plt_2d_pickle_size = 18
+plt_2d_marker_size = 10
+

@@ -2,18 +2,10 @@
 .git/
 .vscode/
 .idea/
-script/
 output/
-
-TETCI/
-NeurIPS/
-
-
 
 *.iml
 *.ipynb_checkpoints/
-
-
 
 # Ignore compiled and built files
 *.pyc
@@ -35,24 +27,15 @@ libmoon/problem/mtl/mtl_data/multimnist/
 *.pickle
 *.pkl
 *.pdf
-
 # Ignore OS and editor-specific files
 .DS_Store
 Thumbs.db
 .desktop
 *.swp
-
 # Ignore sensitive or private information
 config.ini
 secrets.txt
-
 # Ignore temporary files
 *.tmp
 *.bak
-#*.mp4
 
-# Ignore documentation and build artifacts
-docs/
-build/
-dist/
-tetci/

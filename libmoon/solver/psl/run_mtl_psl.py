@@ -16,8 +16,6 @@ import pickle
 from libmoon.util_global.grad_util import numel
 from time import time
 
-
-
 if __name__ == '__main__':
     parse = argparse.ArgumentParser()
     parse.add_argument('--n-epoch', type=int, default=10)

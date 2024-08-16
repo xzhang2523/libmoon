@@ -91,7 +91,6 @@ scale_dict = {
 }
 
 
-
 def get_hv_ref(problem_name):
     # return nadir_point_dict[problem_name] + 1e-2
     hv_ref_dict = {
@@ -110,16 +109,7 @@ def get_hv_ref(problem_name):
         n_obj = problem.n_obj
         return np.ones(n_obj) * 1.2
 
-# def get_hv_ref_dict(problem_name):
-#     if problem_name.startswith('ZDT'):
-#         ref = array([1.0, 1.0])
-#     else:
-#         ref = nadir_point_dict[problem_name]
-#     return ref + 1e-2
-
 root_name = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-
-# print('root_name:', root_name)
 
 def is_pref_based(mtd):
     if mtd in ['epo', 'mgda', 'agg', 'pmgda']:

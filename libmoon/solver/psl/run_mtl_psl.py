@@ -29,9 +29,11 @@ if __name__ == '__main__':
     parse.add_argument('--dataset', type=str, default='fashion')
     parse.add_argument('--solver', type=str, default='agg')
     parse.add_argument('--agg', type=str, default='ls')
-    parse.add_argument('--device', type=str, default='cpu')
+    parse.add_argument('--device-name', type=str, default='cpu')
     parse.add_argument('--ray-hidden', type=int, default=100)
     args = parse.parse_args()
+    from libmoon.util_global.constant import root_name
+
     agg_func = get_agg_func(args.agg)
     if args.solver == 'agg':
         args.task_name = '{}_{}'.format(args.solver, args.agg)
@@ -41,22 +43,17 @@ if __name__ == '__main__':
     print('Training...')
     print('Task name: {}'.format(args.task_name))
     print('Dataset:{}'.format(args.dataset))
-    print('Device:{}'.format(args.device))
-
-
+    print('Device:{}'.format(args.device_name))
     dataset = MultiMNISTData(args.dataset, 'train')
     loader = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size, shuffle=True,
                                          num_workers=0)
     dataset_test = MultiMNISTData('mnist', 'test')
     loader_test = torch.utils.data.DataLoader(dataset_test, batch_size=args.batch_size, shuffle=True,
                                               num_workers=0)
-
-    if args.device == 'cpu':
+    if args.device_name == 'cpu':
         args.device = torch.device("cpu")
     else:
         args.device = torch.device("cuda")
-
-
     if args.model == 'lenet':
         hnet = HyperNet([9, 5])
         net = LeNetTarget([9, 5])
@@ -94,16 +91,13 @@ if __name__ == '__main__':
             loss_history.append(loss_item)
             optimizer.step()
 
-    print('Training time: {}'.format(time() - ts))
-
-    from libmoon.util_global.constant import root_name
+    running_time = np.round((time() - ts) /6,2)
     import os
 
-    save_dir = os.path.join(root_name, 'output', 'psl', 'mtl', args.dataset, args.task_name)
+    save_dir = os.path.join(root_name, 'Output', 'psl', 'mtl', args.dataset, args.task_name, args.device)
     os.makedirs(save_dir, exist_ok=True)
 
     fig = plt.figure()
-
     plt.plot(np.array(loss_history))
     plt.xlabel('Iteration', fontsize=18)
     plt.ylabel('Hypernet loss', fontsize=18)
@@ -149,10 +143,17 @@ if __name__ == '__main__':
     save_fig_name = os.path.join(save_dir, 'loss_ray.pdf')
     plt.savefig(save_fig_name)
     print('save to {}'.format(save_fig_name))
+
+
     pickle_name = os.path.join(save_dir, 'res.pickle')
     with open(pickle_name, 'wb') as f:
         pickle.dump({
             'loss_history': loss_history,
-            'loss_ray': loss_ray_np
+            'loss_ray': loss_ray_np,
+            'running_time': running_time
         }, f)
     print('Pickle saved to {}'.format(pickle_name))
+
+    txt_name = os.path.join(save_dir, 'running_time.txt')
+    with open(txt_name, 'w') as f:
+        f.write('Running time: {} s'.format(running_time))

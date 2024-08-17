@@ -1,11 +1,9 @@
 import torch
 import os
 import pandas as pd
-
 from datetime import datetime
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-
 
 def load_dataset(path, s_label):
 
@@ -36,8 +34,6 @@ def load_dataset(path, s_label):
 
     # data['length_of_stay'] = data['length_of_stay'].astype('timedelta64[h]')  # modified by xz, 11.6
     data['length_of_stay'] = data['length_of_stay'].dt.days
-
-
     data = data.drop(['c_jail_in', 'c_jail_out'], axis=1)
 
     # encode sex

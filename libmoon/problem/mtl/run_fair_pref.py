@@ -1,3 +1,5 @@
+
+
 import matplotlib.pyplot as plt
 from torch.utils import data
 from libmoon.problem.mtl.loaders import Adult, Credit, Compas
@@ -13,7 +15,6 @@ from libmoon.util_global.constant import color_arr, normalize_vec, get_agg_func
 from libmoon.util_global.grad_util import calc_gradients, flatten_grads
 import os
 from libmoon.util_global.constant import root_name
-
 
 if __name__ == '__main__':
     if torch.cuda.is_available():
@@ -45,17 +46,21 @@ if __name__ == '__main__':
                                       '{}'.format(args.seed))
     os.makedirs(output_folder_name, exist_ok=True)
     args.output_folder_name = output_folder_name
-
     if args.solver == 'uniform':
         from libmoon.solver.gradient.methods.core_solver import CoreUniform
         core_uniform = CoreUniform()
 
     print( '{} on {}'.format(args.task_name, args.dataset) )
-    dataset_dict = {'adult':Adult(split="train"), 'credit':Credit(split="train"), 'compass':Compas(split="train")}
+    dataset_dict = {'adult':Adult(split="train"),
+                    'credit':Credit(split="train"),
+                    'compass':Compas(split="train")}
+
     dataset = dataset_dict[args.dataset]
+
     setting_dict = {'adult':adult_setting,
                     'credit':credit_setting,
                     'compass':compass_setting}
+
     settings = setting_dict[args.dataset]
     trainloader = data.DataLoader(dataset, batch_size=args.batch_size, num_workers=0)
     obj_arr = from_name(settings['objectives'], dataset.task_names())
@@ -170,6 +175,7 @@ if __name__ == '__main__':
     from libmoon.metrics.metrics import compute_indicators
     indicators_dict = compute_indicators(epoch_loss_pref_final)
     indicator_name = os.path.join(output_folder_name, 'indicators.txt')
+
     with open(indicator_name, 'w') as f:
         for k,v in indicators_dict.items():
             f.write('{}: {}\n'.format(k, v))

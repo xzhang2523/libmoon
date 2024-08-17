@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from libmoon.solver.gradient.methods.mgda_core import solve_mgda
+from libmoon.solver.gradient.methods.core.mgda_core import solve_mgda
 from libmoon.solver.gradient.methods.epo_solver import EPO_LP
 import torch
 from libmoon.solver.gradient.methods.gradhv import HVMaxSolver
@@ -13,12 +13,9 @@ from torch import nn
 from libmoon.solver.gradient.methods.uniform_solver import train_pfl_model
 from torch.autograd import Variable
 from torch.optim import SGD
-from libmoon.metrics.metrics import compute_lmin
 from libmoon.util_mtl.util import pref2angle, angle2pref, get_angle_range
 from tqdm import tqdm
 import os
-
-
 
 class CoreHVGrad:
     '''

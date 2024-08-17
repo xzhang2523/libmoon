@@ -11,18 +11,17 @@ import argparse
 import torch
 import numpy as np
 from tqdm import tqdm
-from libmoon.util_global.weight_factor import uniform_pref
-from libmoon.util_global.constant import get_agg_func, color_arr, normalize_vec
+from libmoon.util_global.constant import get_agg_func, normalize_vec
 from libmoon.util_global.grad_util import calc_gradients, flatten_grads
 
 import os
 from libmoon.util_global.constant import root_name
 from libmoon.util_mtl.util import get_dataset
 
-from libmoon.solver.gradient.methods.core_solver import CorePMGDA
+from libmoon.solver.gradient.methods.core.core_solver_bk import CorePMGDA
 from libmoon.solver.gradient.methods.pmgda_core import get_nn_pmgda_componets
 
-from libmoon.solver.gradient.methods.core_solver import CoreEPO
+from libmoon.solver.gradient.methods.core.core_solver_bk import CoreEPO
 
 
 class MTL_Solver:
@@ -97,7 +96,7 @@ class MTL_Solver:
                             core_epo = CoreEPO(pref)
                             alpha = torch.Tensor(core_epo.get_alpha(Jacobian, loss_vec))
                         elif self.solver == 'mgda':
-                            from libmoon.solver.gradient.methods.core_solver import CoreMGDA
+                            from libmoon.solver.gradient.methods.core.core_solver_bk import CoreMGDA
                             core_mgda = CoreMGDA()
                             alpha = torch.Tensor(core_mgda.get_alpha(Jacobian))
                         elif self.solver == 'pmgda':

@@ -13,7 +13,7 @@ from libmoon.solver.gradient.methods.uniform_solver import UniformSolver
 
 
 
-from libmoon.solver.gradient.methods.core_solver import CoreAgg, CoreMGDA, CoreEPO, CoreMOOSVGD, CoreHVGrad
+from libmoon.solver.gradient.methods.core.core_solver_bk import CoreAgg, CoreMGDA, CoreEPO, CoreMOOSVGD, CoreHVGrad
 
 def get_core_solver(args, pref=None):
     if args.solver == 'agg':

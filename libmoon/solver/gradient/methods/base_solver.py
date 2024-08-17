@@ -13,7 +13,7 @@ class GradBaseSolver:
         self.n_iter = n_iter
         self.tol = tol
 
-    def solve(self, problem, x, prefs, get_weight_func=None):
+    def solve(self, problem, x, prefs, weight_solver_cls=None):
         '''
             :param problem:
             :param x:
@@ -21,6 +21,7 @@ class GradBaseSolver:
             :return:
                 is a dict with keys: x, y.
         '''
+
         # The abstract class cannot be implemented directly.
         n_prob = len(prefs)
         n_obj = problem.n_obj
@@ -44,7 +45,10 @@ class GradBaseSolver:
                 grad_arr[prob_idx] = torch.stack(grad_arr[prob_idx])
             grad_arr = torch.stack(grad_arr)
             optimizer.zero_grad()
-            weights = get_weight_func()
+
+            if weight_solver_cls.core_name == 'EPOCore':
+                weights = torch.stack([weight_solver_cls.get_alpha(grad_arr[idx], y[idx], idx) for idx in range(len(y)) ])
+
             torch.sum(weights * y).backward()
             optimizer.step()
             if 'lbound' in dir(problem):

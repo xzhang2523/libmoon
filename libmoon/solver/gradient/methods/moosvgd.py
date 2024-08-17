@@ -1,6 +1,6 @@
 # Paper: https://openreview.net/pdf?id=S2-j0ZegyrE
 # Paper name: Profiling Pareto Front With Multi-Objective Stein Variational Gradient Descent
-from libmoon.solver.gradient.methods.mgda_core import solve_mgda
+from libmoon.solver.gradient.methods.core.mgda_core import solve_mgda
 from libmoon.solver.gradient.methods.base_solver import GradBaseSolver
 import torch
 import math
@@ -25,9 +25,6 @@ def kernel_functional_rbf(losses):
     kernel_matrix = torch.exp(-pairwise_distance / A*h)  # 5e-6 for zdt1,2,3, zxy, Dec 5, 2023
     return kernel_matrix
 
-
-
-
 def median(tensor):
     """
         torch.median() acts differently from np.median(). We want to simulate numpy implementation.
@@ -49,20 +46,13 @@ def get_svgd_gradient(G, inputs, losses):
     # G shape (n_prob, n_obj, n_var)
     g_w = [0] * n_prob
     # What is gw?
-
     for idx in range(n_prob):
         g_w[idx] = torch.Tensor( solve_mgda(G[idx], return_coeff=False) )
-
     g_w = torch.stack(g_w)  # (n_prob, n_var)
     # See https://github.com/activatedgeek/svgd/issues/1#issuecomment-649235844 for why there is a factor -0.5
-
     kernel = kernel_functional_rbf(losses)
     kernel_grad = -0.5 * torch.autograd.grad(kernel.sum(), inputs, allow_unused=True)[0]   # (n_prob, n_var)
-
-
     gradient = (kernel.mm(g_w) - kernel_grad) / n_prob
-
-
     return gradient
 
 

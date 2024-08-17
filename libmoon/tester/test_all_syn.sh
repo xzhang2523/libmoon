@@ -1,3 +1,12 @@
+seed_num=1
+for seed in {1,...,$seed_num}
+  do
+  for mtd in mgda tche mtche
+  do
+    python run_syn.py --mtd mtd --seed $seed
+  done
+done
 
 
-python run_syn.py
+
+sleep 100

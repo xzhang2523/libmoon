@@ -1,28 +1,24 @@
-import matplotlib.pyplot as plt
 from torch.utils import data
 from libmoon.problem.mtl.objectives import from_name
 from libmoon.problem.mtl.model_utils import model_from_dataset, dim_dict
 from libmoon.problem.mtl.settings import adult_setting, credit_setting, compass_setting, mnist_setting, fashion_setting, fmnist_setting
-from libmoon.solver.gradient.methods.core_solver import CoreUniform
-from libmoon.solver.gradient.methods.core_solver import CoreMGDA
+from libmoon.solver.gradient.methods.core.core_solver_bk import CoreUniform
+from libmoon.solver.gradient.methods.core.core_solver_bk import CoreMGDA
 
 
 import argparse
 import torch
 import numpy as np
 from tqdm import tqdm
-from libmoon.util_global.weight_factor import uniform_pref
-from libmoon.util_global.constant import get_agg_func, color_arr, normalize_vec
+from libmoon.util_global.constant import get_agg_func, normalize_vec
 from libmoon.util_global.grad_util import calc_gradients, flatten_grads
 
-import os
-from libmoon.util_global.constant import root_name
 from libmoon.util_mtl.util import get_dataset
 
-from libmoon.solver.gradient.methods.core_solver import CorePMGDA
+from libmoon.solver.gradient.methods.core.core_solver_bk import CorePMGDA
 from libmoon.solver.gradient.methods.pmgda_core import get_nn_pmgda_componets
 
-from libmoon.solver.gradient.methods.core_solver import CoreEPO
+from libmoon.solver.gradient.methods.core.core_solver_bk import CoreEPO
 
 
 
@@ -102,16 +98,16 @@ class MTL_Set_Solver:
                         Jacobian = torch.stack([flatten_grads(gradients[idx]) for idx in range(2)])
                         Jacobian_arr.append(Jacobian)
                 if self.solver == 'hvgrad':
-                    from libmoon.solver.gradient.methods.core_solver import CoreHVGrad
+                    from libmoon.solver.gradient.methods.core.core_solver_bk import CoreHVGrad
                     solver = CoreHVGrad(n_prob=self.n_prob, n_obj=2, dataset_name=self.dataset_name)
                     alpha_mat = solver.get_alpha(loss_mat)
                 elif self.solver == 'pmtl':
-                    from libmoon.solver.gradient.methods.core_solver import CorePMTL
+                    from libmoon.solver.gradient.methods.core.core_solver_bk import CorePMTL
                     solver = CorePMTL(pref_mat)
                     is_warmup = self.pmtl_warmup_iter_counter < self.pmtl_warmup_iter
                     alpha_mat = solver.get_alpha(Jacobian_arr=Jacobian_arr, loss_mat=loss_mat, is_warmup=is_warmup)
                 elif self.solver == 'moosvgd':
-                    from libmoon.solver.gradient.methods.core_solver import CoreMOOSVGD
+                    from libmoon.solver.gradient.methods.core.core_solver_bk import CoreMOOSVGD
                     solver = CoreMOOSVGD(n_prob=self.n_prob)
                     alpha_mat = solver.get_alpha(Jacobian_arr, loss_mat)
                 for k in range(self.n_prob):

@@ -2,21 +2,19 @@
     Copyright (c) Xiaoyuan Zhang, City University of Hong Kong
     This script is to design the core mgda functions.
 '''
-
-
 import torch
 from numpy import array
 import numpy as np
 from cvxopt import matrix, solvers
 solvers.options['show_progress'] = False
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 def solve_mgda_analy(grad_1, grad_2, return_coeff = False):
     '''
         Noted that, solve_mgda_analy only support 2-objective case.
         grad_i.shape: (n,).
         This function support grad_i as both Tensor and numpy.
     '''
-
     v1v1 = grad_1 @ grad_1
     v2v2 = grad_2 @ grad_2
     v1v2 = grad_1 @ grad_2
@@ -36,7 +34,6 @@ def solve_mgda_analy(grad_1, grad_2, return_coeff = False):
     else:
         return gw
 
-
 def solve_mgda(G, return_coeff=False):
     '''
         input G: (m,n).
@@ -45,8 +42,6 @@ def solve_mgda(G, return_coeff=False):
     '''
     # if type(G) == torch.Tensor:
     #     G = G.detach().cpu().numpy().copy()
-
-
     m = G.shape[0]
     if m == 2:
         return solve_mgda_analy(G[0], G[1], return_coeff=return_coeff)

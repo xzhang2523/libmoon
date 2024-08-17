@@ -5,7 +5,7 @@ import numpy as np
 from torch.autograd import Variable
 from tqdm import tqdm
 from libmoon.util_global.constant import solution_eps
-from libmoon.solver.gradient.methods.mgda_core import solve_mgda
+from libmoon.solver.gradient.methods.core.mgda_core import solve_mgda
 
 
 def get_d_moomtl(grads):

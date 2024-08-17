@@ -21,8 +21,8 @@ from matplotlib import pyplot as plt
     2. Sener, Ozan, and Vladlen Koltun. "Multi-task learning as multimnist-objective optimization." Advances in neural information processing systems 31 (2018).
 '''
 # class MGDAUBSolver(GradBaseSolver):
-#     def __init__(self, step_size, max_iter, tol):
-#         super().__init__(step_size, max_iter, tol)
+#     def __init__(self, step_size, n_iter, tol):
+#         super().__init__(step_size, n_iter, tol)
 #
 #     def solve(self, problem, x, prefs, args):
 #         x = Variable(x, requires_grad=True)
@@ -30,7 +30,7 @@ from matplotlib import pyplot as plt
 #         ind = HV(ref_point=get_hv_ref(args.problem_name))
 #         hv_arr = []
 #         y_arr = []
-#         for i in tqdm(range(self.max_iter)):
+#         for i in tqdm(range(self.n_iter)):
 #             grad_arr = [0] * args.n_prob
 #             y = problem.evaluate(x)
 #             y_np = y.detach().numpy()
@@ -59,11 +59,14 @@ from matplotlib import pyplot as plt
 #
 #         return res
 class MGDAUBSolver(GradBaseSolver):
-    def __init__(self, step_size, max_iter, tol):
-        super().__init__(step_size, max_iter, tol)
+    def __init__(self, step_size, n_iter, tol, problem, prefs):
+        super().__init__(step_size, n_iter, tol)
         self.weight_solver_cls = MGDACore()
-    def solve(self, problem, x, prefs):
-        return super().solve(problem, x, prefs, self.weight_solver_cls)
+        self.problem = problem
+        self.prefs = prefs
+
+    def solve(self, x):
+        return super().solve(self.problem, x, self.prefs, self.weight_solver_cls)
 
 
 

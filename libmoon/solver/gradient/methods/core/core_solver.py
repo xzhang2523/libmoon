@@ -52,9 +52,11 @@ class EPO_LP(object):
         self.mu_rl = 0     # Stores the latest non-uniformity
 
 
-    def get_alpha(self, l, G, r=None, C=False, relax=False):
+    def get_alpha(self, l, G, r_in=None, C=False, relax=False):
+        r = r_in.numpy() if type(r_in) == torch.Tensor else r_in
         r = self.r if r is None else r
         assert len(l) == len(G) == len(r) == self.m, "length != m"
+
         rl, self.mu_rl, self.a.value = adjustments(l, r)
         self.C.value = G if C else G @ G.T
         self.Ca.value = self.C.value @ self.a.value
@@ -142,7 +144,7 @@ class EPOCore():
         n_prob = len(prefs)
         n_var = problem.n_var
         n_obj = 2
-        self.epo_lp_arr = [ EPO_LP(m=n_obj,n = n_var, r=1/pref) for pref in prefs ]
+        self.epo_lp_arr = [ EPO_LP(m=n_obj,n = n_var, r=1/pref.numpy()) for pref in prefs ]
 
 
     def get_alpha(self, Jacobian, losses, idx):
@@ -160,8 +162,8 @@ class MGDACore():
     def __init__(self):
         self.core_name = 'MGDACore'
 
-    def get_alpha(self, Jacobian, return_coeff=True):
-        _, alpha = solve_mgda(Jacobian, return_coeff=return_coeff)
+    def get_alpha(self, Jacobian, losses, idx):
+        _, alpha = solve_mgda(Jacobian, return_coeff=True)
         return alpha
 
 

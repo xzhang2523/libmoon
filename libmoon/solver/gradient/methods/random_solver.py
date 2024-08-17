@@ -11,12 +11,15 @@ def get_weight_func():
     return Tensor(np.random.rand(10,2))
 
 class RandomSolver(GradBaseSolver):
-    def __init__(self, step_size, n_iter, tol):
+    def __init__(self, step_size, n_iter, tol, problem, prefs):
         self.step_size = step_size
         self.n_iter = n_iter
         self.tol = tol
-    def solve(self, problem, x, prefs):
-        return super().solve(problem, x, prefs, get_weight_func)
+        self.problem = problem
+        self.prefs = prefs
+
+    def solve(self, x):
+        return super().solve(self.problem, x, self.prefs, get_weight_func)
 
 
 if __name__ == '__main__':

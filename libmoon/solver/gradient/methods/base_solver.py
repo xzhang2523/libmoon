@@ -48,6 +48,9 @@ class GradBaseSolver:
 
             if weight_solver_cls.core_name == 'EPOCore':
                 weights = torch.stack([weight_solver_cls.get_alpha(grad_arr[idx], y[idx], idx) for idx in range(len(y)) ])
+            elif weight_solver_cls.core_name == 'MGDACore':
+                weights = torch.stack([weight_solver_cls.get_alpha(grad_arr[idx], y[idx], idx) for idx in range(len(y)) ])
+
 
             torch.sum(weights * y).backward()
             optimizer.step()

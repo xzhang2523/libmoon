@@ -1,5 +1,4 @@
 import torch
-
 from libmoon.solver.gradient.methods.base_solver import GradBaseSolver
 from torch import Tensor
 import numpy as np
@@ -23,12 +22,7 @@ class RandomSolver(GradBaseSolver):
 if __name__ == '__main__':
     problem = ZDT1(n_var=10)
     solver = RandomSolver(0.1, 100, 1e-6)
-    # x = np.random.rand(30)
     x = torch.rand((10,10))
     pref_1d = torch.linspace(0, 1, 10)
     prefs = torch.stack((pref_1d, 1 - pref_1d), dim=1)
     res = solver.solve(problem, x, prefs)
-    hv_arr = res['hv_arr']
-
-    plt.plot(hv_arr)
-    plt.show()

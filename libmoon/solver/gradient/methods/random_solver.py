@@ -5,8 +5,6 @@ import numpy as np
 from libmoon.problem.synthetic.zdt import ZDT1
 from matplotlib import pyplot as plt
 
-
-
 def get_weight_func():
     return Tensor(np.random.rand(10,2))
 

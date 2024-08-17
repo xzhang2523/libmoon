@@ -1,7 +1,6 @@
 import numpy as np
 import cvxpy as cp
 import cvxopt
-
 from libmoon.solver.gradient.methods.base_solver import GradBaseSolver
 from torch.autograd import Variable
 from tqdm import tqdm
@@ -9,16 +8,10 @@ import torch
 from torch.optim import SGD
 from numpy import array
 from pymoo.indicators.hv import HV
-
 import warnings
 warnings.filterwarnings("ignore")
-
 from libmoon.util_global.constant import solution_eps, get_hv_ref
-
-
 from libmoon.util_global.grad_util import get_moo_grad, get_moo_Jacobian
-
-
 
 
 
@@ -37,14 +30,11 @@ class EPO_LP(object):
         self.C = cp.Parameter((m, m))   # C: Gradient inner products, G^T G
         self.Ca = cp.Parameter(m)       # d_bal^TG
         self.rhs = cp.Parameter(m)      # RHS of constraints for balancing
-
         self.alpha = cp.Variable(m)     # Variable to optimize
-
         obj_bal = cp.Maximize(self.alpha @ self.Ca)   # objective for balance
         constraints_bal = [self.alpha >= 0, cp.sum(self.alpha) == 1,  # Simplex
                            self.C @ self.alpha >= self.rhs]
         self.prob_bal = cp.Problem(obj_bal, constraints_bal)  # LP balance
-
         obj_dom = cp.Maximize(cp.sum(self.alpha @ self.C))  # obj for descent
         constraints_res = [self.alpha >= 0, cp.sum(self.alpha) == 1,  # Restrict
                            self.alpha @ self.Ca >= -cp.neg(cp.max(self.Ca)),
@@ -53,21 +43,16 @@ class EPO_LP(object):
                            self.C @ self.alpha >= 0]
         self.prob_dom = cp.Problem(obj_dom, constraints_res)  # LP dominance
         self.prob_rel = cp.Problem(obj_dom, constraints_rel)  # LP dominance
-
         self.gamma = 0     # Stores the latest Optimum value of the LP problem
         self.mu_rl = 0     # Stores the latest non-uniformity
 
 
     def get_alpha(self, l, G, r=None, C=False, relax=False):
-
         r = self.r if r is None else r
         assert len(l) == len(G) == len(r) == self.m, "length != m"
-
         rl, self.mu_rl, self.a.value = adjustments(l, r)
-
         self.C.value = G if C else G @ G.T
         self.Ca.value = self.C.value @ self.a.value
-
 
         if self.mu_rl > self.eps:
             J = self.Ca.value > 0
@@ -88,19 +73,15 @@ class EPO_LP(object):
                 self.gamma = self.prob_dom.solve(solver=cp.GLPK, verbose=False)
             # self.gamma = self.prob_dom.solve(verbose=False)
             self.last_move = "dom"
-
         return self.alpha.value
 
 
 def mu(rl, normed=False):
-
     # Modified by Xiaoyuan to handle negative issue.
     # if len(np.where(rl < 0)[0]):
     #     raise ValueError(f"rl<0 \n rl={rl}")
     #     return None
-    #
     rl = np.clip(rl, 0, np.inf)
-
     m = len(rl)
     l_hat = rl if normed else rl / rl.sum()
     eps = np.finfo(rl.dtype).eps

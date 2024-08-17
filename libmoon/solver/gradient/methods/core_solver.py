@@ -24,9 +24,8 @@ class CoreHVGrad:
     '''
         Conventions used in this paper. Use _vec to denote a vec, and use _mat to denote a matrix.
     '''
-
     def __init__(self, n_prob, n_obj, dataset_name):
-        self.hv_solver = HvMaximization(n_prob, n_obj, get_hv_ref(dataset_name) )
+        self.hv_solver = HVMaxSolver(n_prob, n_obj, get_hv_ref(dataset_name) )
 
     def get_alpha(self, loss_mat):
         '''

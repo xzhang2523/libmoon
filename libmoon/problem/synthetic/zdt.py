@@ -14,7 +14,6 @@ from libmoon.problem.synthetic.mop import BaseMOP
 
 
 class ZDT1( BaseMOP ):
-
     def __init__(self, n_var=30, n_obj=2):
         lbound = np.zeros(n_var)
         ubound = np.ones(n_var)

@@ -13,16 +13,50 @@ class GradBaseSolver:
         self.n_iter = n_iter
         self.tol = tol
 
-    def solve(self, problem, x, prefs):
+    def solve(self, problem, x, prefs, get_weight_func=None):
         '''
             :param problem:
             :param x:
             :param agg:
             :return:
-                is a dict with keys: x, y
+                is a dict with keys: x, y.
         '''
         # The abstract class cannot be implemented directly.
-        raise NotImplementedError
+        n_prob = len(prefs)
+        n_obj = problem.n_obj
+        x = Variable(x, requires_grad=True)
+        optimizer = SGD([x], lr=self.step_size)
+        ind = HV(ref_point=get_hv_ref(problem.problem_name))
+        hv_arr = []
+        y_arr = []
+        for i in tqdm(range(self.n_iter)):
+            grad_arr = [0] * n_prob
+            y = problem.evaluate(x)
+            y_np = y.detach().numpy()
+            y_arr.append(y_np)
+            hv_arr.append(ind.do(y_np))
+            for prob_idx in range(n_prob):
+                grad_arr[prob_idx] = [0] * n_obj
+                for obj_idx in range( n_obj ):
+                    y[prob_idx][obj_idx].backward(retain_graph=True)
+                    grad_arr[prob_idx][obj_idx] = x.grad[prob_idx].clone()
+                    x.grad.zero_()
+                grad_arr[prob_idx] = torch.stack(grad_arr[prob_idx])
+            grad_arr = torch.stack(grad_arr)
+            optimizer.zero_grad()
+            weights = get_weight_func()
+            torch.sum(weights * y).backward()
+            optimizer.step()
+            if 'lbound' in dir(problem):
+                x.data = torch.clamp(x.data, torch.Tensor(problem.lbound) + solution_eps,
+                                     torch.Tensor(problem.ubound) - solution_eps)
+
+        res = {}
+        res['x'] = x.detach().numpy()
+        res['y'] = y.detach().numpy()
+        res['hv_arr'] = hv_arr
+        res['y_arr'] = y_arr
+        return res
 
 
 
@@ -30,7 +64,6 @@ class GradAggSolver(GradBaseSolver):
     def __init__(self, problem, step_size, n_iter, tol, agg):
         self.agg = agg
         self.problem = problem
-
         super().__init__(step_size, n_iter, tol)
 
 

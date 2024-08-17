@@ -2,7 +2,7 @@ from libmoon.problem.mtl.models import MultiLeNet
 from libmoon.problem.mtl.models import FullyConnected
 
 
-def model_from_dataset(dataset_name, architecture, **kwargs):
+def model_from_dataset(dataset_name, architecture='M1', **kwargs):
     if dataset_name == 'adult':
         return FullyConnected(architecture, **kwargs)
     elif dataset_name == 'credit':

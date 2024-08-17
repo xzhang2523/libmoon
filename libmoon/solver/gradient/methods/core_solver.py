@@ -109,7 +109,6 @@ class CoreMGDA:
 
 class CoreUniform:
     def __init__(self, device, folder_name, dataset_name, uniform_pref_update):
-
         self.device = device
         self.loss_mat_ts_arr = []
         self.pref_mat_ts_arr = []

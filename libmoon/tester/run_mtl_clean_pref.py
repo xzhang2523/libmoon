@@ -5,20 +5,18 @@ from matplotlib import pyplot as plt
 import os
 import argparse
 import torch
-from libmoon.metrics.metrics import compute_inner_product, compute_cross_angle
-from libmoon.metrics.metrics import compute_indicators, compute_hv
-from libmoon.util_global.weight_factor import uniform_pref
+from libmoon.metrics.metrics import compute_inner_product, compute_cross_angle, compute_indicators, compute_hv
 from libmoon.util_global import color_arr
-from libmoon.util_global.constant import beautiful_dict
 import pandas as pd
 import pickle
-from libmoon.util_global.constant import root_name, get_param_num
+from libmoon.util_global.constant import root_name
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+
     parser.add_argument('--architecture', type=str, default='M1')
-    parser.add_argument('--dataset-name', type=str, default='compass')
+    parser.add_argument('--dataset-name', type=str, default='adult')
     parser.add_argument('--PaperName', type=str, default='TETCI')
     parser.add_argument('--solver', type=str, default='pmgda')       # Valid solvers: ['PMTL', 'MOOSVGD', 'HVGrad'].
     parser.add_argument('--agg', type=str, default='cosmos')
@@ -27,10 +25,12 @@ if __name__ == '__main__':
     parser.add_argument('--n-prob', type=int, default=10)
     parser.add_argument('--sigma', type=float, default=0.5)
     parser.add_argument('--cosmos-hp', type=float, default=20.0)
-
-    # Adult dataset has 335 iterations. So 400 epoch has 4 uniform update.
-    # Compass dataset has 210 iterations.
     parser.add_argument('--uniform-update-iter', type=int, default=67500)
+    parser.add_argument('--uniform-pref-update', type=int, default=8000)
+    parser.add_argument('--batch-size', type=int, default=128)
+    parser.add_argument('--lr', type=float, default=1e-3)
+    args = parser.parse_args()
+    print('cosmos-hp: {}'.format(args.cosmos_hp))
 
     uniform_update_iter_dict = {
         'adult': 67500,
@@ -38,14 +38,7 @@ if __name__ == '__main__':
         'compass': 2100,
     }
 
-    parser.add_argument('--uniform-pref-update', type=int, default=8000)
-    parser.add_argument('--batch-size', type=int, default=512)
 
-    parser.add_argument('--lr', type=float, default=1e-3)
-    args = parser.parse_args()
-
-    print('cosmos-hp: {}'.format(args.cosmos_hp))
-    # Here, we should calculate how many update per epoch we have.
     if args.dataset_name == 'credit':
         args.batch_size=128
 
@@ -80,8 +73,8 @@ if __name__ == '__main__':
         task_name = '{}_{}'.format(kwargs['solver'], kwargs['agg'])
     else:
         task_name = kwargs['solver']
-
     np.random.seed(kwargs['seed'])
+
     print('Task name: {} on seed {}'.format(task_name, args.seed))
     print('Dataset:{}'.format(kwargs['dataset_name']))
 

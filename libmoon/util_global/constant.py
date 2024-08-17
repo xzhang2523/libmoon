@@ -11,9 +11,6 @@ FONT_SIZE = 20
 FONT_SIZE_2D = 20
 FONT_SIZE_3D = 20
 
-
-PaperName = 'NeurIPS'
-
 solution_eps = 1e-5
 
 nadir_point_dict = {
@@ -25,6 +22,7 @@ nadir_point_dict = {
     'fmnist': array([0.6, 0.6]),
 }
 
+
 ideal_point_dict = {
     'adult': array([0.3, 0.01]),
     'compass': array([0.04, 0.04]),
@@ -32,8 +30,8 @@ ideal_point_dict = {
     'mnist': array([0.2, 0.2]),
     'fashion': array([0.4, 0.4]),
     'fmnist': array([0.2, 0.4]),
-
 }
+
 
 def normalize_vec(x, problem ):
     ideal = ideal_point_dict[problem]

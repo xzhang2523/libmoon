@@ -7,15 +7,12 @@ import torch
 
 from libmoon.metrics.metrics import compute_inner_product, compute_cross_angle
 from libmoon.metrics.metrics import compute_indicators, compute_hv
-
 from libmoon.util_global.weight_factor import uniform_pref
 from libmoon.util_global import color_arr
 from libmoon.util_mtl.util import get_mtl_prefs
 from libmoon.util_global.constant import beautiful_dict
 import pandas as pd
 import pickle
-
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -66,7 +63,7 @@ if __name__ == '__main__':
                              obj_normalization=kwargs['obj_normalization'])
     res, res_history = mtl_solver.solve(pref_mat)
 
-    folder_name = os.path.join( 'D:\\pycharm_project\\libmoon\\tetci', task_name,
+    folder_name = os.path.join( 'D:\\pycharm_project\\libmoon', task_name,
                                kwargs['architecture'], '{}'.format(args.dataset_name), '{}'.format(args.seed) )
 
     os.makedirs(folder_name, exist_ok=True)

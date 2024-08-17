@@ -18,7 +18,6 @@ def from_name(names, task_names):
     else:
         return [ objectives[n]() for n in names ]
 
-
 class CrossEntropyLoss(torch.nn.CrossEntropyLoss):
     def __init__(self, label_name='labels', logits_name='logits'):
         super().__init__(reduction='mean')
@@ -31,15 +30,11 @@ class CrossEntropyLoss(torch.nn.CrossEntropyLoss):
         res = super().__call__(logits, labels)
         return res
 
-
-
 class BinaryCrossEntropyLoss(torch.nn.BCEWithLogitsLoss):
-
     def __init__(self, label_name='labels', logits_name='logits', pos_weight=None):
         super().__init__(reduction='mean', pos_weight=torch.Tensor([pos_weight]).cuda() if pos_weight else None)
         self.label_name = label_name
         self.logits_name = logits_name
-
     def __call__(self, **kwargs):
         logits = kwargs[self.logits_name]
         labels = kwargs[self.label_name]
@@ -50,11 +45,7 @@ class BinaryCrossEntropyLoss(torch.nn.BCEWithLogitsLoss):
         return super().__call__(logits, labels)
 
 
-
-
-
 class MSELoss(torch.nn.MSELoss):
-
     def __init__(self, label_name='labels'):
         super().__init__()
         self.label_name = label_name
@@ -115,12 +106,10 @@ class DEOHyperbolicTangentRelaxation():
         logits = kwargs[self.logits_name]
         labels = kwargs[self.label_name]
         sensible_attribute = kwargs[self.s_name]
-
         n = logits.shape[0]
         logits = torch.sigmoid(logits)
         s_negative = logits[(sensible_attribute.bool()) & (labels == 1)]
         s_positive = logits[(~sensible_attribute.bool()) & (labels == 1)]
-
         return 1 / n * torch.abs(torch.sum(torch.tanh(self.c * torch.relu(s_positive))) - torch.sum(
             torch.tanh(self.c * torch.relu(s_negative))))
 

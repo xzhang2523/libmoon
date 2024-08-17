@@ -80,10 +80,12 @@ if __name__ == '__main__':
             ax.scatter(pref[0], pref[1], pref[2], color=color_arr[idx], s=40)
         th1 = np.linspace(0, np.pi/2, 100)
         th2 = np.linspace(0, np.pi/2, 100)
+
         theta, phi = np.meshgrid(th1, th2)
         x = np.cos(theta) * np.sin(phi)
         y = np.sin(theta) * np.sin(phi)
         z = np.cos(phi)
+
         ax.plot_surface(x, y, z, alpha=0.3)
         ax.axis('equal')
         ax.view_init(30, 45)

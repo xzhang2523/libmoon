@@ -2,7 +2,6 @@ import numpy as np
 from libmoon.problem.mtl.loaders import Adult, Credit, Compas, MultiMNISTData
 from libmoon.util_global.constant import nadir_point_dict, ideal_point_dict
 
-
 def get_dataset(dataset_name):
     if dataset_name == 'adult':
         dataset_ = Adult(split="train")
@@ -19,6 +18,7 @@ def get_dataset(dataset_name):
     else:
         raise ValueError('Invalid dataset name')
     return dataset_
+
 
 def get_angle_range(dataset, return_degrees=False):
     p1 = [nadir_point_dict[dataset][0], ideal_point_dict[dataset][1]]
@@ -63,16 +63,7 @@ def get_mtl_prefs(dataset, n_prob, obj_normalization=True):
 
 
 if __name__ == '__main__':
-    # dataset = 'adult'
-    # ang1, ang2 = get_angle_range(dataset, return_degrees=True)
-    # print()
-
     prefs = np.array([[1, 0], [0, 1]])
     prefs = torch.Tensor([[1, 0], [0, 1]])
     angle = pref2angle( prefs )
     prefs_out = angle2pref(angle)
-
-    print()
-
-
-

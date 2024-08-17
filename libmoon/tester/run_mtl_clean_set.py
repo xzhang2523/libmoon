@@ -13,15 +13,12 @@ import pickle
 from libmoon.util_global.constant import PaperName, root_name
 
 
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--architecture', type=str, default='M1')
     parser.add_argument('--dataset-name', type=str, default='adult')
-
     # For set problems, valid solvers: ['PMTL', 'MOOSVGD', 'HVGrad'].
-    parser.add_argument('--solver', type=str, default='mgda')
+    parser.add_argument('--solver', type=str, default='moosvgd')
     parser.add_argument('--agg', type=str, default='mtche')
     parser.add_argument('--epoch', type=int, default=3000)
     parser.add_argument('--seed', type=int, default=0)

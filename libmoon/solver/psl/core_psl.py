@@ -6,7 +6,7 @@ from libmoon.solver.psl.model import SimplePSLModel
 
 from torch.autograd import Variable
 from libmoon.util_global import get_problem
-from libmoon.util_global.constant import get_problem, FONT_SIZE, agg_dict
+from libmoon.util_global.constant import get_problem, FONT_SIZE
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 

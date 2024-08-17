@@ -158,7 +158,7 @@ class EPOCore():
 '''
 class MGDACore():
     def __init__(self):
-        pass
+        self.core_name = 'MGDACore'
 
     def get_alpha(self, Jacobian, return_coeff=True):
         _, alpha = solve_mgda(Jacobian, return_coeff=return_coeff)

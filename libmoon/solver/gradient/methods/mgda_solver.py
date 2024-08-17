@@ -76,8 +76,6 @@ if __name__ == '__main__':
     prefs = torch.rand(n_prob, 2)
     res = solver.solve(problem, x, prefs)
     y_arr = res['y']
-
-
     plt.scatter(y_arr[:, 0], y_arr[:, 1])
     plt.show()
 

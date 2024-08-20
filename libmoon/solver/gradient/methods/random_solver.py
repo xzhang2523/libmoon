@@ -4,11 +4,7 @@ from torch import Tensor
 import numpy as np
 from libmoon.problem.synthetic.zdt import ZDT1
 from matplotlib import pyplot as plt
-
 from libmoon.solver.gradient.methods.core.core_solver import RandomCore
-
-# def get_weight_func():
-#     return Tensor(np.random.rand(10,2))
 
 
 class CoreRandom:
@@ -27,11 +23,8 @@ class RandomSolver(GradBaseSolver):
         self.problem = problem
         self.prefs = prefs
         self.solver_cls = RandomCore()
-
-
     def solve(self, x):
         return super().solve(self.problem, x, self.prefs, self.solver_cls)
-
 
 
 

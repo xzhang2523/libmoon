@@ -95,6 +95,11 @@ def compute_cross_angle(sols, prefs):
 
 
 def compute_indicators(objs, prefs):
+    '''
+        Input:
+            objs: objective arrays
+            prefs: preference arrays
+    '''
     lmin = compute_lmin(objs)
     soft_lmin = compute_soft_lmin(objs)
     spacing = compute_spacing(objs)
@@ -105,7 +110,7 @@ def compute_indicators(objs, prefs):
     pbi = compute_pbi(objs, prefs)
     return {
         'lmin': lmin,
-        'soft lmin': soft_lmin,
+        'soft_lmin': soft_lmin,
         'spacing': spacing,
         'sparsity': sparsity,
         'hv': hv,
@@ -113,7 +118,6 @@ def compute_indicators(objs, prefs):
         'cross_angle': cross_angle,
         'pbi': pbi
     }
-
 
 if __name__ == '__main__':
     objs = np.random.rand(100, 2)

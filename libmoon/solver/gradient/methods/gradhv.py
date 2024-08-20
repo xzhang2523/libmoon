@@ -8,17 +8,17 @@ International conference on evolutionary multimnist-criterion optimization. Spri
 from libmoon.solver.gradient.methods.base_solver import GradBaseSolver
 from torch.autograd import Variable
 
-
 from tqdm import tqdm
 from pymoo.indicators.hv import HV
 from libmoon.util_global.constant import solution_eps, get_hv_ref
 
 """
-The class HVMaxSolver is based on the algorithm described by
-Wang, Hao, et al.
-"Hypervolume metrics gradient ascent multi-objective optimization."
-International conference on evolutionary multi-criterion optimization. Springer, Cham, 2017.
+    The class HVMaxSolver is based on the algorithm described by
+    Wang, Hao, et al.
+    "Hypervolume metrics gradient ascent multi-objective optimization."
+    International conference on evolutionary multi-criterion optimization. Springer, Cham, 2017.
 """
+
 
 import numpy as np
 import torch

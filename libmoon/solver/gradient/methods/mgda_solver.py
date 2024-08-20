@@ -11,7 +11,7 @@ from libmoon.util_global.constant import solution_eps, get_hv_ref
 from pymoo.indicators.hv import HV
 
 from libmoon.problem.synthetic import ZDT1, ZDT2
-from libmoon.solver.gradient.methods.core.core_solver import MGDACore
+from libmoon.solver.gradient.methods.core.core_solver import MGDAUBCore
 from matplotlib import pyplot as plt
 
 
@@ -61,7 +61,7 @@ from matplotlib import pyplot as plt
 class MGDAUBSolver(GradBaseSolver):
     def __init__(self, step_size, n_iter, tol, problem, prefs):
         super().__init__(step_size, n_iter, tol)
-        self.weight_solver_cls = MGDACore()
+        self.weight_solver_cls = MGDAUBCore()
         self.problem = problem
         self.prefs = prefs
     def solve(self, x):

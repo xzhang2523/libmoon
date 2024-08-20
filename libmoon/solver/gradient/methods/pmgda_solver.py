@@ -53,10 +53,8 @@ class PMGDASolver(GradBaseSolver):
             for prob_idx in range( n_prob ):
                 Jacobian = torch.autograd.functional.jacobian(lambda ph: self.problem.evaluate(ph).squeeze(),
                                                               x[prob_idx].unsqueeze(0))
-
                 Jacobian = torch.squeeze(Jacobian)
                 pref = prefs[prob_idx]
-
                 # (Step 2). Get the gradient of the constraint.
                 h = constraint( y[prob_idx].unsqueeze(0), pref=pref)
                 h.backward(retain_graph=True)

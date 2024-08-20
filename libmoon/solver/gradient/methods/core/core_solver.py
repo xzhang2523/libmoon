@@ -133,18 +133,11 @@ def solve_epo(Jacobian, losses, pref, epo_lp):
 
 
 class EPOCore():
-    # def __init__(self,n_var):
-    #     # pass
-    #     self.n_var = n_var
-    # def set_prefs(self, prefs):
-    #     self.n_obj = 2
-        # self.epo_lp_arr = [EPO_LP(m=n_obj, n=n_var, r=1 / pref.cpu().numpy()) for pref in prefs]
-
     def __init__(self, n_var, prefs):
         '''
             Input:
+            n_var: int, number of variables.
             prefs: (n_prob, n_obj).
-            problem: Problem class.
         '''
         self.core_name = 'EPOCore'
         self.prefs = prefs
@@ -153,7 +146,6 @@ class EPOCore():
         prefs_np = prefs.cpu().numpy() if type(prefs) == torch.Tensor else prefs
         self.epo_lp_arr = [EPO_LP(m=self.n_obj, n = self.n_var, r=1/pref) for pref in prefs_np]
 
-
     def get_alpha(self, Jacobian, losses, idx):
         alpha = solve_epo(Jacobian, losses, self.prefs[idx], self.epo_lp_arr[idx])
         return torch.Tensor(alpha)
@@ -161,16 +153,17 @@ class EPOCore():
 '''
     MGDASolver. 
 '''
-class MGDACore():
-    def __init__(self):
-        self.core_name = 'MGDACore'
+class MGDAUBCore():
+    def __init__(self, n_var, prefs):
+        self.core_name = 'MGDAUBCore'
 
     def get_alpha(self, Jacobian, losses, idx):
         _, alpha = solve_mgda(Jacobian, return_coeff=True)
         return alpha
 
+
 class RandomCore():
-    def __init__(self):
+    def __init__(self, n_var, prefs):
         self.core_name = 'RandomCore'
 
     def get_alpha(self, Jacobian, losses, idx):

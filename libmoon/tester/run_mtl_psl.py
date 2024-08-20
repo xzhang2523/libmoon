@@ -39,6 +39,7 @@ def plot_train():
     plt.savefig(save_fig_name)
     print('save to {}'.format(save_fig_name))
 
+
 if __name__ == '__main__':
     parse = argparse.ArgumentParser()
     parse.add_argument('--n-epoch', type=int, default=10)

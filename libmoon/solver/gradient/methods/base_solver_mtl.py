@@ -4,6 +4,8 @@ import argparse
 
 
 from libmoon.util_global.weight_factor import uniform_pref
+from libmoon.solver.gradient.methods.core.core_solver import EPOCore
+
 
 class BaseSolverMTL:
     def __init__(self):

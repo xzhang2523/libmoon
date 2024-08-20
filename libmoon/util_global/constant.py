@@ -145,7 +145,7 @@ beautiful_dict = {
     'awa': 'AWA',
     # For Gradient use.
     'epo': 'EPO',
-    'mgda': 'MGDA',
+    'mgdaub': 'MGDA-UB',
     'pmgda': 'PMGDA',
     'agg-ls': 'AGG-LS',
     'uniform': 'UMOD',
@@ -156,6 +156,7 @@ beautiful_dict = {
     'agg_pbi': 'Agg-PBI',
     'hvgrad': 'HVGrad',
     'pmtl': 'PMTL',
+    'random' : 'Random'
 }
 
 all_mtd_arr = ['epo', 'pmgda', 'agg_ls', 'agg_tche', 'agg_mtche', 'agg_cosmos', 'agg_pbi', 'hvgrad', 'uniform', 'pmtl']
@@ -165,6 +166,8 @@ color_arr = sns.color_palette() + ['blue', 'red', 'green', 'orange', 'purple', '
 marker_arr = ['o', 'x', '+', 'v', 's', 'p', 'D', 'h', '8', '1']
 
 
-plt_2d_pickle_size = 18
+plt_2d_pickle_size = 16
 plt_2d_marker_size = 10
+plt_2d_label_size = 20
+
 

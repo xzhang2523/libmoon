@@ -7,13 +7,18 @@ from tqdm import tqdm
 from pymoo.indicators.hv import HV
 import numpy as np
 
-class GradBaseSolver:
-    def __init__(self, step_size, n_iter, tol):
-        self.step_size = step_size
-        self.n_iter = n_iter
-        self.tol = tol
+from libmoon.util_global.grad_util import get_moo_Jacobian_batch
 
-    def solve(self, problem, x, prefs, weight_solver_cls=None):
+
+
+class GradBaseSolver:
+    def __init__(self, step_size, epoch, tol, core_solver):
+        self.step_size = step_size
+        self.epoch = epoch
+        self.tol = tol
+        self.core_solver = core_solver
+
+    def solve(self, problem, x , prefs):
         '''
             :param problem:
             :param x:
@@ -22,41 +27,32 @@ class GradBaseSolver:
                 is a dict with keys: x, y.
         '''
         # The abstract class cannot be implemented directly.
-        n_prob = len(prefs)
-        n_obj = problem.n_obj
-        x_var = Variable(x, requires_grad=True)
-        optimizer = SGD([x_var], lr=self.step_size)
+        self.n_prob, self.n_obj = prefs.shape[0], prefs.shape[1]
+
+        xs_var = Variable(x, requires_grad=True)
+        optimizer = SGD([xs_var], lr=self.step_size)
         ind = HV(ref_point=get_hv_ref(problem.problem_name))
-        hv_arr = []
-        y_arr = []
-        for i in tqdm(range(self.n_iter)):
-            grad_arr = [0] * n_prob
-            y = problem.evaluate(x_var)
-            y_np = y.detach().numpy()
+        hv_arr, y_arr = [], []
+        for iter_idx in tqdm(range(self.epoch)):
+            fs_var = problem.evaluate(xs_var)
+            y_np = fs_var.detach().numpy()
             y_arr.append(y_np)
             hv_arr.append(ind.do(y_np))
-            for prob_idx in range(n_prob):
-                grad_arr[prob_idx] = [0] * n_obj
-                for obj_idx in range( n_obj ):
-                    y[prob_idx][obj_idx].backward(retain_graph=True)
-                    grad_arr[prob_idx][obj_idx] = x.grad[prob_idx].clone()
-                    x.grad.zero_()
-                grad_arr[prob_idx] = torch.stack(grad_arr[prob_idx])
-            grad_arr = torch.stack(grad_arr)
+            Jacobian_arr = get_moo_Jacobian_batch(xs_var, fs_var, self.n_obj)
+            y_detach = fs_var.detach()
             optimizer.zero_grad()
-            if weight_solver_cls.core_name in ['EPOCore', 'MGDACore', 'RandomCore']:
-                weights = torch.stack([weight_solver_cls.get_alpha(grad_arr[idx], y[idx], idx) for idx in range(len(y)) ])
+            if self.core_solver.core_name in ['EPOCore', 'MGDAUBCore', 'RandomCore']:
+                weights = torch.stack([self.core_solver.get_alpha(Jacobian_arr[idx], y_detach[idx], idx) for idx in range( self.n_prob) ])
             else:
                 assert False, 'Unknown core_name'
-
-            torch.sum(weights * y).backward()
+            torch.sum(weights * fs_var).backward()
             optimizer.step()
             if 'lbound' in dir(problem):
                 x.data = torch.clamp(x.data, torch.Tensor(problem.lbound) + solution_eps,
                                      torch.Tensor(problem.ubound) - solution_eps)
         res = {}
         res['x'] = x.detach().numpy()
-        res['y'] = y.detach().numpy()
+        res['y'] = y_np
         res['hv_arr'] = hv_arr
         res['y_arr'] = y_arr
         return res
@@ -64,10 +60,10 @@ class GradBaseSolver:
 
 
 class GradAggSolver(GradBaseSolver):
-    def __init__(self, problem, step_size, n_iter, tol, agg):
+    def __init__(self, problem, step_size, epoch, tol, agg):
         self.agg = agg
         self.problem = problem
-        super().__init__(step_size, n_iter, tol)
+        super().__init__(step_size, epoch, tol)
 
     def solve(self, x, prefs):
         x = Variable(x, requires_grad=True)
@@ -79,7 +75,7 @@ class GradAggSolver(GradBaseSolver):
         optimizer = SGD([x], lr=self.step_size)
         agg_func = get_agg_func(self.agg)
         res = {}
-        for i in tqdm(range(self.n_iter)):
+        for i in tqdm(range(self.epoch)):
             y = self.problem.evaluate(x)
             hv_arr.append(ind.do(y.detach().numpy()))
             agg_val = agg_func(y, prefs)

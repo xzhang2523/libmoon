@@ -66,8 +66,6 @@ class BasePSLSolver:
             #     loss.backward()
             #     optimizer.step()
             # else:
-
-
             if self.is_agg:
                 agg_func = get_agg_func(self.agg)
                 g = agg_func(fs, prefs)

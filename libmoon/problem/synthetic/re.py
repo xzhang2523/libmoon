@@ -1,6 +1,8 @@
 
 import numpy as np
 import torch
+from torch import Tensor
+
 from libmoon.problem.synthetic.mop import BaseMOP
 from numpy import array
 
@@ -300,7 +302,6 @@ class RE31(BaseMOP):
         self.n_var = n_var
         self.n_cons = 0
         self.n_original_constraints = 3
-
         self.ubound = np.zeros(self.n_var)
         self.lbound = np.zeros(self.n_var)
         self.lbound[0] = 0.00001
@@ -309,37 +310,31 @@ class RE31(BaseMOP):
         self.ubound[0] = 100.0
         self.ubound[1] = 100.0
         self.ubound[2] = 3.0
-
         self.ideal = np.array([5.53731918799e-05, 0.333333333333, 0.0])
         self.nadir = np.array([500.002668442, 8246211.25124, 19359919.7502])
-
 
     def _evaluate_numpy(self, x):
         n_sub = len(x)
         f = np.zeros( (n_sub, self.n_obj) )
         g = np.zeros( (n_sub, self.n_original_constraints) )
-
         x1 = x[:,0]
         x2 = x[:,1]
         x3 = x[:,2]
-
         # First original objective function
         f[:,0] = x1 * np.sqrt(16.0 + (x3 * x3)) + x2 * np.sqrt(1.0 + x3 * x3)
         # Second original objective function
         f[:,1] = (20.0 * np.sqrt(16.0 + (x3 * x3))) / (x1 * x3)
-
         # Constraint functions
         g[:,0] = 0.1 - f[:,0]
         g[:,1] = 100000.0 - f[:,1]
         g[:,2] = 100000 - ((80.0 * np.sqrt(1.0 + x3 * x3)) / (x3 * x2))
         g = np.where(g < 0, -g, 0)
         f[:,2] = g[:,0] + g[:,1] + g[:,2]
-
         f_norm = (f - self.ideal) / (self.nadir - self.ideal)
         return f_norm
 
     def _evaluate_torch(self, x):
-        pass
+        assert False, '_evaluate_torch not implemented'
 
 
 class RE37(BaseMOP):
@@ -355,7 +350,6 @@ class RE37(BaseMOP):
 
         self.ideal = np.array([0.00889341391106, 0.00488, -0.431499999825])
         self.nadir = np.array([0.98949120096, 0.956587924661, 0.987530948586])
-
 
     def _evaluate_numpy(self, x):
         n_sub = len(x)
@@ -389,6 +383,49 @@ class RE37(BaseMOP):
 
         f_norm = (f - self.ideal) / (self.nadir - self.ideal)
         return f_norm
+
+    def _evaluate_torch(self, x):
+        n_sub = x.shape[0]
+        f = torch.zeros((n_sub, self.n_obj)).to(x.device)
+
+        xAlpha = x[:, 0]
+        xHA = x[:, 1]
+        xOA = x[:, 2]
+        xOPTT = x[:, 3]
+
+        # f1 (TF_max)
+        f[:, 0] = (
+                0.692 + (0.477 * xAlpha) - (0.687 * xHA) - (0.080 * xOA) - (0.0650 * xOPTT)
+                - (0.167 * xAlpha * xAlpha) - (0.0129 * xHA * xAlpha) + (0.0796 * xHA * xHA)
+                - (0.0634 * xOA * xAlpha) - (0.0257 * xOA * xHA) + (0.0877 * xOA * xOA)
+                - (0.0521 * xOPTT * xAlpha) + (0.00156 * xOPTT * xHA) + (0.00198 * xOPTT * xOA)
+                + (0.0184 * xOPTT * xOPTT)
+        )
+
+        # f2 (X_cc)
+        f[:, 1] = (
+                0.153 - (0.322 * xAlpha) + (0.396 * xHA) + (0.424 * xOA) + (0.0226 * xOPTT)
+                + (0.175 * xAlpha * xAlpha) + (0.0185 * xHA * xAlpha) - (0.0701 * xHA * xHA)
+                - (0.251 * xOA * xAlpha) + (0.179 * xOA * xHA) + (0.0150 * xOA * xOA)
+                + (0.0134 * xOPTT * xAlpha) + (0.0296 * xOPTT * xHA) + (0.0752 * xOPTT * xOA)
+                + (0.0192 * xOPTT * xOPTT)
+        )
+
+        # f3 (TT_max)
+        f[:, 2] = (
+                0.370 - (0.205 * xAlpha) + (0.0307 * xHA) + (0.108 * xOA) + (1.019 * xOPTT)
+                - (0.135 * xAlpha * xAlpha) + (0.0141 * xHA * xAlpha) + (0.0998 * xHA * xHA)
+                + (0.208 * xOA * xAlpha) - (0.0301 * xOA * xHA) - (0.226 * xOA * xOA)
+                + (0.353 * xOPTT * xAlpha) - (0.0497 * xOPTT * xOA) - (0.423 * xOPTT * xOPTT)
+                + (0.202 * xHA * xAlpha * xAlpha) - (0.281 * xOA * xAlpha * xAlpha)
+                - (0.342 * xHA * xHA * xAlpha) - (0.245 * xHA * xHA * xOA)
+                + (0.281 * xOA * xOA * xHA) - (0.184 * xOPTT * xOPTT * xAlpha)
+                - (0.281 * xHA * xAlpha * xOA)
+        )
+
+        f_norm = (f - Tensor(self.ideal).to(f.device) ) / (Tensor(self.nadir - self.ideal).to(f.device))
+        return f_norm
+
 
 
 

@@ -21,18 +21,17 @@ class GradBaseSolver:
             :return:
                 is a dict with keys: x, y.
         '''
-
         # The abstract class cannot be implemented directly.
         n_prob = len(prefs)
         n_obj = problem.n_obj
-        x = Variable(x, requires_grad=True)
-        optimizer = SGD([x], lr=self.step_size)
+        x_var = Variable(x, requires_grad=True)
+        optimizer = SGD([x_var], lr=self.step_size)
         ind = HV(ref_point=get_hv_ref(problem.problem_name))
         hv_arr = []
         y_arr = []
         for i in tqdm(range(self.n_iter)):
             grad_arr = [0] * n_prob
-            y = problem.evaluate(x)
+            y = problem.evaluate(x_var)
             y_np = y.detach().numpy()
             y_arr.append(y_np)
             hv_arr.append(ind.do(y_np))
@@ -45,19 +44,16 @@ class GradBaseSolver:
                 grad_arr[prob_idx] = torch.stack(grad_arr[prob_idx])
             grad_arr = torch.stack(grad_arr)
             optimizer.zero_grad()
-
-            if weight_solver_cls.core_name == 'EPOCore':
+            if weight_solver_cls.core_name in ['EPOCore', 'MGDACore', 'RandomCore']:
                 weights = torch.stack([weight_solver_cls.get_alpha(grad_arr[idx], y[idx], idx) for idx in range(len(y)) ])
-            elif weight_solver_cls.core_name == 'MGDACore':
-                weights = torch.stack([weight_solver_cls.get_alpha(grad_arr[idx], y[idx], idx) for idx in range(len(y)) ])
-
+            else:
+                assert False, 'Unknown core_name'
 
             torch.sum(weights * y).backward()
             optimizer.step()
             if 'lbound' in dir(problem):
                 x.data = torch.clamp(x.data, torch.Tensor(problem.lbound) + solution_eps,
                                      torch.Tensor(problem.ubound) - solution_eps)
-
         res = {}
         res['x'] = x.detach().numpy()
         res['y'] = y.detach().numpy()
@@ -73,11 +69,9 @@ class GradAggSolver(GradBaseSolver):
         self.problem = problem
         super().__init__(step_size, n_iter, tol)
 
-
     def solve(self, x, prefs):
         x = Variable(x, requires_grad=True)
         ind = HV(ref_point = get_hv_ref(self.problem.problem_name))
-
         hv_arr = []
         y_arr = []
         x_arr = []

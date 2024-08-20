@@ -14,6 +14,8 @@ from libmoon.util_global.grad_util import numel
 from time import time
 from libmoon.solver.psl.model.mtl import HyperNet, LeNetTarget
 
+
+
 def save_pickle():
     # save pickle
     pickle_name = os.path.join(save_dir, 'res.pickle')
@@ -28,7 +30,6 @@ def save_pickle():
     with open(txt_name, 'w') as f:
         f.write('Running time: {} s'.format(running_time))
 
-
 def plot_train():
     fig = plt.figure()
     plt.plot(np.array(loss_history))
@@ -38,7 +39,6 @@ def plot_train():
     plt.savefig(save_fig_name)
     print('save to {}'.format(save_fig_name))
 
-
 if __name__ == '__main__':
     parse = argparse.ArgumentParser()
     parse.add_argument('--n-epoch', type=int, default=10)
@@ -47,19 +47,16 @@ if __name__ == '__main__':
     parse.add_argument('--n-obj', type=int, default=2)
     parse.add_argument('--model', type=str, default='lenet')
     parse.add_argument('--dataset', type=str, default='fashion')
-    parse.add_argument('--solver', type=str, default='agg')
-    parse.add_argument('--agg', type=str, default='ls')
+    parse.add_argument('--solver', type=str, default='agg_ls')
     parse.add_argument('--device-name', type=str, default='gpu')
     parse.add_argument('--ray-hidden', type=int, default=100)
     args = parse.parse_args()
     from libmoon.util_global.constant import root_name
 
-    agg_func = get_agg_func(args.agg)
-    if args.solver == 'agg':
-        args.task_name = '{}_{}'.format(args.solver, args.agg)
+    if args.solver.startswith('agg'):
+        args.task_name = '{}_{}'.format(*args.solver.split('_'))
     else:
         args.task_name = args.solver
-
     print('Training...')
     print('Task name: {}'.format(args.task_name))
     print('Dataset:{}'.format(args.dataset))
@@ -103,6 +100,7 @@ if __name__ == '__main__':
                 loss_arr = torch.atleast_2d(loss_arr)
                 ray = torch.atleast_2d(ray)
                 loss = agg_func(loss_arr, ray)
+
 
             (loss).backward()
             loss_item = loss.cpu().detach().numpy()

@@ -27,11 +27,9 @@ from libmoon.solver.gradient.methods.core.core_solver_bk import CoreEPO
 class MTL_Solver:
     def __init__(self, n_prob, batch_size, lr, epoch, solver, dataset_name,
                  architecture, obj_normalization, agg, seed, h_tol=5e-3, sigma=0.8):
-
         print('Batch size: {}'.format(batch_size))
         print('Learning rate: {}'.format(lr))
         print('Sigma: {}'.format(sigma))
-
         self.solver = solver
         self.agg = agg
         self.seed = seed
@@ -42,9 +40,7 @@ class MTL_Solver:
         self.architecture = architecture
         self.n_prob = n_prob
         self.batch_size = batch_size
-
         self.dataset = get_dataset( self.dataset_name )
-
         self.h_tol = h_tol
         self.sigma = sigma
 
@@ -59,11 +55,9 @@ class MTL_Solver:
 
         self.settings = self.setting_dict[ self.dataset_name ]
         self.trainloader = data.DataLoader(self.dataset, batch_size=self.batch_size, num_workers=0)
-
         self.obj_arr = from_name( self.settings['objectives'], self.dataset.task_names() )
         self.model_arr = [model_from_dataset(self.dataset_name, self.architecture, dim=dim_dict[self.dataset_name])
                           for _ in range( n_prob )]
-
         self.optimizer_arr = [ torch.optim.Adam(model.parameters(), lr=self.lr)
                                for model in self.model_arr ]
         self.update_counter = 0
@@ -89,26 +83,28 @@ class MTL_Solver:
                     if self.obj_normalization:
                         loss_vec = normalize_vec( loss_vec, problem=self.dataset_name )
 
-                    if self.solver != 'agg':
+                    if self.solver.start_with('agg'):
+                        agg_func = get_agg_func(self.agg, self.co)
+                        scalar_loss = torch.squeeze(agg_func(loss_vec.unsqueeze(0), pref.unsqueeze(0)))
+                    elif self.solver == 'agg':
                         gradients, obj_values = calc_gradients(batch, self.model_arr[pref_idx], self.obj_arr)
-                        Jacobian = torch.stack( [flatten_grads(gradients[idx]) for idx in range(2)] )
+                        Jacobian = torch.stack([flatten_grads(gradients[idx]) for idx in range(2)])
                         if self.solver == 'epo':
                             core_epo = CoreEPO(pref)
                             alpha = torch.Tensor(core_epo.get_alpha(Jacobian, loss_vec))
                         elif self.solver == 'mgda':
                             from libmoon.solver.gradient.methods.core.core_solver_bk import CoreMGDA
                             core_mgda = CoreMGDA()
+
                             alpha = torch.Tensor(core_mgda.get_alpha(Jacobian))
                         elif self.solver == 'pmgda':
                             h_val, Jhf = get_nn_pmgda_componets(loss_vec, pref)
                             grad_h = torch.Tensor(Jhf) @ Jacobian
                             core_pmgda = CorePMGDA()
-                            alpha = core_pmgda.get_alpha(Jacobian, grad_h, h_val, self.h_tol, self.sigma, return_coeff=True, Jhf=Jhf)
+                            alpha = core_pmgda.get_alpha(Jacobian, grad_h, h_val, self.h_tol, self.sigma,
+                                                         return_coeff=True, Jhf=Jhf)
                             alpha = torch.Tensor(alpha)
                         scalar_loss = torch.sum(alpha * loss_vec)
-                    elif self.solver == 'agg':
-                        agg_func = get_agg_func(self.agg, self.co)
-                        scalar_loss = torch.squeeze(agg_func(loss_vec.unsqueeze(0), pref.unsqueeze(0)))
                     elif self.solver == 'uniform':
                         agg_func = get_agg_func('mtche')
                         scalar_loss = torch.squeeze(agg_func(loss_vec.unsqueeze(0), pref.unsqueeze(0)))

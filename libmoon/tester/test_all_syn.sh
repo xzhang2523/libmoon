@@ -1,12 +1,7 @@
-seed_num=1
-for seed in {1,...,$seed_num}
-  do
-  for mtd in mgda tche mtche
-  do
-    python run_syn.py --mtd mtd --seed $seed
-  done
+for solver in mgdaub epo random
+do
+  python run_syn_all.py --solver $solver --seed 1
 done
-
 
 
 sleep 100

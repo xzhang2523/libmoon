@@ -11,7 +11,7 @@ from pymoo.indicators.hv import HV
 import warnings
 warnings.filterwarnings("ignore")
 from libmoon.util_global.constant import solution_eps, get_hv_ref
-from libmoon.util_global.grad_util import get_moo_grad, get_moo_Jacobian
+from libmoon.util_global.grad_util import get_moo_Jacobian
 from libmoon.solver.gradient.methods.core.core_solver import EPOCore
 from libmoon.problem.synthetic.zdt import ZDT1
 
@@ -77,7 +77,6 @@ class EPO_LP(object):
             self.last_move = "dom"
         return self.alpha.value
 
-
 def mu(rl, normed=False):
     # Modified by Xiaoyuan to handle negative issue.
     # if len(np.where(rl < 0)[0]):
@@ -132,7 +131,7 @@ class EPOSolver(GradBaseSolver):
         self.problem = problem
         self.prefs = prefs
         super().__init__(step_size, n_iter, tol)
-        self.epo_core = EPOCore(problem, prefs)
+        self.epo_core = EPOCore(n_var=problem.n_var, prefs=prefs)
     def solve(self, x):
         return super().solve(self.problem, x, self.prefs, weight_solver_cls = self.epo_core)
 
@@ -142,10 +141,8 @@ if __name__ == '__main__':
     # prefs = np.random.rand(n_prob, n_obj)
     pref_1d = np.linspace(0.1, 0.9, n_prob)
     prefs = np.c_[pref_1d, 1 - pref_1d]
-
     problem = ZDT1(n_var=n_var)
     solver = EPOSolver(step_size=1e-2, n_iter=1000, tol=1e-3, problem=problem, prefs=prefs)
-
     x0 = torch.rand(n_prob, n_var)
     res = solver.solve(x=x0)
 

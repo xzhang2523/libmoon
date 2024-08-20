@@ -1,14 +1,28 @@
-
 import torch
-def get_moo_grad(x, y, n_obj):
-    grad_arr = [0] * n_obj
-    for obj_idx in range(n_obj):
-        y[obj_idx].backward(retain_graph=True)
-        grad_arr[obj_idx] = x.grad.clone()
-        x.grad.zero_()
 
-    grad_arr = torch.stack(grad_arr)
-    return grad_arr
+def get_moo_Jacobian_batch(x_batch, y_batch, n_obj):
+    '''
+        Input : x_batch: (batch_size, n_var)
+                y_batch: (batch_size, n_obj)
+                n_obj: int
+        Return: grad_batch: (batch_size, n_obj, n_var)
+    '''
+
+    grad_batch = []
+    batch_size = len(x_batch)
+    for batch_idx in range(batch_size):
+        # grad_arr.append(get_moo_Jacobian(xs, ys, n_obj))
+        grad_arr_idx = [0,] * n_obj
+        for obj_idx in range(n_obj):
+            y_batch[batch_idx][obj_idx].backward(retain_graph = True)
+            grad_arr_idx[obj_idx] = x_batch.grad[batch_idx].clone()
+            x_batch.grad.zero_()
+        grad_batch.append( torch.stack(grad_arr_idx) )
+    return torch.stack(grad_batch)
+
+
+
+
 
 
 def get_moo_Jacobian(x, y, n_obj):
@@ -19,6 +33,8 @@ def get_moo_Jacobian(x, y, n_obj):
         x.grad.zero_()
     grad_arr = torch.stack(grad_arr)
     return grad_arr
+
+
 
 def flatten_grads(grads_dict):
     return torch.cat( [v.view(-1) for _, v in grads_dict.items()] )

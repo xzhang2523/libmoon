@@ -36,7 +36,7 @@ if __name__ == '__main__':
         'batch_size' : args.batch_size,
         'lr' : lr,
         'epoch' : args.epoch,
-        'solver' : 'pmgda',
+        'solver' : 'epo',
         'dataset_name' : args.dataset_name,
         'obj_normalization' : False,
         'n_prob' : args.n_prob,
@@ -53,10 +53,7 @@ if __name__ == '__main__':
     np.random.seed(kwargs['seed'])
     print('Task name: {} on seed {}'.format(task_name, args.seed))
     print('Dataset:{}'.format(kwargs['dataset_name']))
-    if torch.cuda.is_available():
-        print('Using GPU')
-    else:
-        print('Using CPU')
+    print('Using GPU') if torch.cuda.is_available() else print('Using CPU')
 
     mtl_solver = MTL_Solver(**kwargs)
     pref_mat = get_mtl_prefs(args.dataset_name, kwargs['n_prob'],

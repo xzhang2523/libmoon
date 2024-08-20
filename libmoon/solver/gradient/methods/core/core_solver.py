@@ -16,7 +16,7 @@ from pymoo.indicators.hv import HV
 import warnings
 warnings.filterwarnings("ignore")
 from libmoon.util_global.constant import solution_eps, get_hv_ref
-from libmoon.util_global.grad_util import get_moo_grad, get_moo_Jacobian
+from libmoon.util_global.grad_util import get_moo_Jacobian
 from libmoon.problem.synthetic.zdt import ZDT1
 
 
@@ -28,7 +28,6 @@ class EPO_LP(object):
         self.m = m
         self.n = n
         self.r = r
-
         self.eps = eps
         self.last_move = None
         self.a = cp.Parameter(m)        # Adjustments
@@ -116,7 +115,8 @@ def solve_epo(Jacobian, losses, pref, epo_lp):
     if type(pref) == torch.Tensor:
         pref = pref.cpu().numpy()
     pref = np.array(pref)
-    G = Jacobian.detach().clone().cpu().numpy()
+
+    G = Jacobian.detach().clone()
     if type(losses) == torch.Tensor:
         losses_np = losses.detach().clone().cpu().numpy().squeeze()
     else:
@@ -124,16 +124,23 @@ def solve_epo(Jacobian, losses, pref, epo_lp):
     m = G.shape[0]
     n = G.shape[1]
     GG = G @ G.T
+    GG = GG.cpu().numpy()
 
     alpha = epo_lp.get_alpha(losses_np, G=GG, C=True)
     if alpha is None:   # A patch for the issue in cvxpy
         alpha = pref / pref.sum()
-    gw = alpha @ G
-    return torch.Tensor(gw), alpha
+    return alpha
 
 
 class EPOCore():
-    def __init__(self, problem, prefs):
+    # def __init__(self,n_var):
+    #     # pass
+    #     self.n_var = n_var
+    # def set_prefs(self, prefs):
+    #     self.n_obj = 2
+        # self.epo_lp_arr = [EPO_LP(m=n_obj, n=n_var, r=1 / pref.cpu().numpy()) for pref in prefs]
+
+    def __init__(self, n_var, prefs):
         '''
             Input:
             prefs: (n_prob, n_obj).
@@ -141,18 +148,14 @@ class EPOCore():
         '''
         self.core_name = 'EPOCore'
         self.prefs = prefs
-        n_prob = len(prefs)
-        n_var = problem.n_var
-        n_obj = 2
-        self.epo_lp_arr = [ EPO_LP(m=n_obj,n = n_var, r=1/pref.numpy()) for pref in prefs ]
+        self.n_prob, self.n_obj = prefs.shape[0], prefs.shape[1]
+        self.n_var = n_var
+        prefs_np = prefs.cpu().numpy() if type(prefs) == torch.Tensor else prefs
+        self.epo_lp_arr = [EPO_LP(m=self.n_obj, n = self.n_var, r=1/pref) for pref in prefs_np]
 
 
     def get_alpha(self, Jacobian, losses, idx):
-        alpha_arr = []
-        # for pref, epo_lp in zip(self.prefs, self.epo_lp_arr):
-        _, alpha = solve_epo(Jacobian, losses, self.prefs[idx], self.epo_lp_arr[idx])
-            # alpha_arr.append(alpha)
-
+        alpha = solve_epo(Jacobian, losses, self.prefs[idx], self.epo_lp_arr[idx])
         return torch.Tensor(alpha)
 
 '''
@@ -166,15 +169,16 @@ class MGDACore():
         _, alpha = solve_mgda(Jacobian, return_coeff=True)
         return alpha
 
+class RandomCore():
+    def __init__(self):
+        self.core_name = 'RandomCore'
 
+    def get_alpha(self, Jacobian, losses, idx):
+        n_obj = len(losses)
+        return torch.rand(n_obj)
 
 
 if __name__ == '__main__':
-    # Test MGDASolver
-    # mgda = MGDACore()
-    # Jacobian = torch.rand(2, 10)
-    # alpha = mgda.get_alpha(Jacobian)
-    # print(alpha)
     #
     n_prob = 5
     n_obj = 2
@@ -183,7 +187,7 @@ if __name__ == '__main__':
     pref_1d = np.linspace(1e-3, 1-1e-3, n_prob)
     prefs = np.c_[pref_1d, 1 - pref_1d]
 
-    epo_core = EPOCore(prefs, problem)
+    epo_core = EPOCore(problem.n_var, prefs)
     Jacobian = torch.rand(n_obj, n_prob)
     losses = torch.rand(n_obj)
     alpha_arr = epo_core.get_alpha(Jacobian, losses)

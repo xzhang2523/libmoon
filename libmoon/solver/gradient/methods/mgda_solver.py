@@ -64,15 +64,13 @@ class MGDAUBSolver(GradBaseSolver):
         self.weight_solver_cls = MGDACore()
         self.problem = problem
         self.prefs = prefs
-
     def solve(self, x):
         return super().solve(self.problem, x, self.prefs, self.weight_solver_cls)
-
-
 
 if __name__ == '__main__':
     n_prob = 10
     n_var=10
+
     problem = ZDT1(n_var=n_var)
     solver = MGDAUBSolver(0.1, 1000, 1e-6)
     x = torch.rand(n_prob, n_var)

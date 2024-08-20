@@ -8,7 +8,8 @@ from libmoon.solver.gradient.methods.pmgda_solver import PMGDASolver
 from libmoon.solver.gradient.methods.base_solver import GradAggSolver
 
 from libmoon.solver.gradient.methods.base_solver import GradBaseSolver
-from libmoon.solver.gradient.methods.core.core_solver import EPOCore, MGDAUBCore, RandomCore
+from libmoon.solver.gradient.methods.core.core_solver import EPOCore, MGDAUBCore, RandomCore, AggCore, MOOSVGDCore
+
 
 
 import os
@@ -70,8 +71,11 @@ def save_figures(folder_name):
     # os.makedirs(folder_name, exist_ok=True)
     fig_name = os.path.join(folder_name, 'res.pdf')
     plt.savefig(fig_name, bbox_inches='tight')
+    fig_name_svg = os.path.join(folder_name, 'res.svg')
+    plt.savefig(fig_name_svg, bbox_inches='tight')
     print('Save fig to {}'.format(fig_name))
     plt.title(beautiful_dict[args.solver_name])
+
 
 def save_pickles(folder_name):
     import pickle
@@ -81,12 +85,13 @@ def save_pickles(folder_name):
     print('Save pickle to {}'.format(pickle_name))
 
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser( description= 'example script' )
     # solver_array: []
-    parser.add_argument('--solver-name', type=str, default='random')
+    # solver_name: ['hv_grad', 'pmtl', '']
+    parser.add_argument('--solver-name', type=str, default='moosvgd')
     parser.add_argument( '--problem-name', type=str, default='VLMOP1')
-
     parser.add_argument('--step-size', type=float, default=1e-2)
     parser.add_argument('--tol', type=float, default=1e-2)
     parser.add_argument('--draw-fig', type=str, default='True')
@@ -94,12 +99,11 @@ if __name__ == '__main__':
     parser.add_argument('--h-tol', type=float, default=1e-3)
     parser.add_argument('--sigma', type=float, default=0.9)
     parser.add_argument('--n-prob', type=int, default=8 )
-    parser.add_argument('--epoch', type=int, default=500 )
+    parser.add_argument('--epoch', type=int, default=1000 )
     parser.add_argument('--seed-idx', type=int, default=0)
     parser.add_argument('--seed-num', type=int, default=3)
     args = parser.parse_args()
     np.random.seed(args.seed_idx)
-
 
     print('Running {} on {}'.format(args.solver_name, args.problem_name) )
     np.random.seed(args.seed_idx)
@@ -117,10 +121,15 @@ if __name__ == '__main__':
         core_solver = MGDAUBCore(n_var=problem.n_var, prefs=prefs)
     elif args.solver_name == 'random':
         core_solver = RandomCore(n_var=problem.n_var, prefs=prefs)
+    elif args.solver_name.startswith('agg'):
+        core_solver = AggCore(n_var=problem.n_var, prefs=prefs, solver_name=args.solver_name)
+    elif args.solver_name.startswith('moosvgd'):
+        core_solver = MOOSVGDCore(n_var=problem.n_var, prefs=prefs)
     else:
         assert False, 'Unknown solver'
 
-    solver = GradBaseSolver(step_size=1e-2, epoch=args.epoch, tol=args.tol, core_solver=core_solver)
+    solver = GradBaseSolver(step_size=args.step_size, epoch=args.epoch, tol=args.tol, core_solver=core_solver)
+
     res = solver.solve(problem=problem, x=synthetic_init(problem, prefs), prefs=prefs )
     res['prefs'] = prefs
 

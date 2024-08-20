@@ -1,11 +1,13 @@
 
 problem=VLMOP1
 
-for seed in {1..2}
+# mgdaub random epo
+
+for seed in {0..1}
 do
-  for solver_name in mgdaub random epo
+  for solver_name in agg_ls agg_tche agg_pbi agg_cosmos
   do
-    python run_syn_discrete.py --solver-name $solver_name --draw-fig False --epoch 200 --problem-name $problem --seed-idx $seed
+    python run_syn_discrete.py --solver-name $solver_name --draw-fig False --epoch 1000 --problem-name $problem --seed-idx $seed
   done
 done
 sleep 100

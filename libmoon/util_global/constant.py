@@ -73,9 +73,13 @@ beautiful_ind_dict = {
     'igd': 'IGD',
     'spacing': 'Spacing',
     'sparsity': 'Sparsity',
-    'uniform': 'Uniform',
-    'soft uniform': 'SUniform',
+    'lmin': 'Lmin',
+    'soft_lmin': 'Soft Lmin',
     'maxgd': 'MaxGD',
+    'inner_product': 'IP',
+    'cross_angle': 'Cross Angle',
+    'pbi' : 'PBI'
+
 }
 
 scale_dict = {

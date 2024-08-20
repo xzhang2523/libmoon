@@ -170,6 +170,42 @@ class RandomCore():
         n_obj = len(losses)
         return torch.rand(n_obj)
 
+class AggCore():
+    def __init__(self, n_var, prefs, solver_name):
+        self.core_name = 'AggCore'
+        self.solver_name = solver_name
+        self.agg_name = solver_name.split('_')[-1]
+
+    def get_alpha(self, Jacobian, losses, idx):
+        assert False, 'RandomCore does not have get_alpha method.'
+        return None
+
+
+
+class MOOSVGDCore():
+    def __init__(self, n_var, prefs):
+        self.core_name = 'MOOSVGDCore'
+
+    def get_alpha_array(self, Jacobian_arr, losses_arr):
+        '''
+            Input:
+            Jacobian_arr: (n_prob, m, n)
+            losses_arr: (n_prob, m)
+            Return: (n_prob, m)
+        '''
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 if __name__ == '__main__':
     #

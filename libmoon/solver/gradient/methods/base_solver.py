@@ -17,6 +17,7 @@ class GradBaseSolver:
         self.epoch = epoch
         self.tol = tol
         self.core_solver = core_solver
+        self.is_agg = (self.core_solver.core_name == 'AggCore')
 
     def solve(self, problem, x , prefs):
         '''
@@ -26,9 +27,7 @@ class GradBaseSolver:
             :return:
                 is a dict with keys: x, y.
         '''
-        # The abstract class cannot be implemented directly.
         self.n_prob, self.n_obj = prefs.shape[0], prefs.shape[1]
-
         xs_var = Variable(x, requires_grad=True)
         optimizer = SGD([xs_var], lr=self.step_size)
         ind = HV(ref_point=get_hv_ref(problem.problem_name))
@@ -41,11 +40,24 @@ class GradBaseSolver:
             Jacobian_arr = get_moo_Jacobian_batch(xs_var, fs_var, self.n_obj)
             y_detach = fs_var.detach()
             optimizer.zero_grad()
-            if self.core_solver.core_name in ['EPOCore', 'MGDAUBCore', 'RandomCore']:
-                weights = torch.stack([self.core_solver.get_alpha(Jacobian_arr[idx], y_detach[idx], idx) for idx in range( self.n_prob) ])
+            if self.is_agg:
+                agg_name = self.core_solver.solver_name.split('_')[-1]
+                agg_func = get_agg_func(agg_name)
+                agg_val = agg_func(fs_var, torch.Tensor(prefs).to(fs_var.device))
+                torch.sum(agg_val).backward()
             else:
-                assert False, 'Unknown core_name'
-            torch.sum(weights * fs_var).backward()
+                if self.core_solver.core_name in ['EPOCore', 'MGDAUBCore', 'RandomCore']:
+                    weights = torch.stack([self.core_solver.get_alpha(Jacobian_arr[idx], y_detach[idx], idx) for idx in range( self.n_prob) ])
+                # elif self.core_solver.core_name == 'AggCore':
+                elif self.core_solver.core_name in ['PMTLCore', 'MOOSVGDCore', 'HVGradCore']:
+                    # assert False, 'Unknown core_name'
+                    weights = self.core_solver.get_alpha_array(Jacobian_arr, y_detach)
+                else:
+                    assert False, 'Unknown core_name'
+
+                torch.sum(weights * fs_var).backward()
+
+
             optimizer.step()
             if 'lbound' in dir(problem):
                 x.data = torch.clamp(x.data, torch.Tensor(problem.lbound) + solution_eps,

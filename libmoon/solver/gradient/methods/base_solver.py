@@ -51,7 +51,10 @@ class GradBaseSolver:
                 # elif self.core_solver.core_name == 'AggCore':
                 elif self.core_solver.core_name in ['PMTLCore', 'MOOSVGDCore', 'HVGradCore']:
                     # assert False, 'Unknown core_name'
-                    weights = self.core_solver.get_alpha_array(Jacobian_arr, y_detach)
+                    if self.core_solver.core_name == 'HVGradCore':
+                        weights = self.core_solver.get_alpha_array(y_detach)
+                    else:
+                        weights = self.core_solver.get_alpha_array(Jacobian_arr, y_detach)
                 else:
                     assert False, 'Unknown core_name'
 

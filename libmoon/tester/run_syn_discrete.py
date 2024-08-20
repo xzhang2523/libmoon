@@ -8,8 +8,7 @@ from libmoon.solver.gradient.methods.pmgda_solver import PMGDASolver
 from libmoon.solver.gradient.methods.base_solver import GradAggSolver
 
 from libmoon.solver.gradient.methods.base_solver import GradBaseSolver
-from libmoon.solver.gradient.methods.core.core_solver import EPOCore, MGDAUBCore, RandomCore, AggCore, MOOSVGDCore
-
+from libmoon.solver.gradient.methods.core.core_solver import EPOCore, MGDAUBCore, RandomCore, AggCore, MOOSVGDCore, HVGradCore, PMTLCore
 
 
 import os
@@ -76,7 +75,6 @@ def save_figures(folder_name):
     print('Save fig to {}'.format(fig_name))
     plt.title(beautiful_dict[args.solver_name])
 
-
 def save_pickles(folder_name):
     import pickle
     pickle_name = os.path.join(folder_name, 'res.pickle')
@@ -85,12 +83,9 @@ def save_pickles(folder_name):
     print('Save pickle to {}'.format(pickle_name))
 
 
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser( description= 'example script' )
-    # solver_array: []
-    # solver_name: ['hv_grad', 'pmtl', '']
-    parser.add_argument('--solver-name', type=str, default='moosvgd')
+    parser.add_argument('--solver-name', type=str, default='pmtl')
     parser.add_argument( '--problem-name', type=str, default='VLMOP1')
     parser.add_argument('--step-size', type=float, default=1e-2)
     parser.add_argument('--tol', type=float, default=1e-2)
@@ -123,8 +118,12 @@ if __name__ == '__main__':
         core_solver = RandomCore(n_var=problem.n_var, prefs=prefs)
     elif args.solver_name.startswith('agg'):
         core_solver = AggCore(n_var=problem.n_var, prefs=prefs, solver_name=args.solver_name)
-    elif args.solver_name.startswith('moosvgd'):
+    elif args.solver_name == 'moosvgd':
         core_solver = MOOSVGDCore(n_var=problem.n_var, prefs=prefs)
+    elif args.solver_name == 'hvgrad':
+        core_solver = HVGradCore(problem=problem)
+    elif args.solver_name == 'pmtl':
+        core_solver = PMTLCore(problem=problem)
     else:
         assert False, 'Unknown solver'
 

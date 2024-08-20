@@ -1,5 +1,3 @@
-
-
 from libmoon.solver.gradient.methods.core.mgda_core import solve_mgda
 import torch
 
@@ -18,6 +16,9 @@ warnings.filterwarnings("ignore")
 from libmoon.util_global.constant import solution_eps, get_hv_ref
 from libmoon.util_global.grad_util import get_moo_Jacobian
 from libmoon.problem.synthetic.zdt import ZDT1
+
+from libmoon.solver.gradient.methods.gradhv import HVMaxSolver
+# D:\pycharm_project\libmoon\libmoon\solver\gradient\methods\gradhv.py
 
 
 class EPO_LP(object):
@@ -193,8 +194,34 @@ class MOOSVGDCore():
             losses_arr: (n_prob, m)
             Return: (n_prob, m)
         '''
+        pass
+
+class HVGradCore():
+    def __init__(self, problem):
+        self.core_name = 'HVGradCore'
+        # problem = get_problem(problem_name=problem_name, n_var=n_var)
+        self.n_obj, self.n_var = problem.n_obj, problem.n_var
+        self.problem_name = problem.problem_name
+
+    def get_alpha_array(self, losses):
+        '''
+            Input : losses: (n_prob, n_obj)
+            Return: (n_prob, n_obj)
+        '''
+        losses_np = losses.detach().numpy()
+        n_prob = losses_np.shape[0]
+
+        hv_maximizer = HVMaxSolver(n_prob, self.n_obj, get_hv_ref(self.problem_name))
+        weight = hv_maximizer.compute_weights(losses_np.T).T
+        return weight
 
 
+class PMTLCore():
+    def __init__(self, problem):
+        self.core_name = 'HVGradCore'
+
+    def get_alpha_array(self, losses):
+        pass
 
 
 

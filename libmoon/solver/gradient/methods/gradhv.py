@@ -87,7 +87,7 @@ class GradHVSolver(GradBaseSolver):
             assert False, 'hvgrad only supports 2 obj problem'
 
         hv_maximizer = HVMaxSolver(args.n_prob, args.n_obj, get_hv_ref(args.problem_name))
-
+        # weight = hv_maximizer.compute_weights(y_np.T)
 
         x = Variable(x, requires_grad=True)
         optimizer = torch.optim.SGD([x,], lr=self.step_size)

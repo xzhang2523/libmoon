@@ -14,36 +14,86 @@ from libmoon.util_global.constant import plt_2d_pickle_size, plt_2d_marker_size
 
 
 
+def plot_figure_2d():
+    y_arr = res['y']
+    plt.scatter(y_arr[:, 0], y_arr[:, 1], color='black')
+    plt.xticks(fontsize=plt_2d_pickle_size)
+    plt.yticks(fontsize=plt_2d_pickle_size)
+    plt.xlabel('$L_1$', fontsize=plt_2d_marker_size)
+    plt.ylabel('$L_2$', fontsize=plt_2d_marker_size)
+
+
+def plot_figure_3d():
+    ax = (plt.figure()).add_subplot(projection='3d')
+    for idx in range(len(prefs)):
+        ax.plot(res['y_history'][::sub_sample, idx, 0], res['y_history'][::sub_sample, idx, 1],
+                res['y_history'][::sub_sample, idx, 2],
+                color=color_arr[idx])
+    prefs_l2 = prefs / np.linalg.norm(prefs, axis=1, keepdims=True)
+    for idx, pref in enumerate(prefs_l2):
+        ax.scatter(pref[0], pref[1], pref[2], color=color_arr[idx], s=40)
+    th1 = np.linspace(0, np.pi / 2, 100)
+    th2 = np.linspace(0, np.pi / 2, 100)
+
+    theta, phi = np.meshgrid(th1, th2)
+    x = np.cos(theta) * np.sin(phi)
+    y = np.sin(theta) * np.sin(phi)
+    z = np.cos(phi)
+
+    ax.plot_surface(x, y, z, alpha=0.3)
+    ax.axis('equal')
+    ax.view_init(30, 45)
+    ax.set_xlim([0, 1.2])
+    ax.set_ylim([0, 1.2])
+    ax.set_zlim([0, 1.2])
+    ax.set_xlabel('$L_1$', fontsize=FONT_SIZE_3D)
+    ax.set_ylabel('$L_2$', fontsize=FONT_SIZE_3D)
+    ax.set_zlabel('$L_3$', fontsize=FONT_SIZE_3D)
+
+def save_figures():
+    fig_folder_name = os.path.join(root_name, args.PaperName, args.problem_name, '{}'.format(args.seed_idx))
+    os.makedirs(fig_folder_name, exist_ok=True)
+    fig_name = os.path.join(fig_folder_name, '{}.pdf'.format(args.task_name))
+    plt.savefig(fig_name)
+    print('Save fig to {}'.format(fig_name))
+    plt.title(beautiful_dict[args.task_name])
+
+def save_pickles():
+    import pickle
+    pickle_folder = os.path.join(root_name, args.PaperName, args.task_name, 'M1', args.problem_name,
+                                 'seed_{}'.format(args.seed_idx), 'epoch_{}'.format(args.n_iter))
+    os.makedirs(pickle_folder, exist_ok=True)
+    pickle_name = os.path.join(pickle_folder, 'res.pickle')
+    with open(pickle_name, 'wb') as f:
+        pickle.dump(res, f)
+    print('Save pickle to {}'.format(pickle_name))
+
+
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser( description= 'example script' )
-    parser.add_argument( '--agg', type=str, default='mtche')  # If solve is agg, then choose a specific agg method.
-    parser.add_argument('--solver', type=str, default='agg')
+
+    parser.add_argument('--solver', type=str, default='agg_tche')
     parser.add_argument( '--problem-name', type=str, default='VLMOP1')
     parser.add_argument('--step-size', type=float, default=1e-2)
     parser.add_argument('--tol', type=float, default=1e-2)
     parser.add_argument('--plt-pref-flag', type=str, default='N')
     parser.add_argument('--use-plt', type=str, default='Y')
-    parser.add_argument('--PaperName', type=str, default='Output')
     parser.add_argument('--h-tol', type=float, default=1e-3)
     parser.add_argument('--sigma', type=float, default=0.9)
     parser.add_argument('--n-prob', type=int, default=8 )
     parser.add_argument('--n-iter', type=int, default=10 )
     parser.add_argument('--seed-idx', type=int, default=0)
+    parser.add_argument('--seed-num', type=int, default=3)
     args = parser.parse_args()
 
-    if args.solver=='agg':
-        args.task_name = '{}_{}'.format(args.solver, args.agg)
-    else:
-        args.task_name = args.solver
 
     print('Problem: {}'.format(args.problem_name))
     print('Task Name: {}'.format(args.task_name ))
     print('Seed: {}'.format(args.seed_idx))
 
     hv_seed = []
-    seed_num = 3
     np.random.seed(args.seed_idx)
     problem = get_problem(problem_name=args.problem_name, n_var=10)
     if problem.n_obj == 2:
@@ -52,6 +102,9 @@ if __name__ == '__main__':
         args.n_prob = 15
 
     prefs = uniform_pref(n_prob=args.n_prob, n_obj = problem.n_obj, clip_eps=1e-2)
+
+
+    # Actually a bit waste to implement so many solvers. Just import Core solvers.
     if args.solver == 'epo':
         solver = EPOSolver(problem, step_size=1e-2, n_iter=args.n_iter, tol=args.tol )
     elif args.solver == 'pmgda':
@@ -59,56 +112,21 @@ if __name__ == '__main__':
     elif args.solver == 'agg':
         solver = GradAggSolver(problem, step_size=1e-2, n_iter=args.n_iter, tol=args.tol, agg=args.agg)
 
+
+
     res = solver.solve( x=synthetic_init(problem, prefs), prefs=prefs )
+
     res['pref_mat'] = prefs
     sub_sample=1
+
     if problem.n_obj == 2:
-        y_arr = res['y']
-        plt.scatter(y_arr[:, 0], y_arr[:, 1], color='black')
-        plt.xticks(fontsize=plt_2d_pickle_size)
-        plt.yticks(fontsize=plt_2d_pickle_size)
-
-        plt.xlabel('$L_1$', fontsize=plt_2d_marker_size)
-        plt.ylabel('$L_2$', fontsize=plt_2d_marker_size)
-
+        plot_figure_2d()
     elif problem.n_obj == 3:
-        ax = (plt.figure()).add_subplot(projection='3d')
-        for idx in range(len(prefs)):
-            ax.plot(res['y_history'][::sub_sample, idx, 0], res['y_history'][::sub_sample, idx, 1], res['y_history'][::sub_sample, idx, 2],
-                    color=color_arr[idx])
-        prefs_l2 = prefs / np.linalg.norm(prefs, axis=1, keepdims=True)
-        for idx, pref in enumerate(prefs_l2):
-            ax.scatter(pref[0], pref[1], pref[2], color=color_arr[idx], s=40)
-        th1 = np.linspace(0, np.pi/2, 100)
-        th2 = np.linspace(0, np.pi/2, 100)
+        plot_figure_2d()
+    save_figures()
 
-        theta, phi = np.meshgrid(th1, th2)
-        x = np.cos(theta) * np.sin(phi)
-        y = np.sin(theta) * np.sin(phi)
-        z = np.cos(phi)
+    save_pickles()
 
-        ax.plot_surface(x, y, z, alpha=0.3)
-        ax.axis('equal')
-        ax.view_init(30, 45)
-        ax.set_xlim([0, 1.2])
-        ax.set_ylim([0, 1.2])
-        ax.set_zlim([0, 1.2])
-        ax.set_xlabel('$L_1$', fontsize=FONT_SIZE_3D)
-        ax.set_ylabel('$L_2$', fontsize=FONT_SIZE_3D)
-        ax.set_zlabel('$L_3$', fontsize=FONT_SIZE_3D)
 
-    fig_folder_name = os.path.join(root_name, args.PaperName, args.problem_name, '{}'.format(args.seed_idx))
-    os.makedirs(fig_folder_name, exist_ok=True)
-    fig_name = os.path.join(fig_folder_name, '{}.pdf'.format(args.task_name) )
-    plt.savefig( fig_name )
-    print('Save fig to {}'.format(fig_name) )
-    plt.title( beautiful_dict[args.task_name] )
 
-    import pickle
-    pickle_folder = os.path.join(root_name, args.PaperName, args.task_name, 'M1', args.problem_name,
-                               'seed_{}'.format(args.seed_idx), 'epoch_{}'.format(args.n_iter))
-    os.makedirs(pickle_folder, exist_ok=True)
-    pickle_name = os.path.join(pickle_folder, 'res.pickle')
-    with open(pickle_name, 'wb') as f:
-        pickle.dump(res, f)
-    print('Save pickle to {}'.format(pickle_name))
+

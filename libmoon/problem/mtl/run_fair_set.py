@@ -87,16 +87,16 @@ if __name__ == '__main__':
                     Jacobian_arr.append(Jacobian)
 
             if args.solver == 'hvgrad':
-                from libmoon.solver.gradient.methods.core.core_solver_bk import CoreHVGrad
+                from libmoon.solver.gradient.methods.bk.core_solver_bk import CoreHVGrad
                 solver = CoreHVGrad(args)
                 alpha_mat = solver.get_alpha(loss_mat)
             elif args.solver == 'pmtl':
-                from libmoon.solver.gradient.methods.core.core_solver_bk import CorePMTL
+                from libmoon.solver.gradient.methods.bk.core_solver_bk import CorePMTL
                 solver = CorePMTL(args, pref_mat)
                 is_warmup = args.pmtl_warmup_iter_counter < args.pmtl_warmup_iter
                 alpha_mat = solver.get_alpha(Jacobian_arr=Jacobian_arr, loss_mat=loss_mat, is_warmup=is_warmup)
             elif args.solver == 'moosvgd':
-                from libmoon.solver.gradient.methods.core.core_solver_bk import CoreMOOSVGD
+                from libmoon.solver.gradient.methods.bk.core_solver_bk import CoreMOOSVGD
                 solver = CoreMOOSVGD(args)
                 alpha_mat = solver.get_alpha(Jacobian_arr, loss_mat)
                 # print()

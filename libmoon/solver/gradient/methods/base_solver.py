@@ -46,23 +46,22 @@ class GradBaseSolver:
                 agg_val = agg_func(fs_var, torch.Tensor(prefs).to(fs_var.device))
                 torch.sum(agg_val).backward()
             else:
-                if self.core_solver.core_name in ['EPOCore', 'MGDAUBCore', 'RandomCore']:
-                    weights = torch.stack([self.core_solver.get_alpha(Jacobian_array[idx], y_detach[idx], idx) for idx in range( self.n_prob) ])
-                # elif self.core_solver.core_name == 'AggCore':
+                if self.core_solver.core_name in ['EPOCore', 'MGDAUBCore', 'PMGDACore', 'RandomCore']:
+                    alpha_array = torch.stack([self.core_solver.get_alpha(Jacobian_array[idx], y_detach[idx], idx) for idx in range( self.n_prob) ])
                 elif self.core_solver.core_name in ['PMTLCore', 'MOOSVGDCore', 'HVGradCore']:
                     # assert False, 'Unknown core_name'
                     if self.core_solver.core_name == 'HVGradCore':
-                        weights = self.core_solver.get_alpha_array(y_detach)
+                        alpha_array = self.core_solver.get_alpha_array(y_detach)
                     elif self.core_solver.core_name == 'PMTLCore':
-                        weights = self.core_solver.get_alpha_array(Jacobian_array, y_np, epoch_idx)
+                        alpha_array = self.core_solver.get_alpha_array(Jacobian_array, y_np, epoch_idx)
                     elif self.core_solver.core_name == 'MOOSVGDCore':
-                        weights = self.core_solver.get_alpha_array(Jacobian_array, y_detach)
+                        alpha_array = self.core_solver.get_alpha_array(Jacobian_array, y_detach)
                     else:
                         assert False, 'Unknown core_name'
                 else:
                     assert False, 'Unknown core_name'
 
-                torch.sum(weights * fs_var).backward()
+                torch.sum(alpha_array * fs_var).backward()
 
 
             optimizer.step()

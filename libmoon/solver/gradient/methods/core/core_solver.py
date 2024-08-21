@@ -26,6 +26,8 @@ from libmoon.solver.gradient.methods.pmtl import get_d_paretomtl_init, get_d_par
 from libmoon.solver.gradient.methods.moosvgd import get_svgd_alpha_array
 # D:\pycharm_project\libmoon\libmoon\solver\gradient\methods\moosvgd.py
 
+from libmoon.solver.gradient.methods.pmgda_solver import solve_pmgda, constraint, get_Jhf
+# D:\pycharm_project\libmoon\libmoon\solver\gradient\methods\pmgda_solver.py
 
 class EPO_LP(object):
     # Paper: https://proceedings.mlr.press/v119/mahapatra20a.html
@@ -156,6 +158,45 @@ class EPOCore():
     def get_alpha(self, Jacobian, losses, idx):
         alpha = solve_epo(Jacobian, losses, self.prefs[idx], self.epo_lp_arr[idx])
         return torch.Tensor(alpha)
+
+
+import json
+class PMGDACore():
+    def __init__(self, n_var, prefs):
+        '''
+            Input:
+            n_var: int, number of variables.
+            prefs: (n_prob, n_obj).
+        '''
+        self.core_name = 'PMGDACore'
+        self.prefs = prefs
+        self.n_prob, self.n_obj = prefs.shape[0], prefs.shape[1]
+        self.n_var = n_var
+        prefs_np = prefs.cpu().numpy() if type(prefs) == torch.Tensor else prefs
+        self.config_name = 'D:\\pycharm_project\\libmoon\\libmoon\\config\\pmgda.json'
+        json_file = open(self.config_name, 'r')
+        self.config = json.load(json_file)
+        self.h_eps = self.config['h_eps']
+        self.sigma = self.config['sigma']
+
+
+    def get_alpha(self, Jacobian, losses, idx):
+        '''
+            Input:
+            Jacobian: (n_obj, n_var), torch.Tensor
+            losses: (n_obj,), torch.Tensor
+            idx: int
+        '''
+        # (1) get the constraint value
+        h = constraint(losses, pref=self.prefs[idx])
+        h_val = h.detach().clone().numpy()
+
+        alpha = solve_pmgda(Jacobian, grad_h, h_val, self.h_eps, self.sigma, Jhf=Jhf)
+
+
+
+
+
 
 '''
     MGDASolver. 

@@ -31,19 +31,20 @@ def solve_mgda_analy(grad_1, grad_2):
     #     return gw
     return coeff
 
-def solve_mgda(G):
+
+
+
+
+def solve_mgda(Jacobian):
     '''
-        input G: (m,n).
-        output gw (n,).
-        comments: This function is used to solve the dual MGDA problem. It can handle m>2.
+        Input Jacobian: (m,n).
+        Output alpha: (m,)
     '''
-    # if type(G) == torch.Tensor:
-    #     G = G.detach().cpu().numpy().copy()
-    m = G.shape[0]
+    m = Jacobian.shape[0]
     if m == 2:
-        return solve_mgda_analy(G[0], G[1])
+        return solve_mgda_analy(Jacobian[0], Jacobian[1])
     else:
-        Q = G @ G.T
+        Q = Jacobian @ Jacobian.T
         Q = matrix(np.float64(Q))
         p = np.zeros(m)
         A = np.ones(m)
@@ -60,7 +61,7 @@ def solve_mgda(G):
         sol = solvers.qp(Q, p, G_cvx, h, A, b)
 
         res = np.array(sol['x']).squeeze()
-        res = res / sum(res)  # important
-        return res
+        alpha = res / sum(res)  # important
+        return alpha
 
 

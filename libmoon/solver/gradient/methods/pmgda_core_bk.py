@@ -8,10 +8,6 @@ from torch.autograd import Variable
 from numpy import array
 from torch import Tensor
 
-from libmoon.solver.gradient.methods.core.mgda_core import solve_mgda
-
-
-
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -29,7 +25,34 @@ def get_nn_pmgda_componets(loss_vec, pref):
     return h_val, J_hf
 
 
+def solve_mgda_analy(grad_1, grad_2, return_coeff=False):
+    '''
+        Noted that, solve_mgda_analy only support 2-objective case.
+        grad_i.shape: (n,).
+        This function support grad_i as both Tensor and numpy.
+    '''
+    v1v1 = grad_1 @ grad_1
+    v2v2 = grad_2 @ grad_2
+    v1v2 = grad_1 @ grad_2
 
+    gamma = -1.0 * ((v1v2 - v2v2) / (v1v1 + v2v2 - 2 * v1v2))
+    if v1v2 >= v1v1:
+        gamma = 0.999
+
+    if v1v2 >= v2v2:
+        gamma = 0.001
+
+    coeff = torch.Tensor([gamma, 1 - gamma])
+
+    gw = coeff[0] * grad_1 + coeff[1] * grad_2
+    if return_coeff:
+        return gw, coeff
+    else:
+        return gw
+
+
+moosvgdpy_hval_eps = 1e-2
+moosvgdpy_hval_sigma = 1.0
 
 def ts_to_np(grad_arr):
     g_np_arr = [0] * len(grad_arr)
@@ -54,6 +77,7 @@ def constraint(loss_arr, pref=Tensor([0, 1])):
     '''
     if type(pref) == np.ndarray:
         pref = Tensor(pref)
+
     constraint_mtd = 'pbi'
     if constraint_mtd == 'cel':
         eps = 1e-3
@@ -88,20 +112,28 @@ def get_cosmos_Jhf(loss, pref):
     return Jhf
 
 
-def solve_pmgda(Jacobian, grad_h, h_val, h_tol, sigma, Jhf=None):
+def solve_pmgda(Jacobian, grad_h, h_val, h_tol, sigma, return_coeff=False, Jhf=None):
     '''
         Input:
         Jacobian: (n_obj, n_var) : Tensor
         grad_h: (1, n_var)
-        h_val: (1,) : float
+        h_val: (1,)
+        args: args
+        return_coeff: bool
         Jhf: (m,) .
 
         Output:
-        alpha: (m,)
+        if use_coeff:
+            gw: (n,)
+            coeff: (m,)
+        else:
+            gw: (n,)
     '''
+    # Jacobian_np, grad_h_np = ts2np(Jacobian, grad_h)
 
-
+    # Jacobian_np = Jacobian.detach().clone().cpu().numpy()
     Jacobian_ts = Jacobian.detach().clone().to(device)
+
     grad_h_np = grad_h.detach().clone().cpu().numpy()
 
     G_ts = torch.cat((Jacobian, grad_h.unsqueeze(0)), dim=0).detach()
@@ -111,9 +143,33 @@ def solve_pmgda(Jacobian, grad_h, h_val, h_tol, sigma, Jhf=None):
     GGn = (G_ts @ G_n.T).clone().cpu().numpy()
 
     (m, n) = Jacobian_ts.shape
+    # Jacobian_np.shape : (m,n)
+    # grad_h_np.shape : (1,n)
+    # G = np.squeeze(np.r_[Jacobian_np, np.expand_dims(grad_h_np, 0)])
+    # G_norm = np.linalg.norm(G, axis=1)
+    # # G_tilde.shape: (m+1, n)
+    # G_n = np.copy(G)
+    # for i in range(G_n.shape[0]):
+    #     G_n[i] = G_n[i] / (np.linalg.norm(G_n[i]) + 1e-4)
+    # GG = G @ G.T
+    # GGn = G @ G_n.T
+    # condition1 = args.constr_type == 'l2' and h_val < args.constr_rho+args.h_eps
+    # condition2 = args.constr_type == 'linear' and h_val < args.h_eps
     condition = h_val < h_tol
+
     if condition:
-        mu_prime = solve_mgda(Jacobian_ts)
+        if m == 2:  # Only has a close-form for m=2.
+            if return_coeff:
+                gw, mu_prime = solve_mgda_analy(Jacobian_ts[0], Jacobian_ts[1], return_coeff)
+            else:
+                gw = solve_mgda_analy(Jacobian_ts[0], Jacobian_ts[1], return_coeff)
+        else:
+            if return_coeff:
+                gw, mu_prime = solve_mgda(Jacobian_ts, return_coeff)
+            else:
+                gw = solve_mgda(Jacobian_ts, return_coeff)
+
+        mu_prime = np.ones(m) / m  # The coeff is uniform just for simplicity.
     else:
         # Do the correction step. Eq. (20) in the main paper.
         # The total optimization number is m+2. A is the constraint matrix, and b is the constraint vector.
@@ -151,7 +207,11 @@ def solve_pmgda(Jacobian, grad_h, h_val, h_tol, sigma, Jhf=None):
         mu, coeff = res[:-1], res[-1]
         gw = G_n.T @ torch.Tensor(mu).to(G_n.device)
         # coeff, Eq. (18) in the main paper.
-        mu_prime = get_pmgda_DWA_coeff(mu, Jhf, G_norm, m)
+        if return_coeff:
+            if Jhf is not None:
+                mu_prime = get_pmgda_DWA_coeff(mu, Jhf, G_norm, m)
+            else:
+                assert False, 'Jhf is None not implemented.'
 
 
     return mu_prime
@@ -198,8 +258,41 @@ def solve_mgda_null(G_tilde):
     sol = solvers.qp(Q, p, G, h, A, b)
     res = np.array(sol['x']).squeeze()
     gw = res @ G_tilde
+
     return gw
 
+
+def solve_mgda(G, return_coeff=False):
+    '''
+        input G: (m,n).
+        output gw (n,).
+        comments: This function is used to solve the dual MGDA problem. It can handle m>2.
+    '''
+    m = G.shape[0]
+    Q = (G @ G.T).clone().cpu()
+
+    Q = matrix(np.float64(Q))
+    p = np.zeros(m)
+    A = np.ones(m)
+
+    A = matrix(A, (1, m))
+    b = matrix(1.0)
+
+    G_cvx = -np.eye(m)
+    h = [0.0] * m
+    h = matrix(h)
+
+    G_cvx = matrix(G_cvx)
+    p = matrix(p)
+    sol = solvers.qp(Q, p, G_cvx, h, A, b)
+
+    res = np.array(sol['x']).squeeze()
+    res = torch.Tensor(res / sum(res)).to(device)  # important
+    gw = res @ G
+    if return_coeff:
+        return gw, res
+    else:
+        return gw
 
 
 # The following three functions are used to handle.

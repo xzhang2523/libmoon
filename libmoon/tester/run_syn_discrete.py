@@ -6,14 +6,10 @@ from libmoon.util_global import synthetic_init, get_problem, uniform_pref
 from libmoon.solver.gradient.methods import EPOSolver
 from libmoon.solver.gradient.methods.pmgda_solver import PMGDASolver
 from libmoon.solver.gradient.methods.base_solver import GradAggSolver
-
 from libmoon.solver.gradient.methods.base_solver import GradBaseSolver
 from libmoon.solver.gradient.methods.core.core_solver import EPOCore, MGDAUBCore, RandomCore, AggCore, MOOSVGDCore, HVGradCore, PMTLCore
-
 from libmoon.solver.gradient.methods.core.core_solver import PMGDACore
 from libmoon.solver.gradient.methods.uniform_solver import UniformSolver
-
-
 
 
 import os
@@ -119,7 +115,7 @@ if __name__ == '__main__':
         core_solver = MGDAUBCore(n_var=problem.n_var, prefs=prefs)
     elif args.solver_name == 'random':
         core_solver = RandomCore(n_var=problem.n_var, prefs=prefs)
-    elif args.solver_name == 'random':
+    elif args.solver_name == 'pmgda':
         core_solver = PMGDACore(n_var=problem.n_var, prefs=prefs)
     elif args.solver_name.startswith('agg'):
         core_solver = AggCore(n_var=problem.n_var, prefs=prefs, solver_name=args.solver_name)

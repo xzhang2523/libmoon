@@ -47,7 +47,7 @@ if __name__ == '__main__':
     os.makedirs(output_folder_name, exist_ok=True)
     args.output_folder_name = output_folder_name
     if args.solver == 'uniform':
-        from libmoon.solver.gradient.methods.core.core_solver_bk import CoreUniform
+        from libmoon.solver.gradient.methods.bk.core_solver_bk import CoreUniform
         core_uniform = CoreUniform()
 
     print( '{} on {}'.format(args.task_name, args.dataset) )
@@ -91,17 +91,17 @@ if __name__ == '__main__':
                     Jacobian = torch.stack( [flatten_grads(gradients[idx]) for idx in range(2)] )
 
                     if args.solver == 'epo':
-                        from libmoon.solver.gradient.methods.core.core_solver_bk import CoreEPO
+                        from libmoon.solver.gradient.methods.bk.core_solver_bk import CoreEPO
                         core_epo = CoreEPO(pref)
                         alpha = torch.Tensor( core_epo.get_alpha(Jacobian, loss_vec) )
 
                     elif args.solver == 'mgda':
-                        from libmoon.solver.gradient.methods.core.core_solver_bk import CoreMGDA
+                        from libmoon.solver.gradient.methods.bk.core_solver_bk import CoreMGDA
                         core_mgda = CoreMGDA()
                         alpha = torch.Tensor( core_mgda.get_alpha(Jacobian) )
 
                     elif args.solver == 'pmgda':
-                        from libmoon.solver.gradient.methods.core.core_solver_bk import CorePMGDA
+                        from libmoon.solver.gradient.methods.bk.core_solver_bk import CorePMGDA
                         from libmoon.solver.gradient.methods.pmgda_core import get_nn_pmgda_componets
                         h_val, Jhf = get_nn_pmgda_componets(loss_vec, pref, args)
                         grad_h = torch.Tensor(Jhf) @ Jacobian

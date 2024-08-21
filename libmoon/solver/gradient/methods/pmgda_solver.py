@@ -9,9 +9,8 @@ from pymoo.indicators.hv import HV
 import numpy as np
 from libmoon.util_global.constant import solution_eps
 from libmoon.solver.gradient.methods.pmgda_core import solve_pmgda, constraint, get_Jhf
-
 from libmoon.util_global.constant import solution_eps, get_hv_ref
-
+from libmoon.solver.gradient.methods.core.mgda_core import solve_mgda
 
 
 class PMGDASolver(GradBaseSolver):
@@ -22,29 +21,22 @@ class PMGDASolver(GradBaseSolver):
         self.h_tol = h_tol
         super().__init__(step_size, n_iter, tol)
 
-
     def solve(self, x, prefs):
         # The implement of PMGDA is close to EPO
         n_obj, n_var, n_prob = self.problem.n_obj, self.problem.n_var, len(prefs)
-
         x = Variable(x, requires_grad=True)
         optimizer = SGD([x], lr=self.step_size)
-
         ref_point = get_hv_ref(self.problem.problem_name)
         ind = HV(ref_point=ref_point)
-
         hv_arr = []
         y_arr = []
         x_arr = []
 
-
         for i in tqdm(range(self.n_iter)):
             y = self.problem.evaluate(x)
             y_np = y.detach().numpy()
-
             y_arr.append( y_np )
             x_arr.append( x.detach().numpy() )
-
             hv_arr.append(
                 ind.do( y_np )
             )
@@ -64,7 +56,7 @@ class PMGDASolver(GradBaseSolver):
                 Jhf = get_Jhf(y[prob_idx], pref)
 
                 # replace it to mgda loss
-                _, alpha = solve_pmgda(Jacobian, grad_h, h_val, self.h_tol, self.sigma, return_coeff=True, Jhf=Jhf)  # combine the gradient information
+                alpha = solve_pmgda(Jacobian, grad_h, h_val, self.h_tol, self.sigma, return_coeff=True, Jhf=Jhf)  # combine the gradient information
                 alpha_arr[prob_idx] = alpha
 
             optimizer.zero_grad()

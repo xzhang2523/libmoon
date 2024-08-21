@@ -1,6 +1,6 @@
 import numpy as np
 from libmoon.problem.mtl.loaders import Adult, Credit, Compas, MultiMNISTData
-from libmoon.util_global.constant import nadir_point_dict, ideal_point_dict
+from libmoon.util.constant import nadir_point_dict, ideal_point_dict
 
 def get_dataset(dataset_name):
     if dataset_name == 'adult':

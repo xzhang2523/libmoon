@@ -2,7 +2,11 @@ import matplotlib.pyplot as plt
 from torch.utils import data
 from libmoon.problem.mtl.objectives import from_name
 from libmoon.problem.mtl.model_utils import model_from_dataset, dim_dict
+
 from libmoon.problem.mtl.settings import adult_setting, credit_setting, compass_setting, mnist_setting, fashion_setting, fmnist_setting
+
+
+
 import argparse
 import torch
 import numpy as np
@@ -13,13 +17,14 @@ from libmoon.util_global.grad_util import calc_gradients, flatten_grads
 import os
 from libmoon.util_global.constant import root_name
 from libmoon.util.mtl import get_dataset
+
 from libmoon.solver.gradient.methods.bk.core_solver_bk import CorePMGDA
 from libmoon.solver.gradient.methods.pmgda_core import get_nn_pmgda_componets
+
 from libmoon.solver.gradient.methods.bk.core_solver_bk import CoreEPO
 
 
-
-class MTL_Solver:
+class GradBaseMTLSolver:
     def __init__(self, n_prob, batch_size, lr, epoch, solver, dataset_name,
                  architecture, obj_normalization, agg, seed, h_tol=5e-3, sigma=0.8):
         print('Batch size: {}'.format(batch_size))

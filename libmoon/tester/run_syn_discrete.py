@@ -2,21 +2,17 @@ import argparse
 import numpy as np
 import sys
 sys.path.append('D:\\pycharm_project\\libmoon\\')
-from libmoon.util_global import synthetic_init, get_problem, uniform_pref
-from libmoon.solver.gradient.methods import EPOSolver
-from libmoon.solver.gradient.methods.pmgda_solver import PMGDASolver
-from libmoon.solver.gradient.methods.base_solver import GradAggSolver
+from libmoon.util import synthetic_init, get_problem, uniform_pref
 from libmoon.solver.gradient.methods.base_solver import GradBaseSolver
 from libmoon.solver.gradient.methods.core.core_solver import EPOCore, MGDAUBCore, RandomCore, AggCore, MOOSVGDCore, HVGradCore, PMTLCore
 from libmoon.solver.gradient.methods.core.core_solver import PMGDACore
-from libmoon.solver.gradient.methods.uniform_solver import UniformSolver
 
 
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 from matplotlib import pyplot as plt
-from libmoon.util_global.constant import FONT_SIZE_2D, FONT_SIZE_3D, color_arr, beautiful_dict, root_name, min_key_array
-from libmoon.util_global.constant import plt_2d_pickle_size, plt_2d_marker_size, plt_2d_label_size
+from libmoon.util.constant import FONT_SIZE_2D, FONT_SIZE_3D, color_arr, beautiful_dict, root_name, min_key_array
+from libmoon.util.constant import plt_2d_pickle_size, plt_2d_label_size
 def draw_2d_prefs(prefs):
     prefs_norm2 = prefs / np.linalg.norm(prefs, axis=1, keepdims=True)
     for idx, pref in enumerate(prefs_norm2):
@@ -31,7 +27,6 @@ def plot_figure_2d(problem):
     plt.xlabel('$L_1$', fontsize=plt_2d_label_size)
     plt.ylabel('$L_2$', fontsize=plt_2d_label_size)
     plt.axis('equal')
-    # plt.grid()
     pf = problem.get_pf(n_pareto_points=1000)
     plt.plot(pf[:, 0], pf[:, 1], color='red', linewidth=2, label='True PF')
     plt.legend(fontsize=15)
@@ -54,7 +49,6 @@ def plot_figure_3d():
     x = np.cos(theta) * np.sin(phi)
     y = np.sin(theta) * np.sin(phi)
     z = np.cos(phi)
-
     ax.plot_surface(x, y, z, alpha=0.3)
     ax.axis('equal')
     ax.view_init(30, 45)
@@ -87,6 +81,7 @@ def save_pickles(folder_name):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser( description= 'example script' )
+    # mgdaub random epo pmgda agg_ls agg_tche agg_pbi agg_cosmos, agg_softtche pmtl hvgrad moosvgd
     parser.add_argument('--solver-name', type=str, default='mgdaub')
     parser.add_argument( '--problem-name', type=str, default='VLMOP1')
     parser.add_argument('--step-size', type=float, default=1e-2)
@@ -98,16 +93,11 @@ if __name__ == '__main__':
     parser.add_argument('--seed-num', type=int, default=3)
     args = parser.parse_args()
     np.random.seed(args.seed_idx)
-
     print('Running {} on {} with seed {}'.format(args.solver_name, args.problem_name, args.seed_idx) )
     np.random.seed(args.seed_idx)
     problem = get_problem(problem_name=args.problem_name, n_var=10)
-    if problem.n_obj == 2:
-        args.n_prob = 8
-    elif problem.n_obj == 3:
-        args.n_prob = 15
-
     prefs = uniform_pref(n_prob=args.n_prob, n_obj = problem.n_obj, clip_eps=1e-2)
+
     # Actually a bit waste to implement so many solvers. Just import Core solvers.
     if args.solver_name == 'epo':
         core_solver = EPOCore(n_var=problem.n_var, prefs=prefs)

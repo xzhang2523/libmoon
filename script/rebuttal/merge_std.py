@@ -11,11 +11,11 @@ SMALL_DIGIT=3
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--problem_name', type=str, default='VLMOP1')
-    parser.add_argument('--seed_num', type=int, default=2)
+    parser.add_argument('--seed_num', type=int, default=3)
     args = parser.parse_args()
 
     pickle_name_template = 'D:\\pycharm_project\\libmoon\\Output\\discrete\\{}\\{}\\seed_{}\\res.pickle'
-    mtd_arr = ['epo', 'mgdaub', 'random', 'moosvgd', 'pmtl', 'hvgrad', 'agg_ls', 'agg_tche', 'agg_pbi', 'agg_cosmos', 'agg_softtche']
+    mtd_arr = ['epo', 'mgdaub', 'pmgda', 'random', 'moosvgd', 'pmtl', 'hvgrad', 'agg_ls', 'agg_tche', 'agg_pbi', 'agg_cosmos', 'agg_softtche']
 
     mtd_mean_dict = {}
     mtd_std_dict = {}

@@ -7,7 +7,7 @@ import torch
 from libmoon.metrics.metrics import compute_cross_angle
 from libmoon.metrics.metrics import compute_indicators, compute_hv
 from libmoon.util_global import color_arr
-from libmoon.util_mtl.util import get_mtl_prefs
+from libmoon.util.mtl import get_mtl_prefs
 import pandas as pd
 import pickle
 from libmoon.util_global.constant import PaperName, root_name

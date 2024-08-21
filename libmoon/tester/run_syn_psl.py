@@ -6,12 +6,12 @@ import numpy as np
 from tqdm import tqdm
 from libmoon.solver.psl.model import SimplePSLModel
 from torch.autograd import Variable
-from libmoon.util_global import get_problem
-from libmoon.util_global.constant import get_problem, FONT_SIZE, get_agg_func
+from libmoon.util import get_problem
+from libmoon.util.constant import get_problem, FONT_SIZE, get_agg_func
 from libmoon.solver.psl.core_psl import BasePSLSolver
 import argparse
 import os
-from libmoon.util_global import uniform_pref
+from libmoon.util import uniform_pref
 from torch import Tensor
 
 

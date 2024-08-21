@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-from libmoon.util_global.constant import get_param_num
+from libmoon.util.network import numel
 import torch.nn.functional as F
 
 from libmoon.problem.mtl.objectives import from_name

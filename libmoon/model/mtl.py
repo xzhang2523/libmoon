@@ -1,7 +1,10 @@
 import torch
 from torch import nn
-from libmoon.util_global.constant import get_param_num
+from libmoon.util.network import numel
+
+
 import torch.nn.functional as F
+
 
 class HyperNet(nn.Module):
     def __init__(self,
@@ -174,6 +177,6 @@ class LeNetTarget(nn.Module):
 if __name__ == '__main__':
     prefs = torch.rand(10, 2)
     hyper_model = HyperNet(kernel_size=[5,5])
-    model_num = get_param_num(hyper_model)   #model num: 3,186,850. It is too large, unacceptable.
-    print('model_num', model_num)
+    model_num = numel(hyper_model)   #model num: 3,186,850. It is too large, unacceptable.
+    print('model_num {:.2f}M'.format(model_num / 1e6) )
     out_dict = hyper_model(prefs)

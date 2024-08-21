@@ -1,13 +1,13 @@
 from torch.autograd import Variable
 from torch.optim import SGD
 from torch import Tensor
-from libmoon.util_global.constant import get_agg_func, solution_eps, get_hv_ref
+from libmoon.util.constant import get_agg_func, solution_eps, get_hv_ref
 import torch
 from tqdm import tqdm
 from pymoo.indicators.hv import HV
 import numpy as np
 
-from libmoon.util_global.grad_util import get_moo_Jacobian_batch
+from libmoon.util.gradient import get_moo_Jacobian_batch
 
 
 

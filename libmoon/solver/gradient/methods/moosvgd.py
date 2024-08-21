@@ -6,7 +6,7 @@ import torch
 import math
 from torch.autograd import Variable
 from torch.optim import SGD
-from libmoon.util_global.constant import solution_eps
+from libmoon.util.constant import solution_eps
 from tqdm import tqdm
 import numpy as np
 

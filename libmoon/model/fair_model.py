@@ -2,7 +2,7 @@ from torch import nn
 
 
 class FullyConnected(nn.Module):
-    def __init__(self, architecture, dim, **kwargs):
+    def __init__(self, architecture, dim):
         super().__init__()
 
         if not architecture in ['M4', 'M1', 'M2', 'M3']:

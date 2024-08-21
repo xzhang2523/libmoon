@@ -2,17 +2,17 @@ from libmoon.solver.gradient.methods.base_solver import GradBaseSolver
 from torch.autograd import Variable
 from torch.optim import SGD
 from torch import Tensor
-from libmoon.util_global.constant import get_agg_func, solution_eps, get_hv_ref
+from libmoon.util.constant import get_agg_func, solution_eps, get_hv_ref
 import torch
 from tqdm import tqdm
 from pymoo.indicators.hv import HV
 from matplotlib import pyplot as plt
 import numpy as np
-from libmoon.solver.pfl.simple import PFLModel
+from libmoon.model.simple import PFLModel
 from torch import nn
 criterion = nn.MSELoss()
 import os
-from libmoon.util.mtl import pref2angle
+from libmoon.util.xy_util import pref2angle
 
 
 def train_pfl_model(folder_name, update_idx, pfl_model, pfl_optimizer, criterion, prefs, y):

@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 # taken from https://github.com/Xi-L/ParetoMTL and adapted
 import os
 
-from libmoon.util_global.constant import root_name
+from libmoon.util.constant import root_name
 
 
 class MultiMNISTData(torch.utils.data.Dataset):

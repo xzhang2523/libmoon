@@ -1,18 +1,13 @@
 import torch
 from torch import nn
 
-
 class SimplePSLModel(nn.Module):
     def __init__(self, problem):
-
         super().__init__()
         self.problem = problem
         self.hidden_size = 256
-
         self.n_obj, self.n_var = problem.n_obj, problem.n_var
-
         if 'lbound' in dir(problem):
-
             # The input is a preference vector.
             self.psl_model = nn.Sequential(
                 nn.Linear(self.n_obj, self.hidden_size),
@@ -47,3 +42,21 @@ class SimplePSLModel(nn.Module):
             return mid * torch.Tensor(self.problem.ubound - self.problem.lbound).to(mid.device)  + torch.Tensor(self.problem.lbound).to(mid.device)
         else:
             return mid
+
+
+
+
+class PFLModel(nn.Module):
+    def __init__(self, n_obj):
+        super(PFLModel, self).__init__()
+
+
+        self.fc1 = nn.Linear(2, 10)
+        self.fc2 = nn.Linear(10, 10)
+        self.fc3 = nn.Linear(10, n_obj)
+
+    def forward(self, x):
+        x = torch.relu(self.fc1(x))
+        x = torch.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x

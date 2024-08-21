@@ -1,6 +1,6 @@
 from libmoon.util.constant import max_indicators
 import numpy as np
-
+import torch
 
 def set_indicators_rank(Indicators, indicator_dict_dict_saved, mtd_arr):
     for indicator in Indicators:
@@ -28,5 +28,20 @@ def get_indicator(problem_name, mtd_name, num_seed, use_save=False):
     for key in indicator_dict_seed[0].keys():
         mean_indicator_dict[key] = np.mean([indicator_dict[key] for indicator_dict in indicator_dict_seed])
         std_indicator_dict[key] = np.std([indicator_dict[key] for indicator_dict in indicator_dict_seed])
-
     return mean_indicator_dict, std_indicator_dict
+
+
+
+def pref2angle(pref):
+    if type(pref) == torch.Tensor:
+        angle = torch.arctan2(pref[:,1], pref[:,0])
+        angle = angle.unsqueeze(1)
+    else:
+        angle = np.arctan2(pref[:,0], pref[:,1])
+    return angle
+
+def angle2pref(angle):
+    if type(angle) == torch.Tensor:
+        return torch.squeeze(torch.stack([torch.cos(angle), torch.sin(angle)], dim=1))
+    else:
+        return np.stack([np.cos(angle), np.sin(angle)], axis=1)

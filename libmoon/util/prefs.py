@@ -34,3 +34,7 @@ def uniform_pref(n_prob, n_obj=2, clip_eps=0, mode='uniform'):
 
     return prefs
 
+
+def get_random_prefs(batch_size, n_obj):
+    return np.random.dirichlet(np.ones(n_obj), batch_size)
+

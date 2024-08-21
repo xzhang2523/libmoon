@@ -8,12 +8,11 @@ loss_func_arr = from_name(names=['CrossEntropyLoss', 'CrossEntropyLoss'], task_n
 from libmoon.problem.mtl.loaders import MultiMNISTData
 from tqdm import tqdm
 from matplotlib import pyplot as plt
-from libmoon.util_global.constant import get_agg_func
+from libmoon.util.constant import get_agg_func
 import pickle
-from libmoon.util_global.grad_util import numel
+from libmoon.util.gradient import numel
 from time import time
 from libmoon.solver.psl.model.mtl import HyperNet, LeNetTarget
-
 
 
 def save_pickle():
@@ -52,7 +51,7 @@ if __name__ == '__main__':
     parse.add_argument('--device-name', type=str, default='gpu')
     parse.add_argument('--ray-hidden', type=int, default=100)
     args = parse.parse_args()
-    from libmoon.util_global.constant import root_name
+    from libmoon.util.constant import root_name
 
     if args.solver.startswith('agg'):
         args.task_name = '{}_{}'.format(*args.solver.split('_'))
@@ -62,12 +61,14 @@ if __name__ == '__main__':
     print('Task name: {}'.format(args.task_name))
     print('Dataset:{}'.format(args.dataset))
     print('Device:{}'.format(args.device_name))
+
     dataset = MultiMNISTData(args.dataset, 'train')
     loader = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size, shuffle=True,
                                          num_workers=0)
     dataset_test = MultiMNISTData('mnist', 'test')
     loader_test = torch.utils.data.DataLoader(dataset_test, batch_size=args.batch_size, shuffle=True,
                                               num_workers=0)
+
     args.device = torch.device("cpu") if args.device_name == 'cpu' else torch.device("cuda")
     if args.model == 'lenet':
         hnet = HyperNet([9, 5])

@@ -10,7 +10,7 @@ from torch.autograd import Variable
 
 from tqdm import tqdm
 from pymoo.indicators.hv import HV
-from libmoon.util_global.constant import solution_eps, get_hv_ref
+from libmoon.util.constant import solution_eps, get_hv_ref
 
 """
     The class HVMaxSolver is based on the algorithm described by

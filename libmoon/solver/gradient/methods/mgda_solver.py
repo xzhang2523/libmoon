@@ -7,7 +7,7 @@ from torch.optim import SGD
 from tqdm import tqdm
 from torch import Tensor
 import numpy as np
-from libmoon.util_global.constant import solution_eps, get_hv_ref
+from libmoon.util.constant import solution_eps, get_hv_ref
 from pymoo.indicators.hv import HV
 
 from libmoon.problem.synthetic import ZDT1, ZDT2

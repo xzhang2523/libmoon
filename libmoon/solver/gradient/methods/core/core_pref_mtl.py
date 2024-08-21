@@ -1,66 +1,42 @@
 import matplotlib.pyplot as plt
 from torch.utils import data
 from libmoon.problem.mtl.objectives import from_name
-from libmoon.problem.mtl.model_utils import model_from_dataset, dim_dict
-
-from libmoon.problem.mtl.settings import adult_setting, credit_setting, compass_setting, mnist_setting, fashion_setting, fmnist_setting
-
-
+from libmoon.util.mtl import model_from_dataset, mtl_dim_dict, mtl_setting_dict
 
 import argparse
 import torch
 import numpy as np
 from tqdm import tqdm
-from libmoon.util_global.constant import get_agg_func, normalize_vec
-from libmoon.util_global.grad_util import calc_gradients, flatten_grads
-
+from libmoon.util.constant import get_agg_func, normalize_vec, root_name
+from libmoon.util.gradient import calc_gradients, flatten_grads
 import os
-from libmoon.util_global.constant import root_name
 from libmoon.util.mtl import get_dataset
 
-from libmoon.solver.gradient.methods.bk.core_solver_bk import CorePMGDA
-from libmoon.solver.gradient.methods.pmgda_core import get_nn_pmgda_componets
-
-from libmoon.solver.gradient.methods.bk.core_solver_bk import CoreEPO
 
 
 class GradBaseMTLSolver:
-    def __init__(self, n_prob, batch_size, lr, epoch, solver, dataset_name,
-                 architecture, obj_normalization, agg, seed, h_tol=5e-3, sigma=0.8):
-        print('Batch size: {}'.format(batch_size))
-        print('Learning rate: {}'.format(lr))
-        print('Sigma: {}'.format(sigma))
-        self.solver = solver
-        self.agg = agg
-        self.seed = seed
-        self.lr = lr
+    def __init__(self, problem_name, n_prob, batch_size, step_size, epoch, core_solver):
+        self.problem_name = problem_name
+        dataset_train = get_dataset(args.problem_name, type='train')
+        dataset_test = get_dataset(args.problem_name, type='test')
+        self.train_loader = torch.utils.data.DataLoader(dataset_train, batch_size=args.batch_size, shuffle=True,
+                                                   num_workers=0)
+        self.test_loader = torch.utils.data.DataLoader(dataset_test, batch_size=args.batch_size, shuffle=True,
+                                                  num_workers=0)
         self.epoch = epoch
-        self.dataset_name = dataset_name
-        self.obj_normalization = obj_normalization
-        self.architecture = architecture
+        self.problem_name = problem_name
         self.n_prob = n_prob
         self.batch_size = batch_size
-        self.dataset = get_dataset( self.dataset_name )
-        self.h_tol = h_tol
-        self.sigma = sigma
+        self.dataset = get_dataset(self.problem_name)
 
-        self.setting_dict = {
-            'adult': adult_setting,
-            'credit': credit_setting,
-            'compass': compass_setting,
-            'mnist' : mnist_setting,
-            'fashion' : fashion_setting,
-            'fmnist' : fmnist_setting,
-        }
-
-        self.settings = self.setting_dict[ self.dataset_name ]
-        self.trainloader = data.DataLoader(self.dataset, batch_size=self.batch_size, num_workers=0)
+        self.settings = mtl_setting_dict[ self.dataset_name ]
         self.obj_arr = from_name( self.settings['objectives'], self.dataset.task_names() )
-        self.model_arr = [model_from_dataset(self.dataset_name, self.architecture, dim=dim_dict[self.dataset_name])
-                          for _ in range( n_prob )]
+        self.model_arr = [model_from_dataset(self.dataset_name) for _ in range( n_prob )]
         self.optimizer_arr = [ torch.optim.Adam(model.parameters(), lr=self.lr)
                                for model in self.model_arr ]
         self.update_counter = 0
+
+
 
 
     def solve(self, pref_mat):

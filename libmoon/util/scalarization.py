@@ -91,6 +91,9 @@ def cosmos(f_arr, w, coeff=10, z=0):
         return d1 - coeff * d2
 
 
+def draw_contour(func, x_range, y_range, n_points=100):
+    print()
+
 
 if __name__ == '__main__':
     f_arr = torch.rand(100, 2)

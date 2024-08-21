@@ -7,9 +7,9 @@ import torch
 from numpy import array
 from pymoo.indicators.hv import HV
 import numpy as np
-from libmoon.util_global.constant import solution_eps
+from libmoon.util.constant import solution_eps
 from libmoon.solver.gradient.methods.pmgda_core import solve_pmgda, constraint, get_Jhf
-from libmoon.util_global.constant import solution_eps, get_hv_ref
+from libmoon.util.constant import solution_eps, get_hv_ref
 from libmoon.solver.gradient.methods.core.mgda_core import solve_mgda
 
 

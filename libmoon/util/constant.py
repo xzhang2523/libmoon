@@ -127,8 +127,6 @@ def get_device():
         print('cuda is not available')
     return device
 
-def get_param_num(model):
-    return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 # color_arr = ['blue', 'red', 'green', 'orange', 'purple', 'brown', 'pink', 'grey', 'black', 'yellow'] * 100
 

@@ -36,7 +36,7 @@ class MultiLeNet(nn.Module):
 
 
 if __name__ == '__main__':
-    from libmoon.util_global.constant import root_name
+    from libmoon.util.constant import root_name
     import os
     import pickle
 

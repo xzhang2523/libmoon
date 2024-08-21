@@ -5,7 +5,7 @@ import torch
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from torch.utils import data
-from libmoon.util_global.constant import root_name
+from libmoon.util.constant import root_name
 
 
 

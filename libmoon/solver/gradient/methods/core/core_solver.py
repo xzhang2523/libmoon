@@ -13,8 +13,8 @@ from numpy import array
 from pymoo.indicators.hv import HV
 import warnings
 warnings.filterwarnings("ignore")
-from libmoon.util_global.constant import solution_eps, get_hv_ref
-from libmoon.util_global.grad_util import get_moo_Jacobian
+from libmoon.util.constant import solution_eps, get_hv_ref
+from libmoon.util.gradient import get_moo_Jacobian
 from libmoon.problem.synthetic.zdt import ZDT1
 
 from libmoon.solver.gradient.methods.gradhv import HVMaxSolver

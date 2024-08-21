@@ -4,7 +4,7 @@ from .min_norm_solvers_numpy import MinNormSolver
 import numpy as np
 from torch.autograd import Variable
 from tqdm import tqdm
-from libmoon.util_global.constant import solution_eps
+from libmoon.util.constant import solution_eps
 from libmoon.solver.gradient.methods.core.mgda_core import solve_mgda
 
 

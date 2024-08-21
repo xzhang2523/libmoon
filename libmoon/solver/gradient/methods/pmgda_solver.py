@@ -54,7 +54,6 @@ class PMGDASolver(GradBaseSolver):
                 x.grad.zero_()
                 h_val = float(h.detach().clone().numpy())
                 Jhf = get_Jhf(y[prob_idx], pref)
-
                 # replace it to mgda loss
                 alpha = solve_pmgda(Jacobian, grad_h, h_val, self.h_tol, self.sigma, return_coeff=True, Jhf=Jhf)  # combine the gradient information
                 alpha_arr[prob_idx] = alpha

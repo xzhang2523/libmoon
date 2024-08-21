@@ -188,13 +188,14 @@ class PMGDACore():
             idx: int
         '''
         # (1) get the constraint value
-        h = constraint(losses, pref=self.prefs[idx])
-        h_val = h.detach().clone().numpy()
-
-        alpha = solve_pmgda(Jacobian, grad_h, h_val, self.h_eps, self.sigma, Jhf=Jhf)
-
-
-
+        losses_var = Variable(losses, requires_grad=True)
+        h_var = constraint(losses_var, pref=self.prefs[idx])
+        h_val = h_var.detach().clone().numpy()
+        h_var.backward()
+        Jacobian_h_losses = losses_var.grad.detach().clone()
+        # shape: (n_obj)
+        alpha = solve_pmgda(Jacobian, Jacobian_h_losses, h_val, self.h_eps, self.sigma)
+        return torch.Tensor(alpha).to(Jacobian.device)
 
 
 
@@ -206,7 +207,7 @@ class MGDAUBCore():
         self.core_name = 'MGDAUBCore'
 
     def get_alpha(self, Jacobian, losses, idx):
-        _, alpha = solve_mgda(Jacobian, return_coeff=True)
+        alpha = solve_mgda(Jacobian)
         return alpha
 
 

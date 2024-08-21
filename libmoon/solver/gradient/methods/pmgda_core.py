@@ -88,7 +88,7 @@ def get_cosmos_Jhf(loss, pref):
     return Jhf
 
 
-def solve_pmgda(Jacobian, grad_h, h_val, h_tol, sigma, Jhf=None):
+def solve_pmgda(Jacobian, Jacobian_h_losses, h_val, h_tol, sigma):
     '''
         Input:
         Jacobian: (n_obj, n_var) : Tensor
@@ -99,13 +99,10 @@ def solve_pmgda(Jacobian, grad_h, h_val, h_tol, sigma, Jhf=None):
         Output:
         alpha: (m,)
     '''
-
-
+    grad_h = Jacobian_h_losses @ Jacobian
     Jacobian_ts = Jacobian.detach().clone().to(device)
     grad_h_np = grad_h.detach().clone().cpu().numpy()
-
     G_ts = torch.cat((Jacobian, grad_h.unsqueeze(0)), dim=0).detach()
-    # GG = (G_ts @ G_ts.T).detach().clone().cpu().numpy()
     G_norm = torch.norm(G_ts, dim=1, keepdim=True)
     G_n = G_ts / (G_norm + 1e-4)
     GGn = (G_ts @ G_n.T).clone().cpu().numpy()
@@ -151,14 +148,10 @@ def solve_pmgda(Jacobian, grad_h, h_val, h_tol, sigma, Jhf=None):
         mu, coeff = res[:-1], res[-1]
         gw = G_n.T @ torch.Tensor(mu).to(G_n.device)
         # coeff, Eq. (18) in the main paper.
-        mu_prime = get_pmgda_DWA_coeff(mu, Jhf, G_norm, m)
+        mu_prime = get_pmgda_DWA_coeff(mu, Jacobian_h_losses, G_norm, m)
 
 
     return mu_prime
-    # if return_coeff:
-    #     return mu_prime
-    # else:
-    #     return gw
 
 
 

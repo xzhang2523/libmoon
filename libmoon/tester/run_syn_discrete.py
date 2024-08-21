@@ -71,7 +71,10 @@ def save_figures(folder_name):
     plt.savefig(fig_name, bbox_inches='tight')
     fig_name_svg = os.path.join(folder_name, 'res.svg')
     plt.savefig(fig_name_svg, bbox_inches='tight')
+
     print('Save fig to {}'.format(fig_name))
+    print('Save fig to {}'.format(fig_name_svg))
+
     plt.title(beautiful_dict[args.solver_name])
 
 def save_pickles(folder_name):
@@ -84,16 +87,13 @@ def save_pickles(folder_name):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser( description= 'example script' )
-    parser.add_argument('--solver-name', type=str, default='pmgda')
+    parser.add_argument('--solver-name', type=str, default='mgdaub')
     parser.add_argument( '--problem-name', type=str, default='VLMOP1')
     parser.add_argument('--step-size', type=float, default=1e-2)
     parser.add_argument('--tol', type=float, default=1e-2)
     parser.add_argument('--draw-fig', type=str, default='True')
-    parser.add_argument('--use-plt', type=str, default='Y')
-    parser.add_argument('--h-tol', type=float, default=1e-3)
-    parser.add_argument('--sigma', type=float, default=0.9)
     parser.add_argument('--n-prob', type=int, default=8 )
-    parser.add_argument('--epoch', type=int, default=200 )
+    parser.add_argument('--epoch', type=int, default=1000 )
     parser.add_argument('--seed-idx', type=int, default=0)
     parser.add_argument('--seed-num', type=int, default=3)
     args = parser.parse_args()

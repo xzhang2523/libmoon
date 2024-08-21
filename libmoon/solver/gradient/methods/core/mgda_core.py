@@ -9,7 +9,7 @@ from cvxopt import matrix, solvers
 solvers.options['show_progress'] = False
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-def solve_mgda_analy(grad_1, grad_2, return_coeff = False):
+def solve_mgda_analy(grad_1, grad_2):
     '''
         Noted that, solve_mgda_analy only support 2-objective case.
         grad_i.shape: (n,).
@@ -25,16 +25,13 @@ def solve_mgda_analy(grad_1, grad_2, return_coeff = False):
         gamma = 0.001
     else:
         gamma = -1.0 * ((v1v2 - v2v2) / (v1v1 + v2v2 - 2 * v1v2))
-
-
     coeff = torch.Tensor([gamma, 1 - gamma] )
-    gw = coeff[0] * grad_1 + coeff[1] * grad_2
-    if return_coeff:
-        return gw, coeff
-    else:
-        return gw
+    # gw = coeff[0] * grad_1 + coeff[1] * grad_2
+    # else:
+    #     return gw
+    return coeff
 
-def solve_mgda(G, return_coeff=False):
+def solve_mgda(G):
     '''
         input G: (m,n).
         output gw (n,).
@@ -44,7 +41,7 @@ def solve_mgda(G, return_coeff=False):
     #     G = G.detach().cpu().numpy().copy()
     m = G.shape[0]
     if m == 2:
-        return solve_mgda_analy(G[0], G[1], return_coeff=return_coeff)
+        return solve_mgda_analy(G[0], G[1])
     else:
         Q = G @ G.T
         Q = matrix(np.float64(Q))
@@ -64,11 +61,6 @@ def solve_mgda(G, return_coeff=False):
 
         res = np.array(sol['x']).squeeze()
         res = res / sum(res)  # important
-        gw = torch.Tensor( res @ G )
-
-        if return_coeff:
-            return gw, res
-        else:
-            return gw
+        return res
 
 

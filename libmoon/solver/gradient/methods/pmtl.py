@@ -33,7 +33,7 @@ def get_d_paretomtl(grads, value, weights, i):
     vec = np.concatenate((grads, np.dot(w[idx], grads)), axis=0)
     # use MinNormSolver to solve QP
     # sol, nd = MinNormSolver.find_min_norm_element( vec )
-    _, sol = solve_mgda( torch.Tensor(vec), return_coeff=True)
+    sol = solve_mgda( torch.Tensor(vec))
 
     # reformulate ParetoMTL as linear scalarization method, return the weights
     weight0 = sol[0] + np.sum(np.array([sol[j] * w[idx][j - 2, 0] for j in np.arange(2, 2 + np.sum(idx))]))
@@ -46,7 +46,7 @@ def get_d_paretomtl(grads, value, weights, i):
 
 def get_d_paretomtl_init(grads, value, weights, i):
     # calculate the gradient direction for Pareto MTL initialization
-    grads = grads.cpu()
+    # grads = grads.cpu()
     nobj, dim = grads.shape
     # check active constraints
     normalized_current_weight = weights[i] / np.linalg.norm(weights[i])
@@ -62,10 +62,17 @@ def get_d_paretomtl_init(grads, value, weights, i):
         sol = np.ones(1)
     else:
         vecs = np.dot(w[idx], grads)
-        _, sol = solve_mgda( torch.Tensor(vecs), return_coeff=True)
+        sol = solve_mgda( torch.Tensor(vecs))
     # calculate the weights
-    weight0 = np.sum(np.array([sol[j] * w[idx][j, 0] for j in np.arange(0, np.sum(idx))]))
-    weight1 = np.sum(np.array([sol[j] * w[idx][j, 1] for j in np.arange(0, np.sum(idx))]))
+
+    w_index = w[idx]
+
+    # weight0 = np.sum( np.array([sol[j] * w_index[j, 0] for j in np.arange(0, np.sum(idx))]) )
+    # weight1 = np.sum( np.array([sol[j] * w[idx][j, 1] for j in np.arange(0, np.sum(idx))]) )
+    #
+    weight0 = sol @ w_index[:, 0]
+    weight1 = sol @ w_index[:, 1]
+
     weight = np.stack([weight0, weight1])
     return weight
 

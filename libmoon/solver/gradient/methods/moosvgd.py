@@ -8,11 +8,9 @@ from torch.autograd import Variable
 from torch.optim import SGD
 from libmoon.util_global.constant import solution_eps
 from tqdm import tqdm
+import numpy as np
 
-
-
-
-def kernel_functional_rbf(losses):
+def kernel_functional_rbf(losses, bandwidth=5e-6):
     '''
         input losses: (n_prob, n_obj)
         output kernel_matrix: (n_prob, n_prob)
@@ -21,9 +19,10 @@ def kernel_functional_rbf(losses):
     n = losses.shape[0]
     pairwise_distance = torch.norm(losses[:, None] - losses, dim=2).pow(2)
     h = median(pairwise_distance) / math.log(n)
-    A = 5e-6  # Noted, this bandwith parameter is important.
-    kernel_matrix = torch.exp(-pairwise_distance / A*h)  # 5e-6 for zdt1,2,3, zxy, Dec 5, 2023
+    # A = 5e-6  # Noted, this bandwith parameter is important.
+    kernel_matrix = torch.exp(-pairwise_distance / bandwidth*h)  # 5e-6 for zdt1,2,3, zxy, Dec 5, 2023
     return kernel_matrix
+
 
 def median(tensor):
     """
@@ -34,29 +33,63 @@ def median(tensor):
     return (torch.cat((tensor, tensor_max)).median() + tensor.median()) / 2.
 
 
+# def get_svgd_gradient(Jacobian_array, inputs, losses):
+#     '''
+#         :param Jacobian_array.shape: (n_prob, n_obj, n_var)
+#         :param inputs.shape: (n_prob, n_var)
+#         :param losses.shape: (n_prob, n_obj)
+#
+#         Return: gradient: (n_prob, n_obj). Please change the output to (n_prob, n_obj).
+#     '''
+#     n_prob = inputs.size(0)
+#     # G shape (n_prob, n_obj, n_var)
+#     g_w = [0] * n_prob
+#     # What is gw?
+#     for idx in range(n_prob):
+#         g_w[idx] = torch.Tensor( solve_mgda(Jacobian_array[idx], return_coeff=False) )
+#     g_w = torch.stack(g_w)  # (n_prob, n_var)
+#     # See https://github.com/activatedgeek/svgd/issues/1#issuecomment-649235844 for why there is a factor -0.5
+#     kernel = kernel_functional_rbf(losses)
+#     kernel_grad = -0.5 * torch.autograd.grad(kernel.sum(), inputs, allow_unused=True)[0]   # (n_prob, n_var)
+#     gradient = (kernel.mm(g_w) - kernel_grad) / n_prob
+#     return gradient
 
-def get_svgd_gradient(G, inputs, losses):
+
+
+def get_svgd_alpha_array(Jacobian_array, loss_array, input):
     '''
-        :param G.shape: (n_prob, n_obj, n_var)
-        :param inputs.shape: (n_prob, n_var)
+        :param Jacobian_array.shape: (n_prob, n_obj, n_var)
         :param losses.shape: (n_prob, n_obj)
-        :return:
+        :param inputs.shape: (n_prob, n_var)
+        Return: gradient: (n_prob, n_obj). Please change the output to (n_prob, n_obj).
     '''
-    n_prob = inputs.size(0)
-    # G shape (n_prob, n_obj, n_var)
-    g_w = [0] * n_prob
-    # What is gw?
-    for idx in range(n_prob):
-        g_w[idx] = torch.Tensor( solve_mgda(G[idx], return_coeff=False) )
-    g_w = torch.stack(g_w)  # (n_prob, n_var)
+    # Jacobian_array
+    n_prob, n_obj, n_var = Jacobian_array.size()
+    alpha_mgda_array = torch.stack([solve_mgda(Jacobian_array[idx]) for idx in range(n_prob)])
+    # shape (n_prob, n_obj)
+
+    loss_array_var = Variable(loss_array, requires_grad=True)
+    kernel = kernel_functional_rbf(loss_array_var)
+
+    # shape (n_prob, n_prob)
+    alpha1 = kernel.detach().mm(alpha_mgda_array)
+    alpha2 = -0.5 * torch.autograd.grad(kernel.sum(), loss_array_var, allow_unused=True)[0]  # (n_prob, n_var)
+
+    return (alpha1-alpha2) / n_prob
+    # print()
+
+
+
+
+
+    # print()
+
+
+
     # See https://github.com/activatedgeek/svgd/issues/1#issuecomment-649235844 for why there is a factor -0.5
-    kernel = kernel_functional_rbf(losses)
-    kernel_grad = -0.5 * torch.autograd.grad(kernel.sum(), inputs, allow_unused=True)[0]   # (n_prob, n_var)
-    gradient = (kernel.mm(g_w) - kernel_grad) / n_prob
-    return gradient
-
-
-
+    # kernel = kernel_functional_rbf(losses)
+    # kernel_grad = -0.5 * torch.autograd.grad(kernel.sum(), input, allow_unused=True)[0]   # (n_prob, n_var)
+    # gradient = (kernel.mm(g_w) - kernel_grad) / n_prob
 
 
 

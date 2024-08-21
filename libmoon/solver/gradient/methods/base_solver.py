@@ -32,12 +32,12 @@ class GradBaseSolver:
         optimizer = SGD([xs_var], lr=self.step_size)
         ind = HV(ref_point=get_hv_ref(problem.problem_name))
         hv_arr, y_arr = [], []
-        for iter_idx in tqdm(range(self.epoch)):
+        for epoch_idx in tqdm(range(self.epoch)):
             fs_var = problem.evaluate(xs_var)
             y_np = fs_var.detach().numpy()
             y_arr.append(y_np)
             hv_arr.append(ind.do(y_np))
-            Jacobian_arr = get_moo_Jacobian_batch(xs_var, fs_var, self.n_obj)
+            Jacobian_array = get_moo_Jacobian_batch(xs_var, fs_var, self.n_obj)
             y_detach = fs_var.detach()
             optimizer.zero_grad()
             if self.is_agg:
@@ -47,14 +47,18 @@ class GradBaseSolver:
                 torch.sum(agg_val).backward()
             else:
                 if self.core_solver.core_name in ['EPOCore', 'MGDAUBCore', 'RandomCore']:
-                    weights = torch.stack([self.core_solver.get_alpha(Jacobian_arr[idx], y_detach[idx], idx) for idx in range( self.n_prob) ])
+                    weights = torch.stack([self.core_solver.get_alpha(Jacobian_array[idx], y_detach[idx], idx) for idx in range( self.n_prob) ])
                 # elif self.core_solver.core_name == 'AggCore':
                 elif self.core_solver.core_name in ['PMTLCore', 'MOOSVGDCore', 'HVGradCore']:
                     # assert False, 'Unknown core_name'
                     if self.core_solver.core_name == 'HVGradCore':
                         weights = self.core_solver.get_alpha_array(y_detach)
+                    elif self.core_solver.core_name == 'PMTLCore':
+                        weights = self.core_solver.get_alpha_array(Jacobian_array, y_np, epoch_idx)
+                    elif self.core_solver.core_name == 'MOOSVGDCore':
+                        weights = self.core_solver.get_alpha_array(Jacobian_array, y_detach)
                     else:
-                        weights = self.core_solver.get_alpha_array(Jacobian_arr, y_detach)
+                        assert False, 'Unknown core_name'
                 else:
                     assert False, 'Unknown core_name'
 

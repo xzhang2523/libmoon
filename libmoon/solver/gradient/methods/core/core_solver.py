@@ -20,6 +20,12 @@ from libmoon.problem.synthetic.zdt import ZDT1
 from libmoon.solver.gradient.methods.gradhv import HVMaxSolver
 # D:\pycharm_project\libmoon\libmoon\solver\gradient\methods\gradhv.py
 
+from libmoon.solver.gradient.methods.pmtl import get_d_paretomtl_init, get_d_paretomtl
+# D:\pycharm_project\libmoon\libmoon\solver\gradient\methods\pmtl.py
+
+from libmoon.solver.gradient.methods.moosvgd import get_svgd_alpha_array
+# D:\pycharm_project\libmoon\libmoon\solver\gradient\methods\moosvgd.py
+
 
 class EPO_LP(object):
     # Paper: https://proceedings.mlr.press/v119/mahapatra20a.html
@@ -171,6 +177,7 @@ class RandomCore():
         n_obj = len(losses)
         return torch.rand(n_obj)
 
+
 class AggCore():
     def __init__(self, n_var, prefs, solver_name):
         self.core_name = 'AggCore'
@@ -194,7 +201,14 @@ class MOOSVGDCore():
             losses_arr: (n_prob, m)
             Return: (n_prob, m)
         '''
-        pass
+        alpha_array = get_svgd_alpha_array(Jacobian_arr, losses_arr, None)
+        return alpha_array
+        # pass
+
+
+
+
+
 
 class HVGradCore():
     def __init__(self, problem):
@@ -217,11 +231,40 @@ class HVGradCore():
 
 
 class PMTLCore():
-    def __init__(self, problem):
-        self.core_name = 'HVGradCore'
+    def __init__(self, problem, total_epoch, warmup_epoch, prefs):
+        '''
+        Input:
+            problem: Problem
+            total_epoch: int
+            warmup_epoch: int
+            prefs: (n_prob, n_obj)
+        '''
+        self.core_name = 'PMTLCore'
+        self.n_obj, self.n_var = problem.n_obj, problem.n_var
+        self.total_epoch = total_epoch
+        self.warmup_epoch = warmup_epoch
+        self.prefs_np = prefs.numpy() if type(prefs) == torch.Tensor else prefs
 
-    def get_alpha_array(self, losses):
-        pass
+
+    def get_alpha_array(self, Jacobian_array, losses, epoch_idx):
+        '''
+            Input:Jacobian_array: (n_prob, n_obj, n_var)
+                    losses: (n_prob, n_obj)
+                    epoch_idx: int
+            Return: (n_prob, n_obj)
+        '''
+        if type(losses) == torch.Tensor:
+            losses_np = losses.detach().numpy()
+        else:
+            losses_np = losses
+        n_prob = losses_np.shape[0]
+        Jacobian_array_np = Jacobian_array.detach().numpy()
+        if epoch_idx < self.warmup_epoch:
+            weights = [get_d_paretomtl_init(Jacobian_array_np[i], losses_np[i], self.prefs_np, i) for i in range(n_prob)]
+        else:
+            weights = [get_d_paretomtl(Jacobian_array_np[i], losses_np[i], self.prefs_np, i) for i in range(n_prob)]
+        weights = torch.Tensor(np.array(weights)).to(Jacobian_array.device)
+        return weights
 
 
 

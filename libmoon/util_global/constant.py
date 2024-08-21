@@ -22,7 +22,6 @@ nadir_point_dict = {
     'fmnist': array([0.6, 0.6]),
 }
 
-
 ideal_point_dict = {
     'adult': array([0.3, 0.01]),
     'compass': array([0.04, 0.04]),
@@ -31,7 +30,6 @@ ideal_point_dict = {
     'fashion': array([0.4, 0.4]),
     'fmnist': array([0.2, 0.4]),
 }
-
 
 def normalize_vec(x, problem ):
     ideal = ideal_point_dict[problem]
@@ -69,18 +67,19 @@ oracle_indicators = ['hv', 'spacing', 'sparsity', 'uniform', 'soft uniform']
 max_indicators = {'hv', 'uniform', 'soft uniform'}
 
 beautiful_ind_dict = {
-    'hv': 'HV',
-    'igd': 'IGD',
     'spacing': 'Spacing',
     'sparsity': 'Sparsity',
+    'inner_product': 'IP',
+    'cross_angle': 'Cross Angle',
+    'pbi' : 'PBI',
+    'hv': 'HV',
     'lmin': 'Lmin',
     'soft_lmin': 'Soft Lmin',
     'maxgd': 'MaxGD',
-    'inner_product': 'IP',
-    'cross_angle': 'Cross Angle',
-    'pbi' : 'PBI'
-
+    'igd': 'IGD',
 }
+
+min_key_array = ['spacing', 'sparsity', 'pbi', 'cross_angle', 'inner_product'  ]
 
 scale_dict = {
     'hv': 1,
@@ -155,12 +154,14 @@ beautiful_dict = {
     'uniform': 'UMOD',
     'agg_ls': 'Agg-LS',
     'agg_tche': 'Agg-Tche',
+    'agg_softtche': 'Agg-SoftTche',
     'agg_mtche': 'Agg-mTche',
     'agg_cosmos': 'Agg-COSMOS',
     'agg_pbi': 'Agg-PBI',
     'hvgrad': 'HVGrad',
     'pmtl': 'PMTL',
-    'random' : 'Random'
+    'random' : 'Random',
+    'moosvgd' : 'MOO-SVGD'
 }
 
 all_mtd_arr = ['epo', 'pmgda', 'agg_ls', 'agg_tche', 'agg_mtche', 'agg_cosmos', 'agg_pbi', 'hvgrad', 'uniform', 'pmtl']

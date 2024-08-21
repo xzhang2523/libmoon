@@ -7,7 +7,6 @@ def get_moo_Jacobian_batch(x_batch, y_batch, n_obj):
                 n_obj: int
         Return: grad_batch: (batch_size, n_obj, n_var)
     '''
-
     grad_batch = []
     batch_size = len(x_batch)
     for batch_idx in range(batch_size):
@@ -19,9 +18,6 @@ def get_moo_Jacobian_batch(x_batch, y_batch, n_obj):
             x_batch.grad.zero_()
         grad_batch.append( torch.stack(grad_arr_idx) )
     return torch.stack(grad_batch)
-
-
-
 
 
 
@@ -38,6 +34,7 @@ def get_moo_Jacobian(x, y, n_obj):
 
 def flatten_grads(grads_dict):
     return torch.cat( [v.view(-1) for _, v in grads_dict.items()] )
+
 
 def calc_gradients(batch, model, objectives):
     # store gradients and objective values

@@ -37,7 +37,7 @@ def get_dataset(dataset_name, type='train'):
 
 def model_from_dataset(dataset_name, architecture='M1', **kwargs):
     dim = mtl_dim_dict[dataset_name]
-    print('dim:',dim)
+    # print('dim:',dim)
     if dataset_name == 'adult':
         return FullyConnected(architecture, dim, **kwargs)
     elif dataset_name == 'credit':

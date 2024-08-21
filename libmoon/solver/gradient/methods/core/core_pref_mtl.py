@@ -15,49 +15,46 @@ from libmoon.util.mtl import get_dataset
 
 
 class GradBaseMTLSolver:
-    def __init__(self, problem_name, n_prob, batch_size, step_size, epoch, core_solver):
+    def __init__(self, problem_name, n_prob, batch_size, step_size, epoch, core_solver, prefs):
+        self.step_size = step_size
         self.problem_name = problem_name
-        dataset_train = get_dataset(args.problem_name, type='train')
-        dataset_test = get_dataset(args.problem_name, type='test')
-        self.train_loader = torch.utils.data.DataLoader(dataset_train, batch_size=args.batch_size, shuffle=True,
-                                                   num_workers=0)
-        self.test_loader = torch.utils.data.DataLoader(dataset_test, batch_size=args.batch_size, shuffle=True,
-                                                  num_workers=0)
         self.epoch = epoch
-        self.problem_name = problem_name
         self.n_prob = n_prob
         self.batch_size = batch_size
         self.dataset = get_dataset(self.problem_name)
+        self.settings = mtl_setting_dict[self.problem_name]
+        self.prefs = prefs
+        self.core_solver = core_solver
 
-        self.settings = mtl_setting_dict[ self.dataset_name ]
+        train_dataset = get_dataset(self.problem_name, type='train')
+        test_dataset = get_dataset(self.problem_name, type='test')
+        self.train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True,
+                                                   num_workers=0)
+        self.test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=self.batch_size, shuffle=True,
+                                                  num_workers=0)
+
         self.obj_arr = from_name( self.settings['objectives'], self.dataset.task_names() )
-        self.model_arr = [model_from_dataset(self.dataset_name) for _ in range( n_prob )]
-        self.optimizer_arr = [ torch.optim.Adam(model.parameters(), lr=self.lr)
+        self.model_arr = [model_from_dataset(self.problem_name) for _ in range( n_prob )]
+        self.optimizer_arr = [ torch.optim.Adam(model.parameters(), lr=self.step_size)
                                for model in self.model_arr ]
         self.update_counter = 0
 
 
 
 
-    def solve(self, pref_mat):
-        if type(pref_mat) == np.ndarray:
-            pref_mat = torch.Tensor(pref_mat)
+    def solve(self):
         epoch_loss_pref = []
         for _ in tqdm( range(self.epoch) ):
             loss_batch = []
             for b, batch in enumerate(self.trainloader ):
                 loss_mat = [0] * len(pref_mat)
                 for pref_idx, pref in enumerate(pref_mat):
-
                     logits = self.model_arr[pref_idx](batch)
                     batch.update(logits)
                     loss_vec = [0] * 2
                     for idx, obj in enumerate(self.obj_arr):
                         loss_vec[idx] = obj(**batch)
-
                     loss_vec = torch.stack(loss_vec)
-                    if self.obj_normalization:
-                        loss_vec = normalize_vec( loss_vec, problem=self.dataset_name )
 
                     if self.solver.start_with('agg'):
                         agg_func = get_agg_func(self.agg, self.co)
@@ -86,7 +83,6 @@ class GradBaseMTLSolver:
                         scalar_loss = torch.squeeze(agg_func(loss_vec.unsqueeze(0), pref.unsqueeze(0)))
                     else:
                         scalar_loss = torch.sum(alpha * loss_vec)
-
                     self.optimizer_arr[pref_idx].zero_grad()
                     scalar_loss.backward()
                     self.optimizer_arr[pref_idx].step()
@@ -94,9 +90,6 @@ class GradBaseMTLSolver:
                     loss_mat[pref_idx] = loss_vec.detach().cpu().numpy()
                 loss_mat = np.array(loss_mat)
                 loss_batch.append(loss_mat)
-
-
-
             loss_batch = np.array(loss_batch)
             epoch_loss_pref.append(np.mean(loss_batch, axis=0))
         epoch_loss_pref = np.array(epoch_loss_pref)
@@ -135,11 +128,11 @@ if __name__ == '__main__':
     else:
         args.task_name = self.solver
 
-    output_folder_name = os.path.join(root_name, 'output', 'mtl', args.task_name, self.dataset_name, '{}'.format(args.seed))
+    output_folder_name = os.path.join(root_name, 'output', 'mtl', args.task_name, self.problem_name, '{}'.format(args.seed))
     os.makedirs(output_folder_name, exist_ok=True)
     args.output_folder_name = output_folder_name
 
-    epo_solver = MTL_Solver(dataset_name='adult', n_prob=5)
+    epo_solver = MTL_Solver(problem_name='adult', n_prob=5)
     loss_pref_final = epo_solver.solve()
 
     plt.scatter(loss_pref_final[:,0], loss_pref_final[:,1])

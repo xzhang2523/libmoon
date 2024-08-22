@@ -8,7 +8,7 @@ from libmoon.util.prefs import uniform_pref
 from libmoon.util.constant import root_name
 from libmoon.util.mtl import get_dataset, model_from_dataset
 from libmoon.util.network import numel
-from libmoon.solver.gradient.methods.core.core_mtl import GradBaseMTLSolver
+from libmoon.solver.gradient.methods.core.core_mtl import GradBaseMTLSolver, GradBasePSLMTLSolver
 from libmoon.solver.gradient.methods.core.core_solver import EPOCore, MGDAUBCore, RandomCore, AggCore, MOOSVGDCore, HVGradCore, PMTLCore
 from libmoon.solver.gradient.methods.core.core_solver import PMGDACore
 from libmoon.util.mtl import get_mtl_prefs
@@ -16,9 +16,7 @@ import os
 from matplotlib import pyplot as plt
 from libmoon.util.constant import plt_2d_tickle_size, plt_2d_marker_size, plt_2d_label_size
 
-
 def plot_fig_2d(folder_name, loss, prefs):
-
     rho = np.max([np.linalg.norm(elem) for elem in loss])
     prefs_l2 = prefs / np.linalg.norm(prefs, axis=1, keepdims=True)
 
@@ -64,11 +62,7 @@ if __name__ == '__main__':
     model = model_from_dataset(args.problem_name)
     num_param = numel(model)
     print('Number of parameters: {}'.format(num_param))
-
-    # prefs = uniform_pref(n_prob=args.n_prob, n_obj = 2, clip_eps=1e-2)
     prefs = get_mtl_prefs(problem_name=args.problem_name, n_prob=args.n_prob)
-
-
     if args.solver_name == 'epo':
         core_solver = EPOCore(n_var=num_param, prefs=prefs)
     elif args.solver_name == 'mgdaub':
@@ -93,9 +87,7 @@ if __name__ == '__main__':
     res = solver.solve()
     res['prefs'] = prefs
     res['y'] = res['loss']
-
     loss = res['loss']
-
 
 
     folder_name = os.path.join(root_name, 'Output', 'discrete', args.problem_name, args.solver_name,

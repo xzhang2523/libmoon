@@ -11,6 +11,89 @@ from libmoon.util.constant import get_agg_func, normalize_vec, root_name
 from libmoon.util.gradient import calc_gradients_mtl, flatten_grads
 import os
 from libmoon.util.mtl import get_dataset
+from libmoon.model.hypernet import HyperNet, LeNetTarget
+from time import time
+
+
+class GradBasePSLMTLSolver:
+    def __init__(self, problem_name, batch_size, step_size, epoch, device):
+        self.step_size = step_size
+        self.problem_name = problem_name
+        self.epoch = epoch
+        self.batch_size = batch_size
+        self.device = device
+
+        train_dataset = get_dataset(self.problem_name, type='train')
+        test_dataset = get_dataset(self.problem_name, type='test')
+        self.train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True,
+                                                        num_workers=0)
+        self.test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=self.batch_size, shuffle=True,
+                                                       num_workers=0)
+        # For hypernetwork model, we have the hypernet and target network.
+        self.hnet = HyperNet(kernel_size=(3,3))
+        self.net = LeNetTarget(kernel_size=(3,3))
+
+
+    def solve(self):
+        for epoch_idx in tqdm(range(self.epoch)):
+            for batch_idx, batch in enumerate(self.train_loader):
+                ray = torch.from_numpy(
+                    np.random.dirichlet((1, 1), 1).astype(np.float32).flatten()
+                ).to(self.device)  # ray.shape (1,2)
+
+                # batch_ = {}
+                # for k, v in batch.items():
+                #     batch_[k] = v.to(args.device)
+                #
+                self.hnet.train()
+                weights = self.hnet(ray)
+                logits_l, logits_r = self.net(batch['data'], weights)
+                # batch_['logits_l'] = logits_l
+                # batch_['logits_r'] = logits_r
+                loss_arr = torch.stack([loss(**batch_) for loss in loss_func_arr])
+                optimizer.zero_grad()
+                # Here is the core here
+                if args.solver == 'agg':
+                    loss_arr = torch.atleast_2d(loss_arr)
+                    ray = torch.atleast_2d(ray)
+                    loss = agg_func(loss_arr, ray)
+
+                (loss).backward()
+                loss_item = loss.cpu().detach().numpy()
+                loss_history.append(loss_item)
+                optimizer.step()
+
+
+
+
+    def eval(self, eval):
+
+        loss_ray = []
+        for ray in test_ray:
+            loss_arr_epoch = []
+            for i, batch in enumerate(loader):
+                batch_ = {}
+                for k, v in batch.items():
+                    batch_[k] = v.to(args.device)
+                hnet.train()
+                weights = hnet(ray)
+                logits_l, logits_r = net(batch_['data'], weights)
+                batch_['logits_l'] = logits_l
+                batch_['logits_r'] = logits_r
+                loss_arr = torch.stack([loss(**batch_) for loss in loss_func_arr])
+                loss_arr_epoch.append(loss_arr)
+                optimizer.zero_grad()
+                loss = ray @ loss_arr
+                (loss).backward()
+                loss_item = loss.cpu().detach().numpy()
+                loss_history.append(loss_item)
+                optimizer.step()
+            loss_arr_epoch = torch.stack(loss_arr_epoch)
+            loss_arr_epoch_mean = torch.mean(loss_arr_epoch, dim=0)
+            loss_ray.append(loss_arr_epoch_mean)
+
+
+
 
 
 class GradBaseMTLSolver:
@@ -115,41 +198,7 @@ class GradBaseMTLSolver:
 
 
 
+
+
 if __name__ == '__main__':
-    if torch.cuda.is_available():
-        print("CUDA is available")
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', type=str, default='adult')
-    parser.add_argument('--solver', type=str, default='uniform')
-
-    parser.add_argument('--agg', type=str, default='tche')
-    parser.add_argument('--epoch', type=int, default=10)
-    parser.add_argument('--batch-size', type=int, default=256)
-    parser.add_argument('--n-sub', type=int, default=5)
-    parser.add_argument('--lr', type=float, default=1e-2)
-    parser.add_argument('--n-obj', type=int, default=2)
-
-    parser.add_argument('--update-counter', type=int, default=0)
-    parser.add_argument('--uniform-update-counter', type=int, default=0)
-    parser.add_argument('--uniform-update-iter', type=int, default=2000)
-    # For pmgda
-    parser.add_argument('--h-eps', type=float, default=5e-3)
-    parser.add_argument('--sigma', type=float, default=0.8)
-    parser.add_argument('--seed', type=int, default=1)
-
-    args = parser.parse_args()
-    if self.solver == 'agg':
-        args.task_name = 'agg_{}'.format(args.agg)
-    else:
-        args.task_name = self.solver
-
-    output_folder_name = os.path.join(root_name, 'output', 'mtl', args.task_name, self.problem_name, '{}'.format(args.seed))
-    os.makedirs(output_folder_name, exist_ok=True)
-    args.output_folder_name = output_folder_name
-
-    epo_solver = MTL_Solver(problem_name='adult', n_prob=5)
-    loss_pref_final = epo_solver.solve()
-
-    plt.scatter(loss_pref_final[:,0], loss_pref_final[:,1])
-    plt.show()
+    print()

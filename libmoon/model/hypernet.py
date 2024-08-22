@@ -1,10 +1,7 @@
 import torch
 from torch import nn
 from libmoon.util.network import numel
-
-
 import torch.nn.functional as F
-
 
 class HyperNet(nn.Module):
     def __init__(self,

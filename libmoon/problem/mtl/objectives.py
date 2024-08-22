@@ -24,8 +24,8 @@ class CrossEntropyLoss(torch.nn.CrossEntropyLoss):
         self.label_name = label_name
         self.logits_name = logits_name
 
-    def __call__(self, **kwargs):
-        logits = kwargs[self.logits_name]
+    def __call__(self, logits, **kwargs):
+        # logits = kwargs[self.logits_name]
         labels = kwargs[self.label_name]
         res = super().__call__(logits, labels)
         return res
@@ -35,8 +35,8 @@ class BinaryCrossEntropyLoss(torch.nn.BCEWithLogitsLoss):
         super().__init__(reduction='mean', pos_weight=torch.Tensor([pos_weight]).cuda() if pos_weight else None)
         self.label_name = label_name
         self.logits_name = logits_name
-    def __call__(self, **kwargs):
-        logits = kwargs[self.logits_name]
+    def __call__(self, logits, **kwargs):
+        # logits = kwargs[self.logits_name]
         labels = kwargs[self.label_name]
         if logits.ndim == 2:
             logits = torch.squeeze(logits)
@@ -102,8 +102,8 @@ class DEOHyperbolicTangentRelaxation():
         self.s_name = s_name
         self.c = c
 
-    def __call__(self, **kwargs):
-        logits = kwargs[self.logits_name]
+    def __call__(self, logits, **kwargs):
+        # logits = kwargs[self.logits_name]
         labels = kwargs[self.label_name]
         sensible_attribute = kwargs[self.s_name]
         n = logits.shape[0]

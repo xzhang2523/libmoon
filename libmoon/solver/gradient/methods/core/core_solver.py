@@ -197,8 +197,6 @@ class PMGDACore():
         alpha = solve_pmgda(Jacobian, Jacobian_h_losses, h_val, self.h_eps, self.sigma)
         return torch.Tensor(alpha).to(Jacobian.device)
 
-
-
 '''
     MGDASolver. 
 '''
@@ -245,19 +243,14 @@ class MOOSVGDCore():
         '''
         alpha_array = get_svgd_alpha_array(Jacobian_arr, losses_arr, None)
         return alpha_array
-        # pass
-
-
-
-
 
 
 class HVGradCore():
-    def __init__(self, problem):
+    def __init__(self, n_obj, n_var, problem_name):
         self.core_name = 'HVGradCore'
         # problem = get_problem(problem_name=problem_name, n_var=n_var)
-        self.n_obj, self.n_var = problem.n_obj, problem.n_var
-        self.problem_name = problem.problem_name
+        self.n_obj, self.n_var = n_obj, n_var
+        self.problem_name = problem_name
 
     def get_alpha_array(self, losses):
         '''
@@ -273,7 +266,7 @@ class HVGradCore():
 
 
 class PMTLCore():
-    def __init__(self, problem, total_epoch, warmup_epoch, prefs):
+    def __init__(self, n_obj, n_var, total_epoch, warmup_epoch, prefs):
         '''
         Input:
             problem: Problem
@@ -282,7 +275,7 @@ class PMTLCore():
             prefs: (n_prob, n_obj)
         '''
         self.core_name = 'PMTLCore'
-        self.n_obj, self.n_var = problem.n_obj, problem.n_var
+        self.n_obj, self.n_var = n_obj, n_var
         self.total_epoch = total_epoch
         self.warmup_epoch = warmup_epoch
         self.prefs_np = prefs.numpy() if type(prefs) == torch.Tensor else prefs
@@ -307,14 +300,6 @@ class PMTLCore():
             weights = [get_d_paretomtl(Jacobian_array_np[i], losses_np[i], self.prefs_np, i) for i in range(n_prob)]
         weights = torch.Tensor(np.array(weights)).to(Jacobian_array.device)
         return weights
-
-
-
-
-
-
-
-
 
 
 

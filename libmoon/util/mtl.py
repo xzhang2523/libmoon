@@ -2,11 +2,7 @@ import numpy as np
 from libmoon.problem.mtl.loaders import Adult, Credit, Compas, MultiMNISTData
 from libmoon.util.constant import nadir_point_dict, ideal_point_dict
 from libmoon.model import MultiLeNet, FullyConnected
-# from libmoon.util.mtl import dim_dict
 from libmoon.problem.mtl.settings import adult_setting, credit_setting, compass_setting, mnist_setting, fashion_setting, fmnist_setting
-
-
-
 
 
 mtl_dim_dict = {
@@ -49,7 +45,6 @@ def model_from_dataset(dataset_name, architecture='M1', **kwargs):
     else:
         raise ValueError("Unknown model name {}".format(dataset_name))
 
-
 def get_angle_range(dataset, return_degrees=False):
     p1 = [nadir_point_dict[dataset][0], ideal_point_dict[dataset][1]]
     p2 = [ideal_point_dict[dataset][0], nadir_point_dict[dataset][1]]
@@ -60,12 +55,12 @@ def get_angle_range(dataset, return_degrees=False):
         th2 = np.rad2deg(th2)
     return th1, th2
 
-def get_mtl_prefs(dataset, n_prob, obj_normalization=True):
+def get_mtl_prefs(problem_name, n_prob, obj_normalization=False):
     if obj_normalization:
         theta_arr = np.linspace(0, np.pi/2, n_prob)
     else:
-        p1 = [nadir_point_dict[dataset][0], ideal_point_dict[dataset][1]]
-        p2 = [ideal_point_dict[dataset][0], nadir_point_dict[dataset][1]]
+        p1 = [nadir_point_dict[problem_name][0], ideal_point_dict[problem_name][1]]
+        p2 = [ideal_point_dict[problem_name][0], nadir_point_dict[problem_name][1]]
         th1 = np.arctan2(p1[1], p1[0])
         th2 = np.arctan2(p2[1], p2[0])
         theta_arr = np.linspace(th1, th2, n_prob)

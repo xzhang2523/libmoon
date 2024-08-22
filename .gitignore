@@ -4,6 +4,8 @@
 .idea/
 output/
 archive/
+global_bk/
+
 
 *.iml
 *.ipynb_checkpoints/

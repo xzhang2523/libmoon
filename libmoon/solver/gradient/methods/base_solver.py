@@ -40,6 +40,8 @@ class GradBaseSolver:
             Jacobian_array = get_moo_Jacobian_batch(xs_var, fs_var, self.n_obj)
             y_detach = fs_var.detach()
             optimizer.zero_grad()
+
+
             if self.is_agg:
                 agg_name = self.core_solver.solver_name.split('_')[-1]
                 agg_func = get_agg_func(agg_name)

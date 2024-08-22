@@ -12,7 +12,7 @@ import os
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 from matplotlib import pyplot as plt
 from libmoon.util.constant import FONT_SIZE_2D, FONT_SIZE_3D, color_arr, beautiful_dict, root_name, min_key_array
-from libmoon.util.constant import plt_2d_pickle_size, plt_2d_label_size
+from libmoon.util.constant import plt_2d_tickle_size, plt_2d_label_size
 def draw_2d_prefs(prefs):
     prefs_norm2 = prefs / np.linalg.norm(prefs, axis=1, keepdims=True)
     for idx, pref in enumerate(prefs_norm2):
@@ -22,8 +22,8 @@ def draw_2d_prefs(prefs):
 def plot_figure_2d(problem):
     y_arr = res['y']
     plt.scatter(y_arr[:, 0], y_arr[:, 1], color='black')
-    plt.xticks(fontsize=plt_2d_pickle_size)
-    plt.yticks(fontsize=plt_2d_pickle_size)
+    plt.xticks(fontsize=plt_2d_tickle_size)
+    plt.yticks(fontsize=plt_2d_tickle_size)
     plt.xlabel('$L_1$', fontsize=plt_2d_label_size)
     plt.ylabel('$L_2$', fontsize=plt_2d_label_size)
     plt.axis('equal')
@@ -121,6 +121,7 @@ if __name__ == '__main__':
 
     solver = GradBaseSolver(step_size=args.step_size, epoch=args.epoch, tol=args.tol, core_solver=core_solver)
     res = solver.solve(problem=problem, x=synthetic_init(problem, prefs), prefs=prefs )
+    # res.keys()
     res['prefs'] = prefs
 
     folder_name = os.path.join(root_name, 'Output', 'discrete', args.problem_name, args.solver_name, 'seed_{}'.format(args.seed_idx))

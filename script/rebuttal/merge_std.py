@@ -7,8 +7,9 @@ import argparse
 import os
 
 SMALL_DIGIT=3
+
 if __name__ == '__main__':
-    task = 'task3'
+    task = 'task3'    #Task 3, synthetic psl
     parser = argparse.ArgumentParser()
     parser.add_argument('--problem_name', type=str, default='adult')
     parser.add_argument('--seed_num', type=int, default=3)
@@ -20,9 +21,15 @@ if __name__ == '__main__':
     mtd_arr = ['agg_tche', 'agg_mtche', 'agg_pbi', 'agg_cosmos', 'agg_softtche',]     # For syn psl usage
 
     mtd_arr = ['epo', 'mgdaub', 'pmgda', 'random', 'moosvgd', 'pmtl', 'hvgrad',
-               'agg_ls', 'agg_tche','agg_pbi', 'agg_cosmos', 'agg_softtche']  # for mtl discrete usage
+               'agg_ls', 'agg_tche','agg_mtche', 'agg_pbi', 'agg_cosmos', 'agg_softtche']  # for mtl discrete usage
 
-    if task == 'task3':
+    if task == 'task2':
+        args.problem_name = 'adult'
+        args.task = 'discrete'
+        mtd_arr = ['epo', 'mgdaub', 'pmgda', 'random', 'moosvgd', 'pmtl', 'hvgrad',
+                   'agg_ls', 'agg_tche', 'agg_pbi', 'agg_cosmos', 'agg_softtche']  # for mtl discrete usage
+
+    elif task == 'task3':
         args.problem_name = 'RE21'
         args.task = 'psl'
         mtd_arr = ['agg_tche', 'agg_mtche', 'agg_pbi', 'agg_cosmos', 'agg_softtche', 'epo', 'pmgda']  # For syn psl usage

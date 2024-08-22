@@ -77,6 +77,7 @@ beautiful_ind_dict = {
     'soft_lmin': 'Soft Lmin',
     'maxgd': 'MaxGD',
     'igd': 'IGD',
+    'span': 'Span',
 }
 
 min_key_array = ['spacing', 'sparsity', 'pbi', 'cross_angle', 'inner_product'  ]

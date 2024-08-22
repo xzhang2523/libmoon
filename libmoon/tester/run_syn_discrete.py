@@ -91,6 +91,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     np.random.seed(args.seed_idx)
+    print('Synthetic discrete')
     print('Running {} on {} with seed {}'.format(args.solver_name, args.problem_name, args.seed_idx) )
     np.random.seed(args.seed_idx)
     problem = get_problem(problem_name=args.problem_name, n_var=10)

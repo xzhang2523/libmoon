@@ -81,8 +81,6 @@ def save_pickle(folder_name, res):
     print('Save pickle to {}'.format(pickle_name))
 
 
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     # solver array: ['agg_ls', 'agg_tche', 'agg_pbi', 'agg_cosmos', 'epo']
@@ -102,7 +100,8 @@ if __name__ == '__main__':
     problem = get_problem(problem_name=args.problem_name, n_var=10)
     solver = BasePSLSolver(problem, batch_size=128, device='cuda', lr=1e-3, epoch=args.epoch,
                            solver_name=args.solver_name, use_es=False)
-    print('Running {} on {}'.format(args.solver_name, args.problem_name))
+    print('Synthetic PSL')
+    print('Running {} on {} with seed {}'.format(args.solver_name, args.problem_name, args.seed_idx))
     model, loss_history = solver.solve()
 
     prefs = uniform_pref(n_prob=args.eval_num, n_obj=problem.n_obj, clip_eps=1e-2)
@@ -111,7 +110,8 @@ if __name__ == '__main__':
     res['y'] = eval_y
     res['prefs'] = prefs
 
-    folder_name = os.path.join('D:\\pycharm_project\\libmoon\\output\\psl', args.problem_name, args.solver_name, 'seed_{}'.format(args.seed_idx) )
+    folder_name = os.path.join('D:\\pycharm_project\\libmoon\\output\\psl', args.problem_name, args.solver_name,
+                               'seed_{}'.format(args.seed_idx) )
     os.makedirs(folder_name, exist_ok=True)
 
     if problem.n_obj==2:

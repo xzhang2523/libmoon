@@ -83,6 +83,10 @@ def compute_inner_product(sols, prefs):
     ip_values_vec = np.sum(sum_value, axis=1)
     return np.mean(ip_values_vec)
 
+def compute_span(sols):
+    return np.min(np.max(sols, axis=0) - np.min(sols, axis=0))
+
+
 
 def compute_cross_angle(sols, prefs):
     arccos_value_arr = []
@@ -102,12 +106,13 @@ def compute_indicators(objs, prefs):
     '''
     lmin = compute_lmin(objs)
     soft_lmin = compute_soft_lmin(objs)
-    spacing = compute_spacing(objs)
-    sparsity = compute_sparsity(objs)
+    spacing = compute_spacing(objs) * 100
+    sparsity = compute_sparsity(objs) * 100
     hv = compute_hv(objs)
     inner_product = compute_inner_product(objs, prefs)
     cross_angle = compute_cross_angle(objs, prefs)
     pbi = compute_pbi(objs, prefs)
+    span = compute_span(objs)
     return {
         'lmin': lmin,
         'soft_lmin': soft_lmin,
@@ -116,8 +121,10 @@ def compute_indicators(objs, prefs):
         'hv': hv,
         'inner_product': inner_product,
         'cross_angle': cross_angle,
-        'pbi': pbi
+        'pbi': pbi,
+        'span': span
     }
+
 
 if __name__ == '__main__':
     objs = np.random.rand(100, 2)

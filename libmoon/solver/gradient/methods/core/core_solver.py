@@ -190,7 +190,7 @@ class PMGDACore():
         # (1) get the constraint value
         losses_var = Variable(losses, requires_grad=True)
         h_var = constraint(losses_var, pref=self.prefs[idx])
-        h_val = h_var.detach().clone().numpy()
+        h_val = h_var.detach().cpu().clone().numpy()
         h_var.backward()
         Jacobian_h_losses = losses_var.grad.detach().clone()
         # shape: (n_obj)

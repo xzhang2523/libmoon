@@ -10,8 +10,8 @@ import torch
 FONT_SIZE = 20
 FONT_SIZE_2D = 20
 FONT_SIZE_3D = 20
-
 solution_eps = 1e-5
+
 
 nadir_point_dict = {
     'adult': array([0.6, 0.12]),
@@ -144,7 +144,6 @@ beautiful_dict = {
     'adjust' : 'UMOEA/D',
     'Subset' : 'Subset',
     'awa': 'AWA',
-    # For Gradient use.
     'epo': 'EPO',
     'mgdaub': 'MGDA-UB',
     'pmgda': 'PMGDA',
@@ -160,6 +159,22 @@ beautiful_dict = {
     'pmtl': 'PMTL',
     'random' : 'Random',
     'moosvgd' : 'MOO-SVGD'
+}
+
+paper_dict = {
+    'epo' : 'Mahapatra et al 2020',
+    'mgdaub' : 'Sener et al 2018',
+    'pmgda' : 'Zhang et al 2024',
+    'random' : 'Lin et al 2021',
+    'moosvgd' : 'Liu et al 2021',
+    'pmtl' : 'Lin et al 2019',
+    'hvgrad' : 'Deist et al 2021',
+    'agg_ls' : 'Miettinen et al 1999',
+    'agg_tche' : 'Zhang et al 2007',
+    'agg_pbi' : 'Zhang et al 2007',
+    'agg_cosmos' : 'Ruchte et al 2007',
+    'agg_softtche' : 'Lin et al 2024',
+    'agg_mtche' : 'Ma et al 2017',
 }
 
 all_mtd_arr = ['epo', 'pmgda', 'agg_ls', 'agg_tche', 'agg_mtche', 'agg_cosmos', 'agg_pbi', 'hvgrad', 'uniform', 'pmtl']

@@ -53,6 +53,7 @@ class RE21(BaseMOP):
 
 
     def _evaluate_torch(self, x):
+
         x1 = x[:, 0]
         x2 = x[:, 1]
         x3 = x[:, 2]
@@ -64,7 +65,7 @@ class RE21(BaseMOP):
         f1 = L * ( (2 * x1) + np.sqrt(2.0) * x2 + torch.sqrt(x3) + x4 )
         f2 = ((F * L) / E) * ((2.0 / x1) + (2.0 * np.sqrt(2.0) / x2) - (2.0 * np.sqrt(2.0) / x3) + (2.0 / x4))
         f_arr = torch.stack((f1, f2), dim=1)
-        f_arr_norm = (f_arr - self.ideal) / (self.nadir - self.ideal)
+        f_arr_norm = (f_arr - Tensor(self.ideal).to(f_arr.device) ) / Tensor(self.nadir - self.ideal).to(f_arr.device)
         f_arr_norm[:, 0] = 0.5 * f_arr_norm[:, 0]
         return f_arr_norm
 

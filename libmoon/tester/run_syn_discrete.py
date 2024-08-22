@@ -32,7 +32,7 @@ def plot_figure_2d(problem):
     plt.legend(fontsize=15)
     draw_2d_prefs(prefs)
 
-def plot_figure_3d():
+def plot_figure_3d(folder_name):
     sub_sample = 1
     ax = (plt.figure()).add_subplot(projection='3d')
     for idx in range(len(prefs)):
@@ -65,10 +65,8 @@ def save_figures(folder_name):
     plt.savefig(fig_name, bbox_inches='tight')
     fig_name_svg = os.path.join(folder_name, 'res.svg')
     plt.savefig(fig_name_svg, bbox_inches='tight')
-
     print('Save fig to {}'.format(fig_name))
     print('Save fig to {}'.format(fig_name_svg))
-
     plt.title(beautiful_dict[args.solver_name])
 
 def save_pickles(folder_name):
@@ -89,8 +87,8 @@ if __name__ == '__main__':
     parser.add_argument('--draw-fig', type=str, default='True')
     parser.add_argument('--n-prob', type=int, default=8 )
     parser.add_argument('--epoch', type=int, default=1000 )
-    parser.add_argument('--seed-idx', type=int, default=0)
-    parser.add_argument('--seed-num', type=int, default=3)
+    parser.add_argument('--seed-idx', type=int, default=1)
+
     args = parser.parse_args()
     np.random.seed(args.seed_idx)
     print('Running {} on {} with seed {}'.format(args.solver_name, args.problem_name, args.seed_idx) )

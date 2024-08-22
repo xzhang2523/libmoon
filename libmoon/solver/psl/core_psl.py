@@ -2,15 +2,15 @@ import matplotlib.pyplot as plt
 import torch
 import numpy as np
 from tqdm import tqdm
-from libmoon.solver.psl.model import SimplePSLModel
+from libmoon.model.simple import SimplePSLModel
 from torch.autograd import Variable
-from libmoon.util_global import get_problem
-from libmoon.util_global.constant import get_problem, FONT_SIZE, get_agg_func
-from libmoon.util_global.grad_util import get_moo_Jacobian_batch
+from libmoon.util import get_problem
+from libmoon.util.constant import get_problem, FONT_SIZE, get_agg_func
+from libmoon.util.gradient import get_moo_Jacobian_batch
 
 
 # D:\pycharm_project\libmoon\libmoon\solver\gradient\methods\core\core_solver.py
-from libmoon.solver.gradient.methods.core.core_solver import EPOCore
+from libmoon.solver.gradient.methods.core.core_solver import EPOCore, PMGDACore
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
@@ -70,12 +70,16 @@ class BasePSLSolver:
                 agg_func = get_agg_func(self.agg)
                 g = agg_func(fs, prefs)
                 loss = torch.mean(g)
-            elif self.solver_name in ['epo']:
+            elif self.solver_name in ['epo', 'pmgda']:
                 # Use core_epo_cls
                 Jacobian_arr = get_moo_Jacobian_batch(xs_var, fs_var, self.n_obj)
                 # shape: (batch_size, n_obj, n_var)
-                epo_core = EPOCore(n_var=self.n_var, prefs=prefs)
-                alpha_arr = torch.stack([epo_core.get_alpha(Jacobian_arr[idx], fs_detach[idx], idx)
+                if self.solver_name == 'epo':
+                    core_solver = EPOCore(n_var=self.n_var, prefs=prefs)
+                else:
+                    core_solver = PMGDACore(n_var=self.n_var, prefs=prefs)
+
+                alpha_arr = torch.stack([core_solver.get_alpha(Jacobian_arr[idx], fs_detach[idx], idx)
                                          for idx in range(self.batch_size)]).to(self.device)
                 # shape: (batch_size, n_obj)
                 loss = torch.mean(alpha_arr * fs)

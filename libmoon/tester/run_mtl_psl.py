@@ -12,7 +12,7 @@ from libmoon.util.constant import get_agg_func
 import pickle
 from libmoon.util.gradient import numel
 from time import time
-from libmoon.solver.psl.model.mtl import HyperNet, LeNetTarget
+from libmoon.model.mtl import HyperNet, LeNetTarget
 
 
 def save_pickle():

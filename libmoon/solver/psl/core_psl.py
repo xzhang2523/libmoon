@@ -89,8 +89,12 @@ class BasePSLSolver:
 
             loss_history.append(loss.cpu().detach().numpy())
             self.optimizer.zero_grad()
+
             loss.backward()
+            # gradient clip here
+            torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1)
             self.optimizer.step()
+
         return self.model, loss_history
 
 

@@ -10,14 +10,13 @@ from tqdm import tqdm
 from matplotlib import pyplot as plt
 from libmoon.util.constant import get_agg_func
 import pickle
-from libmoon.util.gradient import numel
+from libmoon.util.network import numel
 from time import time
 from libmoon.model.mtl import HyperNet, LeNetTarget
 
-
 def save_pickle():
     # save pickle
-    pickle_name = os.path.join(save_dir, 'res.pickle')
+    pickle_name = os.path.join(folder_name, 'res.pickle')
     with open(pickle_name, 'wb') as f:
         pickle.dump({
             'loss_history': loss_history,
@@ -25,7 +24,7 @@ def save_pickle():
             'running_time': running_time
         }, f)
     print('Pickle saved to {}'.format(pickle_name))
-    txt_name = os.path.join(save_dir, 'running_time.txt')
+    txt_name = os.path.join(folder_name, 'running_time.txt')
     with open(txt_name, 'w') as f:
         f.write('Running time: {} s'.format(running_time))
 
@@ -34,9 +33,11 @@ def plot_train():
     plt.plot(np.array(loss_history))
     plt.xlabel('Iteration', fontsize=18)
     plt.ylabel('Hypernet loss', fontsize=18)
-    save_fig_name = os.path.join(save_dir, 'hypernet_loss.pdf')
+    save_fig_name = os.path.join(folder_name, 'hypernet_loss.pdf')
     plt.savefig(save_fig_name)
     print('save to {}'.format(save_fig_name))
+
+
 
 
 if __name__ == '__main__':
@@ -98,6 +99,7 @@ if __name__ == '__main__':
             loss_arr = torch.stack([loss(**batch_) for loss in loss_func_arr])
             optimizer.zero_grad()
 
+            # Here is the core here
             if args.solver == 'agg':
                 loss_arr = torch.atleast_2d(loss_arr)
                 ray = torch.atleast_2d(ray)
@@ -112,8 +114,8 @@ if __name__ == '__main__':
     running_time = np.round((time() - ts) /6,2)
     import os
 
-    save_dir = os.path.join(root_name, 'Output', 'psl', 'mtl', args.dataset, args.task_name, args.device)
-    os.makedirs(save_dir, exist_ok=True)
+    folder_name = os.path.join(root_name, 'Output', 'psl', 'mtl', args.dataset, args.task_name, args.device)
+    os.makedirs(folder_name, exist_ok=True)
 
 
 
@@ -157,7 +159,7 @@ if __name__ == '__main__':
     plt.scatter(loss_ray_np[:, 0], loss_ray_np[:, 1])
     plt.xlabel('Loss 1', fontsize=18)
     plt.ylabel('Loss 2', fontsize=18)
-    save_fig_name = os.path.join(save_dir, 'loss_ray.pdf')
+    save_fig_name = os.path.join(folder_name, 'loss_ray.pdf')
     plt.savefig(save_fig_name)
     print('save to {}'.format(save_fig_name))
 

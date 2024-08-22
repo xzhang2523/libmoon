@@ -30,7 +30,7 @@ if __name__ == '__main__':
                    'agg_ls', 'agg_tche', 'agg_pbi', 'agg_cosmos', 'agg_softtche']  # for mtl discrete usage
 
     elif task == 'task3':
-        args.problem_name = 'RE21'
+        args.problem_name = 'RE37'
         args.task = 'psl'
         mtd_arr = ['agg_tche', 'agg_mtche', 'agg_pbi', 'agg_cosmos', 'agg_softtche', 'epo', 'pmgda']  # For syn psl usage
 

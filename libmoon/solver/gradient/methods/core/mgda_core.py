@@ -44,7 +44,8 @@ def solve_mgda(Jacobian):
     if m == 2:
         return solve_mgda_analy(Jacobian[0], Jacobian[1])
     else:
-        Q = Jacobian @ Jacobian.T
+        Q = (Jacobian @ Jacobian.T).cpu().detach().numpy()
+
         Q = matrix(np.float64(Q))
         p = np.zeros(m)
         A = np.ones(m)

@@ -30,8 +30,8 @@ class GradBasePSLMTLSolver:
         self.test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=self.batch_size, shuffle=True,
                                                        num_workers=0)
         # For hypernetwork model, we have the hypernet and target network.
-        self.hnet = HyperNet(kernel_size=(3,3))
-        self.net = LeNetTarget(kernel_size=(3,3))
+        self.hnet = HyperNet(kernel_size=(3,3)).to(self.device)
+        self.net = LeNetTarget(kernel_size=(3,3)).to(self.device)
 
 
     def solve(self):

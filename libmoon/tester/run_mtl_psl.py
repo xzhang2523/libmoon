@@ -38,7 +38,6 @@ def plot_train_process(folder_name, loss_history):
     print('save to {}'.format(save_fig_name))
 
 
-
 if __name__ == '__main__':
     parse = argparse.ArgumentParser()
     parse.add_argument('--epoch', type=int, default=10)
@@ -48,7 +47,8 @@ if __name__ == '__main__':
     parse.add_argument('--n-obj', type=int, default=2)
     parse.add_argument('--solver', type=str, default='agg_ls')
 
-    parse.add_argument('--problem-name', type=str, default='adult')
+    # problem_name: ['mnist', 'fashion', 'mfashion']
+    parse.add_argument('--problem-name', type=str, default='')
     parse.add_argument('--device', type=str, default='gpu')
     parse.add_argument('--n-eval', type=int, default=10)
 

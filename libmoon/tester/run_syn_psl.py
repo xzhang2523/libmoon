@@ -11,7 +11,7 @@ from libmoon.util.constant import get_problem, FONT_SIZE, get_agg_func
 from libmoon.solver.psl.core_psl import BasePSLSolver
 import argparse
 import os
-from libmoon.util import uniform_pref
+from libmoon.util import get_uniform_pref
 from torch import Tensor
 
 def plot_psl_figure_3d(folder_name, eval_y_np):
@@ -101,7 +101,7 @@ if __name__ == '__main__':
     print('Running {} on {} with seed {}'.format(args.solver_name, args.problem_name, args.seed_idx))
     model, loss_history = solver.solve()
 
-    prefs = uniform_pref(n_prob=args.eval_num, n_obj=problem.n_obj, clip_eps=1e-2)
+    prefs = get_uniform_pref(n_prob=args.eval_num, n_obj=problem.n_obj, clip_eps=1e-2)
     eval_y = problem.evaluate(model( Tensor(prefs).cuda())).cpu().detach().numpy()
     res = {}
 

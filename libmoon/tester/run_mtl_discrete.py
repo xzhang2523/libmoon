@@ -1,10 +1,11 @@
 import sys
 sys.path.append('D:\\pycharm_project\\libmoon\\')
 
+
 import numpy as np
 import argparse
 import torch
-from libmoon.util.prefs import uniform_pref
+from libmoon.util.prefs import get_uniform_pref
 from libmoon.util.constant import root_name
 from libmoon.util.mtl import get_dataset, model_from_dataset
 from libmoon.util.network import numel
@@ -15,6 +16,8 @@ from libmoon.util.mtl import get_mtl_prefs
 import os
 from matplotlib import pyplot as plt
 from libmoon.util.constant import plt_2d_tickle_size, plt_2d_marker_size, plt_2d_label_size
+
+
 
 def plot_fig_2d(folder_name, loss, prefs):
     rho = np.max([np.linalg.norm(elem) for elem in loss])

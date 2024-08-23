@@ -9,10 +9,10 @@ import os
 SMALL_DIGIT=3
 
 if __name__ == '__main__':
-    task = 'task3'    #Task 3, synthetic psl
+    task = 'task4'    #Task 3, synthetic psl
     parser = argparse.ArgumentParser()
     parser.add_argument('--problem_name', type=str, default='adult')
-    parser.add_argument('--seed_num', type=int, default=3)
+    parser.add_argument('--seed_num', type=int, default=1)
     parser.add_argument('--task', type=str, default='discrete')
     args = parser.parse_args()
     pickle_name_template = 'D:\\pycharm_project\\libmoon\\Output\\{}\\{}\\{}\\seed_{}\\res.pickle'
@@ -28,12 +28,16 @@ if __name__ == '__main__':
         args.task = 'discrete'
         mtd_arr = ['epo', 'mgdaub', 'pmgda', 'random', 'moosvgd', 'pmtl', 'hvgrad',
                    'agg_ls', 'agg_tche', 'agg_pbi', 'agg_cosmos', 'agg_softtche']  # for mtl discrete usage
-
     elif task == 'task3':
         args.problem_name = 'RE37'
         args.task = 'psl'
-        mtd_arr = ['agg_tche', 'agg_mtche', 'agg_pbi', 'agg_cosmos', 'agg_softtche', 'epo', 'pmgda']  # For syn psl usage
-
+        mtd_arr = ['agg_ls','agg_tche', 'agg_mtche', 'agg_pbi', 'agg_cosmos', 'agg_softtche', 'epo', 'pmgda']  # For syn psl usage
+    elif task == 'task4':
+        args.problem_name = 'mnist'
+        args.task = 'psl'
+        mtd_arr = ['agg_ls','agg_tche', 'agg_mtche', 'agg_pbi', 'agg_cosmos', 'agg_softtche']
+    else:
+        assert False, 'Unknown task'
 
 
     mtd_mean_dict, mtd_std_dict = {}, {}

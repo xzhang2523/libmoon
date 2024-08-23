@@ -106,11 +106,10 @@ class LeNetTarget(nn.Module):
                  n_conv_layers=2,
                  n_tasks=2
                  ):
-
         super().__init__()
         assert len(kernel_size) == n_conv_layers, (
-            'kernel size should be the same as the number of conv layers'
-            'conv layers holding kernel size for earch conv layer'
+            'Kernel size should be the same as the number of conv layers'
+            'Konv layers holding kernel size for earch conv layer'
         )
         self.n_kernels = n_kernels
         self.kernel_size= kernel_size
@@ -118,6 +117,7 @@ class LeNetTarget(nn.Module):
         self.n_conv_layers = n_conv_layers
         self.n_tasks = n_tasks
         self.target_hidden_dim= target_hidden_dim
+
 
     def forward(self, x, weights=None):
         # weights['conv0.weights'].shape : (bs, 810)
@@ -129,10 +129,8 @@ class LeNetTarget(nn.Module):
             bias=weights['conv0.bias'],
             stride=1,
         )
-
         x = F.relu(x)
         x = F.max_pool2d(x, 2)
-
         for i in range(1, self.n_conv_layers):
             x = F.conv2d(
                 x,
@@ -144,9 +142,7 @@ class LeNetTarget(nn.Module):
             )
             x = F.relu(x)
             x = F.max_pool2d(x, 2)
-
         x = torch.flatten(x, 1)
-
         x = F.linear(
             x,
             weight = weights['hidden0.weights'].reshape(
@@ -154,7 +150,6 @@ class LeNetTarget(nn.Module):
             ),
             bias=weights['hidden0.bias'],
         )
-
         logits = []
         for j in range(self.n_tasks):
             logits.append(
@@ -166,7 +161,6 @@ class LeNetTarget(nn.Module):
                     bias=weights[f"task{j}.bias"],
                 )
             )
-
         return logits
 
 

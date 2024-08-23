@@ -185,7 +185,7 @@ color_arr = sns.color_palette() + ['blue', 'red', 'green', 'orange', 'purple', '
 marker_arr = ['o', 'x', '+', 'v', 's', 'p', 'D', 'h', '8', '1']
 
 
-plt_2d_tickle_size = 16
+plt_2d_tickle_size = 12
 plt_2d_marker_size = 10
 plt_2d_label_size = 20
 

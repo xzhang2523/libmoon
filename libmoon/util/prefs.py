@@ -20,7 +20,7 @@ def das_dennis_recursion(ref_dirs, ref_dir, n_partitions, beta, depth):
             das_dennis_recursion(ref_dirs, np.copy(ref_dir), n_partitions, beta - i, depth + 1)
 
 
-def uniform_pref(n_prob, n_obj=2, clip_eps=0, mode='uniform'):
+def get_uniform_pref(n_prob, n_obj=2, clip_eps=0, mode='uniform'):
     if n_obj == 2:
         # Just generate linear uniform preferences
         pref_1 = np.linspace(clip_eps, 1-clip_eps, n_prob)
@@ -36,5 +36,8 @@ def uniform_pref(n_prob, n_obj=2, clip_eps=0, mode='uniform'):
 
 
 def get_random_prefs(batch_size, n_obj):
+    '''
+        Description: .
+    '''
     return np.random.dirichlet(np.ones(n_obj), batch_size)
 

@@ -41,7 +41,7 @@ def model_from_dataset(dataset_name, architecture='M1', **kwargs):
     elif dataset_name == 'compass':
         return FullyConnected(architecture,dim, **kwargs)
     elif dataset_name in ['mnist','fashion','fmnist'] :
-        return MultiLeNet(**kwargs)
+        return MultiLeNet(dim=dim, **kwargs)
     else:
         raise ValueError("Unknown model name {}".format(dataset_name))
 

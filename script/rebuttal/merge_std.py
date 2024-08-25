@@ -9,7 +9,6 @@ import os
 SMALL_DIGIT=3
 
 if __name__ == '__main__':
-    task = 'task4'    #Task 3, synthetic psl
     parser = argparse.ArgumentParser()
     parser.add_argument('--problem_name', type=str, default='adult')
     parser.add_argument('--seed_num', type=int, default=1)
@@ -22,7 +21,7 @@ if __name__ == '__main__':
 
     mtd_arr = ['epo', 'mgdaub', 'pmgda', 'random', 'moosvgd', 'pmtl', 'hvgrad',
                'agg_ls', 'agg_tche','agg_mtche', 'agg_pbi', 'agg_cosmos', 'agg_softtche']  # for mtl discrete usage
-
+    task = 'task4'    #Task 3, synthetic psl
     if task == 'task2':
         args.problem_name = 'adult'
         args.task = 'discrete'
@@ -33,9 +32,12 @@ if __name__ == '__main__':
         args.task = 'psl'
         mtd_arr = ['agg_ls','agg_tche', 'agg_mtche', 'agg_pbi', 'agg_cosmos', 'agg_softtche', 'epo', 'pmgda']  # For syn psl usage
     elif task == 'task4':
+        args.seed_num=3
         args.problem_name = 'mnist'
         args.task = 'psl'
-        mtd_arr = ['agg_ls','agg_tche', 'agg_mtche', 'agg_pbi', 'agg_cosmos', 'agg_softtche']
+        mtd_arr = ['agg_ls','agg_tche', 'agg_mtche', 'agg_cosmos', 'agg_softtche']
+        # mtd_arr = ['agg_ls','agg_tche',]
+
     else:
         assert False, 'Unknown task'
 

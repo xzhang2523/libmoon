@@ -2,35 +2,38 @@ import argparse
 import numpy as np
 import sys
 sys.path.append('D:\\pycharm_project\\libmoon\\')
-from libmoon.util import synthetic_init, get_problem, uniform_pref
+from libmoon.util import synthetic_init, get_problem, get_uniform_pref
 from libmoon.solver.gradient.methods.base_solver import GradBaseSolver
 from libmoon.solver.gradient.methods.core.core_solver import EPOCore, MGDAUBCore, RandomCore, AggCore, MOOSVGDCore, HVGradCore, PMTLCore
 from libmoon.solver.gradient.methods.core.core_solver import PMGDACore
-
 
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 from matplotlib import pyplot as plt
 from libmoon.util.constant import FONT_SIZE_2D, FONT_SIZE_3D, color_arr, beautiful_dict, root_name, min_key_array
 from libmoon.util.constant import plt_2d_tickle_size, plt_2d_label_size
-def draw_2d_prefs(prefs):
+def draw_2d_prefs(prefs, rho):
     prefs_norm2 = prefs / np.linalg.norm(prefs, axis=1, keepdims=True)
     for idx, pref in enumerate(prefs_norm2):
-        plt.plot([0, pref[0]], [0, pref[1]], color='grey', linewidth=2,
+        plt.plot([0, pref[0]*rho], [0, pref[1]*rho], color='grey', linewidth=2,
                  linestyle='--')
 
 def plot_figure_2d(problem):
     y_arr = res['y']
+    rho = np.max([np.linalg.norm(y) for y in y_arr])
+
     plt.scatter(y_arr[:, 0], y_arr[:, 1], color='black')
     plt.xticks(fontsize=plt_2d_tickle_size)
     plt.yticks(fontsize=plt_2d_tickle_size)
     plt.xlabel('$L_1$', fontsize=plt_2d_label_size)
     plt.ylabel('$L_2$', fontsize=plt_2d_label_size)
     plt.axis('equal')
-    pf = problem.get_pf(n_pareto_points=1000)
-    plt.plot(pf[:, 0], pf[:, 1], color='red', linewidth=2, label='True PF')
+    if hasattr(problem, 'get_pf'):
+        pf = problem.get_pf(n_pareto_points=1000)
+        plt.plot(pf[:, 0], pf[:, 1], color='red', linewidth=2, label='True PF')
+
     plt.legend(fontsize=15)
-    draw_2d_prefs(prefs)
+    draw_2d_prefs(prefs, rho)
 
 def plot_figure_3d(folder_name):
     sub_sample = 1
@@ -78,14 +81,14 @@ def save_pickles(folder_name):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser( description= 'example script' )
+    parser = argparse.ArgumentParser( description= 'example script')
     # mgdaub random epo pmgda agg_ls agg_tche agg_pbi agg_cosmos, agg_softtche pmtl hvgrad moosvgd
-    parser.add_argument('--solver-name', type=str, default='mgdaub')
-    parser.add_argument( '--problem-name', type=str, default='VLMOP1')
+    parser.add_argument('--solver-name', type=str, default='agg_cosmos')
+    parser.add_argument( '--problem-name', type=str, default='regression')
     parser.add_argument('--step-size', type=float, default=1e-2)
     parser.add_argument('--tol', type=float, default=1e-2)
     parser.add_argument('--draw-fig', type=str, default='True')
-    parser.add_argument('--n-prob', type=int, default=8 )
+    parser.add_argument('--n-prob', type=int, default=10 )
     parser.add_argument('--epoch', type=int, default=1000 )
     parser.add_argument('--seed-idx', type=int, default=1)
 
@@ -95,7 +98,7 @@ if __name__ == '__main__':
     print('Running {} on {} with seed {}'.format(args.solver_name, args.problem_name, args.seed_idx) )
     np.random.seed(args.seed_idx)
     problem = get_problem(problem_name=args.problem_name, n_var=10)
-    prefs = uniform_pref(n_prob=args.n_prob, n_obj = problem.n_obj, clip_eps=1e-2)
+    prefs = get_uniform_pref(n_prob=args.n_prob, n_obj = problem.n_obj, clip_eps=1e-2)
 
     # Actually a bit waste to implement so many solvers. Just import Core solvers.
     if args.solver_name == 'epo':
@@ -111,9 +114,9 @@ if __name__ == '__main__':
     elif args.solver_name == 'moosvgd':
         core_solver = MOOSVGDCore(n_var=problem.n_var, prefs=prefs)
     elif args.solver_name == 'hvgrad':
-        core_solver = HVGradCore(problem=problem)
+        core_solver = HVGradCore(n_obj=problem.n_obj, n_var=problem.n_var, problem_name=problem.problem_name)
     elif args.solver_name == 'pmtl':
-        core_solver = PMTLCore(problem=problem, total_epoch=args.epoch, warmup_epoch=args.epoch // 5, prefs=prefs)
+        core_solver = PMTLCore(n_obj=problem.n_obj, n_var=problem.n_var, total_epoch=args.epoch, warmup_epoch=args.epoch // 5, prefs=prefs)
     else:
         assert False, 'Unknown solver'
 

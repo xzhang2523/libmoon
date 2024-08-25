@@ -102,6 +102,7 @@ def get_hv_ref(problem_name):
         'MAF1': array([2.0, 2.0, 2.0]),
         'mnist': array([3.0, 3.0]),
         'fmnist': array([3.0, 3.0]),
+        'regression': array([8.0, 8.0]),
     }
 
     if problem_name in hv_ref_dict:
@@ -153,6 +154,7 @@ beautiful_dict = {
     'agg_ls': 'Agg-LS',
     'agg_tche': 'Agg-Tche',
     'agg_softtche': 'Agg-SoftTche',
+    'agg_softmtche': 'Agg-SoftmTche',
     'agg_mtche': 'Agg-mTche',
     'agg_cosmos': 'Agg-COSMOS',
     'agg_pbi': 'Agg-PBI',
@@ -175,10 +177,12 @@ paper_dict = {
     'agg_pbi' : 'Zhang et al 2007',
     'agg_cosmos' : 'Ruchte et al 2007',
     'agg_softtche' : 'Lin et al 2024',
+    'agg_softmtche' : 'Lin et al 2024',
     'agg_mtche' : 'Ma et al 2017',
 }
 
-all_mtd_arr = ['epo', 'pmgda', 'agg_ls', 'agg_tche', 'agg_mtche', 'agg_cosmos', 'agg_pbi', 'hvgrad', 'uniform', 'pmtl']
+all_mtd_arr = ['epo', 'pmgda', 'agg_ls', 'agg_tche', 'agg_mtche',
+               'agg_cosmos', 'agg_pbi', 'hvgrad', 'uniform', 'pmtl']
 
 import seaborn as sns
 color_arr = sns.color_palette() + ['blue', 'red', 'green', 'orange', 'purple', 'brown', 'pink', 'grey', 'black', 'yellow']

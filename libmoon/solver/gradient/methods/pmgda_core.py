@@ -145,8 +145,9 @@ def solve_pmgda(Jacobian, Jacobian_h_losses, h_val, h_tol, sigma):
         sol = solvers.lp(c_matrix, A_matrix, b_matrix)
         res = np.array(sol['x']).squeeze()
 
+        # print( len(res) )
         mu, coeff = res[:-1], res[-1]
-        gw = G_n.T @ torch.Tensor(mu).to(G_n.device)
+        # gw = G_n.T @ torch.Tensor(mu).to(G_n.device)
         # coeff, Eq. (18) in the main paper.
         mu_prime = get_pmgda_DWA_coeff(mu, Jacobian_h_losses, G_norm, m)
 

@@ -1,14 +1,14 @@
 **Table 1. Supported synthetic problems.**
 
-| Problem Name                  | Objective numbers  |
-|-------------------------------|--------------------|
-| VLMOP (Volkovich et al, 1997) | 2                  |
-| ZDT (Zitzler et al, 2000)     | 2                  |
-| DTLZ (Deb et al, 2005)        | Any                |
-| MAF (Cheng et al, 2017)       | Any                |
-| RE (Tanabe et al, 2020)       | from 2 to 5        |
-| Fi (Lin et al 2022)           | 2                  |
-
+| Problem Name                     | Objective numbers |
+|----------------------------------|-------------------|
+| VLMOP (Volkovich et al, 1997)    | 2                 |
+| ZDT (Zitzler et al, 2000)        | 2                 |
+| DTLZ (Deb et al, 2005)           | Any               |
+| MAF (Cheng et al, 2017)          | Any               |
+| RE (Tanabe et al, 2020)          | from 2 to 5       |
+| Fi (Lin et al 2022)              | 2                 |
+| Machine Learning (Hu et al 2023) | Ant               |
 
 ---
 Reference
@@ -24,3 +24,5 @@ Reference
 [5] Cheng et al. A benchmark test suite for evolutionary many-objective optimization. Complex and intelligent system. 2017. 
 
 [6] Tanabe et al. An easy-to-use real-world multi-objective optimization problem suite, Applied Soft Computing 2020. 
+
+[7] Hu et al. Revisiting Scalarization in Multi-Task Learning: A Theoretical Perspective. NeurIPS 2023.  

@@ -11,6 +11,8 @@ from libmoon.util.mtl import get_dataset
 from libmoon.model.hypernet import HyperNet, LeNetTarget
 from libmoon.util.prefs import get_random_prefs, get_uniform_pref
 
+from libmoon.util.network import numel
+
 
 class GradBasePSLMTLSolver:
     def __init__(self, problem_name, batch_size, step_size, epoch, device, solver_name):
@@ -29,6 +31,12 @@ class GradBasePSLMTLSolver:
         # For hypernetwork model, we have the hypernet and target network.
         self.hnet = HyperNet(kernel_size=(9, 5)).to(self.device)
         self.net = LeNetTarget(kernel_size=(9, 5)).to(self.device)
+
+        num_param_hnet, num_param_net = numel(self.hnet), numel(self.net)
+        print('Number of parameters in hnet: {:.2f}M, net: {:.2f}K'.format(num_param_hnet/1e6, num_param_net/1e3))
+
+
+
         self.optimizer = torch.optim.Adam(self.hnet.parameters(), lr=self.step_size)
         self.dataset = get_dataset(self.problem_name)
         self.settings = mtl_setting_dict[self.problem_name]

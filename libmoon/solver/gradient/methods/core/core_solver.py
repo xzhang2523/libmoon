@@ -259,7 +259,6 @@ class HVGradCore():
         '''
         losses_np = losses.detach().numpy()
         n_prob = losses_np.shape[0]
-
         hv_maximizer = HVMaxSolver(n_prob, self.n_obj, get_hv_ref(self.problem_name))
         weight = hv_maximizer.compute_weights(losses_np.T).T
         return weight

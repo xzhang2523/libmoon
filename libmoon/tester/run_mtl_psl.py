@@ -4,7 +4,6 @@ import torch
 import argparse
 from matplotlib import pyplot as plt
 import pickle
-from libmoon.util.network import numel
 from libmoon.solver.gradient.methods.core.core_mtl import GradBasePSLMTLSolver
 import os
 from libmoon.util.constant import root_name, plt_2d_tickle_size, plt_2d_marker_size, plt_2d_label_size
@@ -21,7 +20,6 @@ def save_pickle(folder_name, res):
 
 def plot_fig_2d(folder_name, eval_res, draw_fig):
     plt.figure()
-
     eval_loss = eval_res['eval_loss']
     plt.scatter(eval_loss[:, 0], eval_loss[:, 1])
     plt.plot(eval_loss[:, 0], eval_loss[:, 1], marker='o', markersize=plt_2d_marker_size)
@@ -64,8 +62,6 @@ if __name__ == '__main__':
     args = parse.parse_args()
     print('Device:{}'.format(args.device))
     print('Running MTL PSL {} on {} with seed {}'.format(args.solver_name, args.problem_name, args.seed_idx))
-    model = model_from_dataset(args.problem_name)
-    num_param = numel(model)
     device = torch.device('cuda') if args.device == 'gpu' else torch.device('cpu')
     solver = GradBasePSLMTLSolver(problem_name=args.problem_name, batch_size=args.batch_size,
                                   step_size=args.step_size, epoch=args.epoch, device=device, solver_name=args.solver_name)

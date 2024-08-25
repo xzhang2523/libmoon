@@ -65,22 +65,22 @@ class BaseMOP():
         else:
             raise ValueError("Input has to be in the form of Tensor or ndarray!")
 
-    def get_pf(self, n_points: int=100) -> np.ndarray:
-        """
-        Get Pareto front
-        Parameters
-        ----------
-        num_points : int, optional
-            _description_, by default 100
-        Returns
-        -------
-        np.ndarray
-            _description_
-        """
-        # TODO
-        # if method=='uniform':
-        if hasattr(self, "_get_pf"): return self._get_pf(n_points)
-        else: raise NotImplementedError("Subclasses should implement this method.")
+    # def get_pf(self, n_points: int=100) -> np.ndarray:
+    #     """
+    #     Get Pareto front
+    #     Parameters
+    #     ----------
+    #     num_points : int, optional
+    #         _description_, by default 100
+    #     Returns
+    #     -------
+    #     np.ndarray
+    #         _description_
+    #     """
+    #     # TODO
+    #     # if method=='uniform':
+    #     if hasattr(self, "_get_pf"): return self._get_pf(n_points)
+    #     else: raise NotImplementedError("Subclasses should implement this method.")
 
 
 

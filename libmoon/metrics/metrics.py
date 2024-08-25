@@ -60,10 +60,14 @@ def compute_spacing(sols):
     sp_arr = - np.min(mat, axis=1)
     return np.std(sp_arr)
 
-def compute_hv( sols ):
+def compute_hv( sols, problem_name):
     n_var, n_obj = sols.shape
     from pymoo.indicators.hv import HV
     ref_point = np.ones(n_obj)
+    if problem_name == 'regression':
+        ref_point = np.array([8.0, 8.0])
+    else:
+        ref_point = np.ones(n_obj)
     ind = HV(ref_point=ref_point)
     hv_val = ind(sols)
     return hv_val
@@ -99,7 +103,7 @@ def compute_cross_angle(sols, prefs):
     return np.mean(arccos_value_arr)
 
 
-def compute_indicators(objs, prefs):
+def compute_indicators(objs, prefs, problem_name='ZDT1'):
     '''
         Input:
             objs: objective arrays
@@ -109,7 +113,7 @@ def compute_indicators(objs, prefs):
     soft_lmin = compute_soft_lmin(objs)
     spacing = compute_spacing(objs) * 100
     sparsity = compute_sparsity(objs) * 100
-    hv = compute_hv(objs)
+    hv = compute_hv(objs, problem_name)
     inner_product = compute_inner_product(objs, prefs)
     cross_angle = compute_cross_angle(objs, prefs)
     pbi = compute_pbi(objs, prefs)

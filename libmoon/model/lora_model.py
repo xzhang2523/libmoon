@@ -1,3 +1,10 @@
+'''
+    1. Zhong et al. Panacea: Pareto Alignment via Preference Adaptation for LLMs.
+    2. Chen at al. Efficient Pareto Manifold Learning with Low-Rank Structure. ICML 2024.
+'''
+
+
+
 import torch
 from torch import nn
 from libmoon.util.network import numel

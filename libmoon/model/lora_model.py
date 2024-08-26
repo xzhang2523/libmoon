@@ -1,5 +1,7 @@
 # Chen et al. Efficient Pareto Manifold Learning with Low-Rank Structure. ICML. 2024.
 # Zhong et al. Panacea: Pareto Alignment via Preference Adaptation for LLMs. ArXiv. 2024.
+import sys
+sys.path.append('D:\\pycharm_project\\libmoon')
 
 import torch
 from libmoon.problem.synthetic.vlmop import VLMOP1, VLMOP2
@@ -16,7 +18,7 @@ from libmoon.problem.mtl.objectives import from_name
 import numpy as np
 
 class MTLPSLLoRAModel(torch.nn.Module):
-    def __init__(self, problem_name, step_size=1e-3, batch_size=128):
+    def __init__(self, problem_name, step_size=1e-3, batch_size=128, solver_name='agg_mtche'):
         super(MTLPSLLoRAModel, self).__init__()
         self.step_size = step_size
         self.problem_name = problem_name
@@ -31,17 +33,18 @@ class MTLPSLLoRAModel(torch.nn.Module):
         # [torch.Size([128, 88]), torch.Size([128]), torch.Size([128, 128]), torch.Size([128]), torch.Size([1, 128]),
         #  torch.Size([1])]
         self.free_rank = 4
-        self.A1 = torch.nn.Parameter((torch.rand(self.params_shape[0][0], self.free_rank)))
-        self.B1 = torch.nn.Parameter((torch.rand(self.free_rank, self.params_shape[0][1])))
+        self.A1 = torch.nn.Parameter((torch.rand(self.params_shape[0][0], self.free_rank) * 1e-3))
+        self.B1 = torch.nn.Parameter((torch.rand(self.free_rank, self.params_shape[0][1]) * 1e-3))
 
-        self.A2 = torch.nn.Parameter((torch.rand(self.params_shape[2][0], self.free_rank)))
-        self.B2 = torch.nn.Parameter((torch.rand(self.free_rank, self.params_shape[2][1])))
+        self.A2 = torch.nn.Parameter((torch.rand(self.params_shape[2][0], self.free_rank) * 1e-3 ))
+        self.B2 = torch.nn.Parameter((torch.rand(self.free_rank, self.params_shape[2][1]) * 1e-3))
 
         all_parameters = [self.A1, self.B1, self.A2, self.B2] + list(self.base_model.parameters())
-        self.optimizer = torch.optim.SGD(all_parameters, lr=self.step_size)
+        self.optimizer = torch.optim.Adam(all_parameters, lr=self.step_size)
         self.obj_arr = from_name( self.settings['objectives'], self.dataset.task_names() )
 
         self.n_obj = 2
+        self.agg_name = solver_name.split('_')[-1]
 
 
 
@@ -73,8 +76,7 @@ class MTLPSLLoRAModel(torch.nn.Module):
                 # self.optimizer.zero_grad()
                 logits = self.base_model(batch['data'])
                 loss_vec = torch.stack([obj(logits['logits'], **batch) for obj in self.obj_arr])
-                # print()
-                loss = get_agg_func('ls')(torch.atleast_2d(loss_vec), torch.atleast_2d(prefs))
+                loss = get_agg_func(self.agg_name)(torch.atleast_2d(loss_vec), torch.atleast_2d(prefs))
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
@@ -84,8 +86,24 @@ class MTLPSLLoRAModel(torch.nn.Module):
         return loss_epoch
 
 
-    def evaluate(self, prefs):
-        pass
+    def evaluate(self, prefs_batch):
+        loss_pref = []
+        for prefs in prefs_batch:
+            loss_batch = []
+            for batch_idx, batch in enumerate(self.train_loader):
+                prefs = get_random_prefs(1, self.n_obj).squeeze()
+                self.set_pref(prefs)
+                # self.optimizer.zero_grad()
+                logits = self.base_model(batch['data'])
+                loss_vec = torch.stack([obj(logits['logits'], **batch) for obj in self.obj_arr])
+                loss = get_agg_func('ls')(torch.atleast_2d(loss_vec), torch.atleast_2d(prefs))
+                self.optimizer.zero_grad()
+                loss.backward()
+                self.optimizer.step()
+                loss_batch.append(loss_vec.clone().detach().numpy())
+            loss_pref.append(np.mean(loss_batch, axis=0))
+        return np.array(loss_pref)
+
 
 
 
@@ -161,26 +179,40 @@ def evaluate_synthetic(problem, model):
     plot_fig_2d(folder_name=folder_name, loss=objective_np, prefs=uniform_prefs)
 
 
-
-
 if __name__ == '__main__':
     '''
         Evaluate the performance on fairness classification problem. 
     '''
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--epoch', type=int, default=5)
+    parser.add_argument('--epoch', type=int, default=100)
+    parser.add_argument('--eval-num', type=int, default=20)
+
     parser.add_argument('--batch-size', type=int, default=128)
-    parser.add_argument('--step-size', type=float, default=1e-8)
+    parser.add_argument('--step-size', type=float, default=1e-4)
     parser.add_argument('--n-obj', type=int, default=2)
     parser.add_argument('--problem-name', type=str, default='adult')
+    parser.add_argument('--solver-name', type=str, default='agg_mtche')
+
     args = parser.parse_args()
 
-    psl_model = MTLPSLLoRAModel(problem_name=args.problem_name, step_size=args.step_size, batch_size=args.batch_size)
+    psl_model = MTLPSLLoRAModel(problem_name=args.problem_name, step_size=args.step_size,
+                                batch_size=args.batch_size, solver_name=args.solver_name)
+
+    print('Training...')
     history = psl_model.optimize(epoch=args.epoch)
-    plt.plot(history)
-    plt.xlabel('Epoch', fontsize=20)
-    plt.ylabel('Loss', fontsize=20)
-    plt.xticks(fontsize=12)
-    plt.yticks(fontsize=12)
-    plt.show()
+    uniform_prefs = get_uniform_pref(n_prob=args.eval_num, n_obj=args.n_obj)
+
+    print('Evaluating...')
+    eval_res = psl_model.evaluate(uniform_prefs)
+
+    folder_name = os.path.join('D:\\pycharm_project\\libmoon\\Output\\psl_lora', args.problem_name)
+    os.makedirs(folder_name, exist_ok=True)
+    res = {}
+    res['y'] = eval_res
+    res['loss'] = history
+    res['prefs'] = uniform_prefs
+
+    plot_loss(folder_name=folder_name, loss_arr=res['loss'])
+    save_pickle(folder_name=folder_name, res=res)
+    plot_fig_2d(folder_name=folder_name, loss=res['y'], prefs=uniform_prefs)

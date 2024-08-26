@@ -41,10 +41,6 @@ def save_pickle(folder_name):
     print('Save pickle to {}'.format(pickle_name))
 
 
-
-
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--architecture', type=str, default='M1')
@@ -98,7 +94,3 @@ if __name__ == '__main__':
     os.makedirs(folder_name, exist_ok=True)
     plot_fig_2d(folder_name=folder_name, loss=loss, prefs=prefs)
     save_pickle(folder_name=folder_name)
-
-
-
-

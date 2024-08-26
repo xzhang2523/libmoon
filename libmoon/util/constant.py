@@ -200,6 +200,7 @@ def plot_fig_2d(folder_name, loss, prefs, use_plt='False'):
     plt.figure()
     rho = np.max([np.linalg.norm(elem) for elem in loss])
     prefs_l2 = prefs / np.linalg.norm(prefs, axis=1, keepdims=True)
+    plt.axis('equal')
     plt.xlabel('$L_1$', fontsize=plt_2d_label_size)
     plt.ylabel('$L_2$', fontsize=plt_2d_label_size)
     plt.xticks(fontsize=plt_2d_tickle_size)
@@ -207,8 +208,8 @@ def plot_fig_2d(folder_name, loss, prefs, use_plt='False'):
     for pref in prefs_l2:
         plt.plot([0, rho * pref[0]], [0, rho * pref[1]], color='grey', linestyle='--', linewidth=2)
     plt.scatter(loss[:, 0], loss[:, 1])
-    file_name = os.path.join(folder_name, 'res.svg')
-    plt.savefig(file_name, format='svg', dpi=1200, bbox_inches='tight')
+    file_name = os.path.join(folder_name, 'res.pdf')
+    plt.savefig(file_name, dpi=1200, bbox_inches='tight')
     print('Save to {}'.format(file_name))
     if use_plt == 'True':
         plt.show()

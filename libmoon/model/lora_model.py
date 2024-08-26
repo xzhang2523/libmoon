@@ -1,3 +1,5 @@
+# Chen et al. Efficient Pareto Manifold Learning with Low-Rank Structure. ICML. 2024.
+# Zhong et al. Panacea: Pareto Alignment via Preference Adaptation for LLMs. ArXiv. 2024.
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -6,10 +8,26 @@ from tqdm import tqdm
 from libmoon.util.prefs import get_random_prefs, get_uniform_pref
 from libmoon.util.constant import get_agg_func
 from matplotlib import pyplot as plt
-
-
 from libmoon.util.constant import save_pickle, plot_loss, plot_fig_2d
 import os
+
+
+class MTLPSLLoRAModel(torch.nn.Module):
+    def __init__(self):
+        super(MTLPSLLoRAModel, self).__init__()
+
+    def forward(self, prefs):
+        pass
+
+    def optimize(self, problem, epoch):
+        pass
+
+    def evaluate(self, prefs):
+        pass
+
+
+
+
 
 class SimplePSLLoRAModel(torch.nn.Module):
     def __init__(self, n_obj, n_var, step_size=1e-3):
@@ -47,14 +65,14 @@ class SimplePSLLoRAModel(torch.nn.Module):
 
 
     def evaluate(self, prefs):
-        variable = psl_model.forward(prefs)
-        objective = problem.evaluate(variable)
+        variable = self.forward(prefs)
+        objective = self.problem.evaluate(variable)
         objective_np = objective.clone().detach().numpy()
         variable_np = variable.clone().detach().numpy()
         return objective_np, variable_np
 
 
-if __name__ == '__main__':
+def evaluate_synthetic(problem, model):
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--epoch', type=int, default=10000)
@@ -63,7 +81,7 @@ if __name__ == '__main__':
     parser.add_argument('--n-obj', type=int, default=2)
     parser.add_argument('--n-var', type=int, default=2)
     args = parser.parse_args()
-    problem = VLMOP2(n_var=args.n_var, n_obj=args.n_obj)
+    problem = VLMOP1(n_var=args.n_var, n_obj=args.n_obj)
     psl_model = SimplePSLLoRAModel( n_var=args.n_var, n_obj=args.n_obj, step_size=args.step_size)
     loss_arr = psl_model.optimize(problem, args.epoch)
 
@@ -72,11 +90,24 @@ if __name__ == '__main__':
     objective_np, variable_np = psl_model.evaluate(uniform_prefs)
     plt.scatter(objective_np[:, 0], objective_np[:, 1])
 
-    folder_name = os.path.join('D:\\pycharm_project\\libmoon\\Output\\psl', problem.problem_name)
+    folder_name = os.path.join('D:\\pycharm_project\\libmoon\\Output\\psl_lora', problem.problem_name)
     os.makedirs(folder_name, exist_ok=True)
-
+    res = {}
+    res['y'] = objective_np
+    res['loss'] = loss_arr
+    res['prefs'] = uniform_prefs
     plot_loss(folder_name=folder_name, loss_arr=loss_arr)
     save_pickle(folder_name=folder_name, res=res)
     plot_fig_2d(folder_name=folder_name, loss=objective_np, prefs=uniform_prefs)
+
+
+
+
+if __name__ == '__main__':
+    '''
+        Evaluate the performance on fairness classification problem. 
+    '''
+
+
 
 

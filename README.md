@@ -24,18 +24,19 @@ Star and fork us on GitHub — it motivates us a lot!
 The first three authors contribute equally to this work.
 
 ## Advisory Board
-| **Name**               | **Affiliation**                                 | **Role**                                            |
-|------------------------|-------------------------------------------------|-----------------------------------------------------|
-| **Xuehai Pan**         | PKU                                             | For software design                                 |
-| **Hongzong Li**        | CityUHK                                         | For local search                                    |
-| **Prof. Jingda Deng**  | Xi'an Jiaotong University                       | For advice on High-D hypervolume computation        |
-| **Prof. Yifan Chen**   | Hong Kong Baptist University                    | For advice on OR                                    |
-| **Prof. Ke Shang**     | Shenzhen University                             | For advice on approximate hypervolume-based methods |
-| **Prof. Genghui Li**   | Shenzhen University                             | For advice on MOEAs                                 |
-| **Prof. Han Zhao**     | University of Illinois at Urbana-Champaign      | For advice on fairness classification               |
-| **Prof. Zhenkun Wang** | SusTech                                         | Paper writing and maintenance of community          |
-| **Prof. Tao Qin**      | MSRA                                            | Industry application                                |
-| **Prof. Qingfu Zhang** | CityUHK                                         | Corresponding                                       |
+| **Name**               | **Affiliation**                            | **Role**                                            |
+|------------------------|--------------------------------------------|-----------------------------------------------------|
+| **Xuehai Pan**         | PKU                                        | For software design                                 |
+| **Hongzong Li**        | CityUHK                                    | For local search                                    |
+| **Weiyu Chen**         | HKUST                                      | For LoRA PSL                                        |
+| **Prof. Jingda Deng**  | Xi'an Jiaotong University                  | For advice on High-D hypervolume computation        |
+| **Prof. Yifan Chen**   | Hong Kong Baptist University               | For advice on OR                                    |
+| **Prof. Ke Shang**     | Shenzhen University                        | For advice on approximate hypervolume-based methods |
+| **Prof. Genghui Li**   | Shenzhen University                        | For advice on MOEAs                                 |
+| **Prof. Han Zhao**     | University of Illinois at Urbana-Champaign | For advice on fairness classification               |
+| **Prof. Zhenkun Wang** | SusTech                                    | Paper writing and maintenance of community          |
+| **Prof. Tao Qin**      | MSRA                                       | Industry application                                |
+| **Prof. Qingfu Zhang** | CityUHK                                    | Corresponding                                       |
 
 
 ## Contact

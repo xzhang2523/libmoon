@@ -15,6 +15,7 @@ from libmoon.util.mtl import get_mtl_prefs
 import os
 from matplotlib import pyplot as plt
 from libmoon.util.constant import plt_2d_tickle_size, plt_2d_marker_size, plt_2d_label_size
+from libmoon.problem.mtl.objectives import from_name
 
 
 def plot_fig_2d(folder_name, loss, prefs):
@@ -84,6 +85,7 @@ if __name__ == '__main__':
 
     solver = GradBaseMTLSolver(problem_name=args.problem_name, step_size=args.step_size, epoch=args.epoch, core_solver=core_solver,
                                batch_size=args.batch_size, prefs=prefs)
+
     res = solver.solve()
     res['prefs'] = prefs
     res['y'] = res['loss']

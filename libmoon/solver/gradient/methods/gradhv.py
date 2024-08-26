@@ -18,14 +18,10 @@ from libmoon.util.constant import solution_eps, get_hv_ref
     "Hypervolume metrics gradient ascent multi-objective optimization."
     International conference on evolutionary multi-criterion optimization. Springer, Cham, 2017.
 """
-
-
 import numpy as np
 import torch
-
 from libmoon.solver.gradient.methods.hv_grad.functions_evaluation import fastNonDominatedSort
 from libmoon.solver.gradient.methods.hv_grad.functions_hv_grad_3d import grad_multi_sweep_with_duplicate_handling
-
 
 class HVMaxSolver(object):
     """

@@ -1,8 +1,7 @@
 # Chen et al. Efficient Pareto Manifold Learning with Low-Rank Structure. ICML. 2024.
 # Zhong et al. Panacea: Pareto Alignment via Preference Adaptation for LLMs. ArXiv. 2024.
-import numpy as np
+
 import torch
-import torch.nn.functional as F
 from libmoon.problem.synthetic.vlmop import VLMOP1, VLMOP2
 from tqdm import tqdm
 from libmoon.util.prefs import get_random_prefs, get_uniform_pref
@@ -10,22 +9,83 @@ from libmoon.util.constant import get_agg_func
 from matplotlib import pyplot as plt
 from libmoon.util.constant import save_pickle, plot_loss, plot_fig_2d
 import os
-
+from libmoon.model.fair_model import FullyConnected
+from libmoon.util.mtl import model_from_dataset, mtl_dim_dict, mtl_setting_dict
+from libmoon.util.mtl import get_dataset
+from libmoon.problem.mtl.objectives import from_name
+import numpy as np
 
 class MTLPSLLoRAModel(torch.nn.Module):
-    def __init__(self):
+    def __init__(self, problem_name, step_size=1e-3, batch_size=128):
         super(MTLPSLLoRAModel, self).__init__()
+        self.step_size = step_size
+        self.problem_name = problem_name
+        self.dataset = get_dataset(self.problem_name)
+        self.train_loader = torch.utils.data.DataLoader(self.dataset, batch_size=batch_size, shuffle=True)
+        self.settings = mtl_setting_dict[self.problem_name]
+        self.batch_size = batch_size
 
-    def forward(self, prefs):
-        pass
+        self.base_model = model_from_dataset(self.problem_name)
+        self.params = list(self.base_model.parameters())
+        self.params_shape = [p.shape for p in self.params]
+        # [torch.Size([128, 88]), torch.Size([128]), torch.Size([128, 128]), torch.Size([128]), torch.Size([1, 128]),
+        #  torch.Size([1])]
+        self.free_rank = 4
+        self.A1 = torch.nn.Parameter((torch.rand(self.params_shape[0][0], self.free_rank)))
+        self.B1 = torch.nn.Parameter((torch.rand(self.free_rank, self.params_shape[0][1])))
 
-    def optimize(self, problem, epoch):
-        pass
+        self.A2 = torch.nn.Parameter((torch.rand(self.params_shape[2][0], self.free_rank)))
+        self.B2 = torch.nn.Parameter((torch.rand(self.free_rank, self.params_shape[2][1])))
+
+        all_parameters = [self.A1, self.B1, self.A2, self.B2] + list(self.base_model.parameters())
+        self.optimizer = torch.optim.SGD(all_parameters, lr=self.step_size)
+        self.obj_arr = from_name( self.settings['objectives'], self.dataset.task_names() )
+
+        self.n_obj = 2
+
+
+
+
+    # def forward(self, x):
+    #     def get_pref_model(prefs):
+    #         for p in prefs:
+    #             W0 = p[0] * self.A1 @ self.B1
+    #             W1 = p[0] * self.A2 @ self.B2
+    #             self.base_model.parameters()[0] += W0
+    #             self.base_model.parameters()[2] += W1
+    #             y = self.base_model(x)
+
+    def set_pref(self, prefs):
+        W0 = prefs[0] * self.A1 @ self.B1
+        W1 = prefs[0] * self.A2 @ self.B2
+        params = list( self.base_model.parameters() )
+        params[0].data.add_(W0)
+        params[2].data.add_(W1)
+
+    #     RuntimeError: a leaf Variable that requires grad is being used in an in-place operation.
+    def optimize(self, epoch):
+        loss_epoch = []
+        for epoch_idx in tqdm(range(epoch)):
+            loss_batch = []
+            for batch_idx, batch in enumerate(self.train_loader):
+                prefs = get_random_prefs(1, self.n_obj).squeeze()
+                self.set_pref(prefs)
+                # self.optimizer.zero_grad()
+                logits = self.base_model(batch['data'])
+                loss_vec = torch.stack([obj(logits['logits'], **batch) for obj in self.obj_arr])
+                # print()
+                loss = get_agg_func('ls')(torch.atleast_2d(loss_vec), torch.atleast_2d(prefs))
+                self.optimizer.zero_grad()
+                loss.backward()
+                self.optimizer.step()
+                loss_batch.append(loss.clone().detach().item())
+            # loss_history = np.mean(torch.tensor(loss_batch))
+            loss_epoch.append(np.mean(loss_batch))
+        return loss_epoch
+
 
     def evaluate(self, prefs):
         pass
-
-
 
 
 
@@ -107,7 +167,20 @@ if __name__ == '__main__':
     '''
         Evaluate the performance on fairness classification problem. 
     '''
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--epoch', type=int, default=5)
+    parser.add_argument('--batch-size', type=int, default=128)
+    parser.add_argument('--step-size', type=float, default=1e-8)
+    parser.add_argument('--n-obj', type=int, default=2)
+    parser.add_argument('--problem-name', type=str, default='adult')
+    args = parser.parse_args()
 
-
-
-
+    psl_model = MTLPSLLoRAModel(problem_name=args.problem_name, step_size=args.step_size, batch_size=args.batch_size)
+    history = psl_model.optimize(epoch=args.epoch)
+    plt.plot(history)
+    plt.xlabel('Epoch', fontsize=20)
+    plt.ylabel('Loss', fontsize=20)
+    plt.xticks(fontsize=12)
+    plt.yticks(fontsize=12)
+    plt.show()

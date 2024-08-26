@@ -1,16 +1,18 @@
 import matplotlib.pyplot as plt
 from torch.utils import data
 from libmoon.problem.mtl.objectives import from_name
+
 from libmoon.util.mtl import model_from_dataset, mtl_dim_dict, mtl_setting_dict
+from libmoon.util.mtl import get_dataset
+
+
 import torch
 import numpy as np
 from tqdm import tqdm
 from libmoon.util.constant import get_agg_func, root_name
 from libmoon.util.gradient import calc_gradients_mtl, flatten_grads
-from libmoon.util.mtl import get_dataset
 from libmoon.model.hypernet import HyperNet, LeNetTarget
 from libmoon.util.prefs import get_random_prefs, get_uniform_pref
-
 from libmoon.util.network import numel
 
 
@@ -34,8 +36,6 @@ class GradBasePSLMTLSolver:
 
         num_param_hnet, num_param_net = numel(self.hnet), numel(self.net)
         print('Number of parameters in hnet: {:.2f}M, net: {:.2f}K'.format(num_param_hnet/1e6, num_param_net/1e3))
-
-
 
         self.optimizer = torch.optim.Adam(self.hnet.parameters(), lr=self.step_size)
         self.dataset = get_dataset(self.problem_name)
@@ -71,10 +71,7 @@ class GradBasePSLMTLSolver:
                     print()
                 else:
                     assert False, 'Unknown solver_name'
-
-
                 loss_batch.append( loss.cpu().detach().numpy() )
-                # self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
             loss_epoch.append( np.mean(np.array(loss_batch)) )

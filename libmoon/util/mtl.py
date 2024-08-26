@@ -35,11 +35,11 @@ def model_from_dataset(dataset_name, architecture='M1', **kwargs):
     dim = mtl_dim_dict[dataset_name]
     # print('dim:',dim)
     if dataset_name == 'adult':
-        return FullyConnected(architecture, dim, **kwargs)
+        return FullyConnected(dim, architecture, **kwargs)
     elif dataset_name == 'credit':
-        return FullyConnected(architecture,dim, **kwargs)
+        return FullyConnected(dim, architecture, **kwargs)
     elif dataset_name == 'compass':
-        return FullyConnected(architecture,dim, **kwargs)
+        return FullyConnected(dim, architecture, **kwargs)
     elif dataset_name in ['mnist','fashion','fmnist'] :
         return MultiLeNet(dim=dim, **kwargs)
     else:

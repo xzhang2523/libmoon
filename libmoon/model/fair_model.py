@@ -2,7 +2,7 @@ from torch import nn
 
 
 class FullyConnected(nn.Module):
-    def __init__(self, architecture, dim):
+    def __init__(self, dim, architecture='M1'):
         super().__init__()
 
         if not architecture in ['M4', 'M1', 'M2', 'M3']:
@@ -51,6 +51,6 @@ class FullyConnected(nn.Module):
             )
 
 
-    def forward(self, batch):
-        x = batch['data']
-        return dict(logits=self.f(x))
+    def forward(self, data):
+        # x = batch['data']
+        return dict(logits=self.f(data))

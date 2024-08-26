@@ -1,11 +1,8 @@
 import torch
 from libmoon.problem.mtl.mnist import MultiMnistProblem
 import argparse
-
-
-from libmoon.util_global.weight_factor import uniform_pref
+from libmoon.util.prefs import get_uniform_pref
 from libmoon.solver.gradient.methods.core.core_solver import EPOCore
-
 
 class BaseSolverMTL:
     def __init__(self):

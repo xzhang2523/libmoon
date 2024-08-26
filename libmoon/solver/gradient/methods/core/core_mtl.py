@@ -114,12 +114,14 @@ class GradBaseMTLSolver:
         self.settings = mtl_setting_dict[self.problem_name]
         self.prefs = prefs
         self.core_solver = core_solver
+
         train_dataset = get_dataset(self.problem_name, type='train')
         test_dataset = get_dataset(self.problem_name, type='test')
         self.train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True,
                                                    num_workers=0)
         self.test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=self.batch_size, shuffle=True,
                                                   num_workers=0)
+
         self.obj_arr = from_name( self.settings['objectives'], self.dataset.task_names() )
         self.model_arr = [model_from_dataset(self.problem_name) for _ in range( self.n_prob )]
         self.optimizer_arr = [ torch.optim.Adam(model.parameters(), lr=self.step_size)

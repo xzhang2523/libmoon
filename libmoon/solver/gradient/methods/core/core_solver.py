@@ -225,7 +225,7 @@ class AggCore():
         self.agg_name = solver_name.split('_')[-1]
 
     def get_alpha(self, Jacobian, losses, idx):
-        assert False, 'RandomCore does not have get_alpha method.'
+        assert False, 'AggCore does not have get_alpha method.'
         return None
 
 

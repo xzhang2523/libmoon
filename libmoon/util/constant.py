@@ -12,6 +12,8 @@ FONT_SIZE_2D = 20
 FONT_SIZE_3D = 20
 solution_eps = 1e-5
 
+from matplotlib import pyplot as plt
+
 
 nadir_point_dict = {
     'adult': array([0.6, 0.12]),
@@ -193,4 +195,39 @@ plt_2d_tickle_size = 12
 plt_2d_marker_size = 10
 plt_2d_label_size = 20
 
+
+def plot_fig_2d(folder_name, loss, prefs, use_plt='False'):
+    plt.figure()
+    rho = np.max([np.linalg.norm(elem) for elem in loss])
+    prefs_l2 = prefs / np.linalg.norm(prefs, axis=1, keepdims=True)
+    plt.xlabel('$L_1$', fontsize=plt_2d_label_size)
+    plt.ylabel('$L_2$', fontsize=plt_2d_label_size)
+    plt.xticks(fontsize=plt_2d_tickle_size)
+    plt.yticks(fontsize=plt_2d_tickle_size)
+    for pref in prefs_l2:
+        plt.plot([0, rho * pref[0]], [0, rho * pref[1]], color='grey', linestyle='--', linewidth=2)
+    plt.scatter(loss[:, 0], loss[:, 1])
+    file_name = os.path.join(folder_name, 'res.svg')
+    plt.savefig(file_name, format='svg', dpi=1200, bbox_inches='tight')
+    print('Save to {}'.format(file_name))
+    if use_plt == 'True':
+        plt.show()
+
+def save_pickle(folder_name, res):
+    import pickle
+    pickle_name = os.path.join(folder_name, 'res.pickle')
+    with open(pickle_name, 'wb') as f:
+        pickle.dump(res, f)
+    print('Save pickle to {}'.format(pickle_name))
+
+def plot_loss(folder_name, loss_arr):
+    plt.figure()
+    plt.plot(loss_arr)
+    plt.xlabel('Epoch', fontsize=plt_2d_label_size)
+    plt.ylabel('Loss', fontsize=plt_2d_label_size)
+    plt.xticks(fontsize=plt_2d_tickle_size)
+    plt.yticks(fontsize=plt_2d_tickle_size)
+    plt.grid()
+    file_name = os.path.join(folder_name, 'loss.pdf')
+    plt.savefig(file_name, format='pdf', dpi=1200, bbox_inches='tight')
 

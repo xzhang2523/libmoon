@@ -120,15 +120,14 @@ if __name__ == '__main__':
     else:
         assert False, 'Unknown solver'
 
-
     solver = GradBaseSolver(step_size=args.step_size, epoch=args.epoch, tol=args.tol, core_solver=core_solver)
     res = solver.solve(problem=problem, x=synthetic_init(problem, prefs), prefs=prefs )
     # res.keys()
     res['prefs'] = prefs
 
-    folder_name = os.path.join(root_name, 'Output', 'discrete', args.problem_name, args.solver_name, 'seed_{}'.format(args.seed_idx))
+    folder_name = os.path.join(root_name, 'Output', 'discrete', args.problem_name, args.solver_name,
+                               'seed_{}'.format(args.seed_idx))
     os.makedirs(folder_name, exist_ok=True)
-
     if problem.n_obj == 2:
         plot_figure_2d(problem=problem)
     elif problem.n_obj == 3:

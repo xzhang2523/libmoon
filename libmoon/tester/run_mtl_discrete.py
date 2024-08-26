@@ -1,7 +1,6 @@
 import sys
 sys.path.append('D:\\pycharm_project\\libmoon\\')
 
-
 import numpy as np
 import argparse
 import torch
@@ -18,11 +17,9 @@ from matplotlib import pyplot as plt
 from libmoon.util.constant import plt_2d_tickle_size, plt_2d_marker_size, plt_2d_label_size
 
 
-
 def plot_fig_2d(folder_name, loss, prefs):
     rho = np.max([np.linalg.norm(elem) for elem in loss])
     prefs_l2 = prefs / np.linalg.norm(prefs, axis=1, keepdims=True)
-
     plt.xlabel('$L_1$', fontsize=plt_2d_label_size)
     plt.ylabel('$L_2$', fontsize=plt_2d_label_size)
     plt.xticks(fontsize=plt_2d_tickle_size)
@@ -42,6 +39,10 @@ def save_pickle(folder_name):
     with open(pickle_name, 'wb') as f:
         pickle.dump(res, f)
     print('Save pickle to {}'.format(pickle_name))
+
+
+
+
 
 
 if __name__ == '__main__':
@@ -91,7 +92,6 @@ if __name__ == '__main__':
     res['prefs'] = prefs
     res['y'] = res['loss']
     loss = res['loss']
-
 
     folder_name = os.path.join(root_name, 'Output', 'discrete', args.problem_name, args.solver_name,
                                'seed_{}'.format(args.seed_idx))

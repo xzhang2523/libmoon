@@ -20,7 +20,7 @@ def das_dennis_recursion(ref_dirs, ref_dir, n_partitions, beta, depth):
             das_dennis_recursion(ref_dirs, np.copy(ref_dir), n_partitions, beta - i, depth + 1)
 
 
-def get_uniform_pref(n_prob, n_obj=2, clip_eps=0, mode='uniform'):
+def get_uniform_pref(n_prob, n_obj=2, clip_eps=0, mode='uniform', type='Tensor'):
     if n_obj == 2:
         # Just generate linear uniform preferences
         pref_1 = np.linspace(clip_eps, 1-clip_eps, n_prob)
@@ -32,12 +32,20 @@ def get_uniform_pref(n_prob, n_obj=2, clip_eps=0, mode='uniform'):
         prefs = np.clip(prefs, clip_eps, 1-clip_eps)
         prefs = prefs / prefs.sum(axis=1)[:, None]
 
-    return prefs
+    if type == 'Tensor':
+        import torch
+        return torch.Tensor(prefs)
+    else:
+        return prefs
 
 
-def get_random_prefs(batch_size, n_obj):
+def get_random_prefs(batch_size, n_obj, type='Tensor'):
     '''
         Description: .
     '''
-    return np.random.dirichlet(np.ones(n_obj), batch_size)
+    import torch
+    if type == 'Tensor':
+        return torch.distributions.dirichlet.Dirichlet(torch.ones(n_obj)).sample((batch_size,)).squeeze()
+    else:
+        return np.random.dirichlet(np.ones(n_obj), batch_size)
 

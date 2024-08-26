@@ -53,8 +53,6 @@ def calc_gradients_mtl(batch, model, objectives):
             if not_private and param.requires_grad and param.grad is not None:
                 gradients[i][name] = param.grad.data.detach().clone()
     return gradients
-
-
 '''
     This file contains the utility functions for the gradient descent solver.
 '''

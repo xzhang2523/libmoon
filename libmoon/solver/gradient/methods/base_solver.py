@@ -6,10 +6,7 @@ import torch
 from tqdm import tqdm
 from pymoo.indicators.hv import HV
 import numpy as np
-
 from libmoon.util.gradient import get_moo_Jacobian_batch
-
-
 
 class GradBaseSolver:
     def __init__(self, step_size, epoch, tol, core_solver):

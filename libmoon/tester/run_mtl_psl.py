@@ -7,16 +7,14 @@ import pickle
 from libmoon.solver.gradient.methods.core.core_mtl import GradBasePSLMTLSolver
 import os
 from libmoon.util.constant import root_name, plt_2d_tickle_size, plt_2d_marker_size, plt_2d_label_size
-# plt_2d_tickle_size = 16
-# plt_2d_marker_size = 10
-# plt_2d_label_size = 20
-from libmoon.util.mtl import get_dataset, model_from_dataset
+
 
 def save_pickle(folder_name, res):
     pickle_name = os.path.join(folder_name, 'res.pickle')
     with open(pickle_name, 'wb') as f:
         pickle.dump(res, f)
     print('Save pickle to {}'.format(pickle_name))
+
 
 def plot_fig_2d(folder_name, eval_res, draw_fig):
     plt.figure()

@@ -1,236 +1,82 @@
-'''
-    1. Zhong et al. Panacea: Pareto Alignment via Preference Adaptation for LLMs.
-    2. Chen at al. Efficient Pareto Manifold Learning with Low-Rank Structure. ICML 2024.
-'''
-
-
-
+import numpy as np
 import torch
-from torch import nn
-from libmoon.util.network import numel
 import torch.nn.functional as F
-
-from libmoon.problem.mtl.objectives import from_name
-loss_func_arr = from_name( names=['CrossEntropyLoss', 'CrossEntropyLoss'], task_names=['l', 'r'] )
+from libmoon.problem.synthetic.vlmop import VLMOP1, VLMOP2
+from tqdm import tqdm
+from libmoon.util.prefs import get_random_prefs, get_uniform_pref
+from libmoon.util.constant import get_agg_func
 from matplotlib import pyplot as plt
 
 
+from libmoon.util.constant import save_pickle, plot_loss, plot_fig_2d
+import os
 
-class LeNetTargetLoRA(nn.Module):
-    '''
-        LeNet target network
-    '''
-    def __init__(self,
-                 kernel_size,
-                 n_kernels=10,
-                 out_dim=10,
-                 target_hidden_dim=50,
-                 n_conv_layers=2,
-                 n_tasks=2
-                 ):
+class SimplePSLLoRAModel(torch.nn.Module):
+    def __init__(self, n_obj, n_var, step_size=1e-3):
+        super(SimplePSLLoRAModel, self).__init__()
+        # self.n_tasks = n_tasks
+        self.lr = step_size
+        self.n_obj = n_obj
+        self.n_var = n_var
+        self.Theta = torch.nn.Parameter(torch.rand(n_obj + 1, n_var))
+        self.optimizer = torch.optim.Adam([self.Theta], lr=self.lr)
 
-        super().__init__()
-        assert len(kernel_size) == n_conv_layers, (
-            'kernel size should be the same as the number of conv layers'
-            'conv layers holding kernel size for earch conv layer'
-        )
-        self.n_kernels = n_kernels
-        self.kernel_size = kernel_size
-        self.out_dim = out_dim
-        self.n_conv_layers = n_conv_layers
-        self.n_tasks = n_tasks
-        self.target_hidden_dim = target_hidden_dim
+    def forward(self, prefs):
+        gen_theta = torch.cat((torch.ones(len(prefs), 1),
+                               torch.tensor(prefs).clone().detach() ), dim=1)
+        # gen_theta.shape: (n_problem, n_obj+1)
+        variable = torch.matmul(gen_theta, self.Theta)
+        return variable
+
+    def optimize(self, problem, epoch):
+        loss_arr = []
+        loss_history = []
+        for epoch_idx in tqdm(range(epoch)):
+            # self.optimizer.zero_grad()
+            prefs = get_random_prefs(128, self.n_obj)
+            variable = self.forward(prefs)
+            objective = problem.evaluate(variable)
+            agg_func = get_agg_func('mtche')
+            agg_val = agg_func(objective, prefs)
+            self.optimizer.zero_grad()
+            loss = torch.mean(agg_val)
+            loss.backward()
+            self.optimizer.step()
+            loss_arr.append(loss.clone().detach().item())
+        return loss_arr
 
 
-    def forward(self, x, weights=None, A=None, ray=None):
-        # weights['conv0.weights'].shape : (bs, 810)
-        x = F.conv2d(
-            x,
-            weight=weights['conv0.weights'].reshape(
-                self.n_kernels, 1, self.kernel_size[0], self.kernel_size[0]
-            ),
-            bias=weights['conv0.bias'],
-            stride=1,
-        )
-
-        x = F.relu(x)
-        x = F.max_pool2d(x, 2)
-
-        for i in range(1, self.n_conv_layers):
-            if i == 1:
-                base_weight = weights[f"conv{i}.weights"]
-                base_weight = base_weight + (ray[0] * A).squeeze()
-
-            if i==1:
-                x = F.conv2d(
-                    x,
-                    base_weight.reshape(
-                        int(2 ** i * self.n_kernels), int(2 ** (i - 1) * self.n_kernels), self.kernel_size[i],
-                        self.kernel_size[i]
-                    ),
-                    bias=weights[f"conv{i}.bias"],
-                    stride=1,
-                )
-            else:
-                x = F.conv2d(
-                    x,
-                    weight=weights[f"conv{i}.weights"].reshape(
-                        int(2 ** i * self.n_kernels), int(2 ** (i - 1) * self.n_kernels), self.kernel_size[i],
-                        self.kernel_size[i]
-                    ),
-                    bias=weights[f"conv{i}.bias"],
-                    stride=1,
-                )
-            x = F.relu(x)
-            x = F.max_pool2d(x, 2)
-
-        x = torch.flatten(x, 1)
-
-        x = F.linear(
-            x,
-            weight=weights['hidden0.weights'].reshape(
-                self.target_hidden_dim, x.shape[-1]
-            ),
-            bias=weights['hidden0.bias'],
-        )
-
-        logits = []
-        for j in range(self.n_tasks):
-            logits.append(
-                F.linear(
-                    x,
-                    weight=weights[f"task{j}.weights"].reshape(
-                        self.out_dim, self.target_hidden_dim
-                    ),
-                    bias=weights[f"task{j}.bias"],
-                )
-            )
-        return logits
-
+    def evaluate(self, prefs):
+        variable = psl_model.forward(prefs)
+        objective = problem.evaluate(variable)
+        objective_np = objective.clone().detach().numpy()
+        variable_np = variable.clone().detach().numpy()
+        return objective_np, variable_np
 
 
 if __name__ == '__main__':
     import argparse
-    from libmoon.problem.mtl.loaders import MultiMNISTData
-    from libmoon.util_global.constant import get_device
-    from tqdm import tqdm
-    import numpy as np
-    from mtl import HyperNet
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--epoch', type=int, default=10000)
+    parser.add_argument('--batch-size', type=int, default=128)
+    parser.add_argument('--step-size', type=float, default=1e-3)
+    parser.add_argument('--n-obj', type=int, default=2)
+    parser.add_argument('--n-var', type=int, default=2)
+    args = parser.parse_args()
+    problem = VLMOP2(n_var=args.n_var, n_obj=args.n_obj)
+    psl_model = SimplePSLLoRAModel( n_var=args.n_var, n_obj=args.n_obj, step_size=args.step_size)
+    loss_arr = psl_model.optimize(problem, args.epoch)
 
-    parse = argparse.ArgumentParser()
-    parse.add_argument('--n-epoch', type=int, default=5)
-    parse.add_argument('--batch-size', type=int, default=128)
-    parse.add_argument('--lr', type=float, default=1e-3)
-    parse.add_argument('--n-obj', type=int, default=2)
-    parse.add_argument('--model', type=str, default='lenet')
-    parse.add_argument('--ray-hidden', type=int, default=100)
+    # plt.figure()
+    uniform_prefs = get_uniform_pref(n_prob=10, n_obj=args.n_obj)
+    objective_np, variable_np = psl_model.evaluate(uniform_prefs)
+    plt.scatter(objective_np[:, 0], objective_np[:, 1])
 
+    folder_name = os.path.join('D:\\pycharm_project\\libmoon\\Output\\psl', problem.problem_name)
+    os.makedirs(folder_name, exist_ok=True)
 
-    from torch.autograd import Variable
+    plot_loss(folder_name=folder_name, loss_arr=loss_arr)
+    save_pickle(folder_name=folder_name, res=res)
+    plot_fig_2d(folder_name=folder_name, loss=objective_np, prefs=uniform_prefs)
 
-    dataset = MultiMNISTData('mnist', 'train')
-    args = parse.parse_args()
-    loader = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size, shuffle=True,
-                                         num_workers=0)
-    dataset_test = MultiMNISTData('mnist', 'test')
-    loader_test = torch.utils.data.DataLoader(dataset_test, batch_size=args.batch_size, shuffle=True,
-                                              num_workers=0)
-
-    args.device = get_device()
-    if args.model == 'lenet':
-        hnet = HyperNet([9, 5]).to(args.device)
-        net = LeNetTargetLoRA([9, 5]).to(args.device)
-    else:
-        assert False, 'model not supported'
-
-    loss_history = []
-    A = Variable(torch.Tensor(np.random.randn(5000, 1))).to(args.device)
-    A.requires_grad = True
-
-
-    ray_input = torch.Tensor([0.5, 0.5]).to(args.device)
-    weights = hnet(ray_input)
-
-    for k,v in weights.items():
-        weights[k] = Variable(v, requires_grad=True).to(args.device)
-
-    # print()
-    optimized_var = list(weights.values())
-
-    A_optimizer = torch.optim.Adam([A]+optimized_var, lr=args.lr)
-
-
-
-
-    print('Training...')
-    for idx in tqdm(range(args.n_epoch)):
-        for i, batch in enumerate(loader):
-            ray = torch.from_numpy(
-                np.random.dirichlet((1, 1), 1).astype(np.float32).flatten()
-            ).to(args.device)  # ray.shape (1,2)
-
-            batch_ = {}
-            for k, v in batch.items():
-                batch_[k] = v.to(args.device)
-
-
-            # dict_keys(['conv0.weights', 'conv0.bias', 'conv1.weights', 'conv1.bias', 'hidden0.weights', 'hidden0.bias',
-            #            'task0.weights', 'task0.bias', 'task1.weights', 'task1.bias'])
-
-            logits_l, logits_r = net(batch_['data'], weights, A, ray)
-
-            batch_['logits_l'] = logits_l
-            batch_['logits_r'] = logits_r
-            loss_arr = torch.stack([loss(**batch_) for loss in loss_func_arr])
-            A_optimizer.zero_grad()
-
-            loss_arr = torch.atleast_2d(loss_arr)
-            ray = torch.atleast_2d(ray)
-            # print()
-            loss = torch.sum(loss_arr * ray )
-
-            (loss).backward()
-            loss_item = loss.cpu().detach().numpy()
-            loss_history.append(loss_item)
-            A_optimizer.step()
-
-
-    ray_1d = torch.linspace(0.1, 0.9, 10).to(args.device)
-    ray_2d = torch.stack([ray_1d, 1 - ray_1d], dim=1).to(args.device)
-
-
-    print('Evaluating...')
-    loss_ray = []
-
-    for idx, ray in tqdm(enumerate(ray_2d)):
-        loss_batch_arr = []
-        for i, batch in enumerate(loader):
-
-
-            batch_ = {}
-            for k, v in batch.items():
-                batch_[k] = v.to(args.device)
-            # ray = torch.from_numpy(
-            #     np.random.dirichlet((1, 1), 1).astype(np.float32).flatten()
-            # ).to(args.device)  # ray.shape (1,2)
-            ray_input = torch.Tensor([0.5, 0.5]).to(args.device)
-            weights = hnet(ray_input)
-            # dict_keys(['conv0.weights', 'conv0.bias', 'conv1.weights', 'conv1.bias', 'hidden0.weights', 'hidden0.bias',
-            #            'task0.weights', 'task0.bias', 'task1.weights', 'task1.bias'])
-            logits_l, logits_r = net(batch_['data'], weights, A, ray)
-            batch_['logits_l'] = logits_l
-            batch_['logits_r'] = logits_r
-            loss_arr = torch.stack([loss(**batch_) for loss in loss_func_arr])
-            loss_batch_arr.append( loss_arr.detach().cpu().numpy() )
-
-        loss_batch_arr = np.array(loss_batch_arr)
-        loss_ray.append( np.mean(loss_batch_arr, axis=0) )
-
-    loss_ray = np.array(loss_ray)
-
-    plt.scatter(loss_ray[:,0], loss_ray[:,1])
-    plt.plot(loss_ray[:, 0], loss_ray[:, 1])
-    plt.show()
-
-    print('done')
 

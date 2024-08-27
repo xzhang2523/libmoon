@@ -1,8 +1,13 @@
+import sys
+sys.path.append('D:\\pycharm_project\\libmoon')
+
 from libmoon.problem.synthetic.zdt import ZDT2
 import matplotlib.pyplot as plt
 import numpy as np
 import time
 from libmoon.solver.mobo.methods.dirhvego_solver import DirHVEGOSolver
+
+
 
 
 if __name__ == '__main__':

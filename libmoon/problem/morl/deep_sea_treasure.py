@@ -19,20 +19,15 @@ class DeepSeaTreasure(object):
              [-10, -10, -10, -10, -10, -10, -10, -10, 22.4, 0, 0],
              [-10, -10, -10, -10, -10, -10, -10, -10, -10, 23.7, 0]]
         )
-
         # DON'T normalize
         self.max_reward = 1.0
-
         # state space specification: 2-dimensional discrete box
         self.state_spec = [['discrete', 1, [0, 10]], ['discrete', 1, [0, 10]]]
-
         # action space specification: 1 dimension, 0 up, 1 down, 2 left, 3 right
         self.action_spec = ['discrete', 1, [0, 4]]
-
         # reward specification: 2-dimensional reward
         # 1st: treasure value || 2nd: time penalty
         self.reward_spec = [[0, 14], [-1, 0]]
-
         self.current_state = np.array([0, 0])
         self.terminal = False
 
@@ -74,3 +69,5 @@ class DeepSeaTreasure(object):
         reward = np.array([treasure_value, time_penalty])
 
         return self.current_state, reward, self.terminal
+
+

@@ -110,16 +110,21 @@ currently:
 (*) The original MOO-SVGD code does not include an implementation for Multitask Learning (MTL). Our release of MOO-SVGD
 is the first open-source code that supports MTL.
 
-| Method                                                                                                                                                                             | Property                                                               | #Obj               | Support | Published    | Complexity      |
-|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|--------------------|---------|--------------|-----------------|
-| Aggregation fun. based, e.g. Tche,mTche,LS,PBI,...                                                                                                                                 | Pareto solution with aggregations.                                     | Any                | Y       |              |                 |
-| [COSMOS](https://arxiv.org/pdf/2103.13392.pdf) [code](https://github.com/ruchtem/cosmos)                                                                                           | Approximated exact solution.                                           | Any                | Y       | ICDM 2021    | $O(m n K )$     |
-| [EPO](https://proceedings.mlr.press/v119/mahapatra20a/mahapatra20a.pdf) [code](https://github.com/dbmptr/EPOSearch)                                                                | Exact solution.                                                        | Any                | Y       | ICML 2020    | $O(m^2 n K )$   |
-| [MOO-SVGD](https://openreview.net/pdf?id=S2-j0ZegyrE) [code](https://github.com/gnobitab/MultiObjectiveSampling)                                                                   | A set of diverse Pareto solution.                                      | Any                | Y       | NeurIPS 2021 | $O(m^2 n K^2 )$ |
-| [MGDA](https://proceedings.neurips.cc/paper/2018/file/432aca3a1e345e339f35a30c8f65edce-Paper.pdf) [code](https://github.com/intel-isl/MultiObjectiveOptimization)                  | Arbitray Pareto solutions. Location affected highly by initialization. | Any                | Y       | NeurIPS 2018 | $O(m^2 n K )$   |
-| [PMGDA](http://arxiv.org/abs/2402.09492)                                                                                                                                           | Pareto solutions satisfying any preference.                            | Any                | Y       | Under review | $O(m^2 n K )$   |
-| [PMTL](https://proceedings.neurips.cc/paper_files/paper/2019/file/685bfde03eb646c27ed565881917c71c-Paper.pdf) [code](https://github.com/Xi-L/ParetoMTL)                            | Pareto solutions in sectors.                                           | 2. 3 is difficult. | Y       | NeurIPS 2019 | $O(m^2 n K^2 )$ |
-| [HVGrad](https://arxiv.org/abs/2102.04523) [WangHao](https://link.springer.com/chapter/10.1007/978-3-319-54157-0_44) [code](https://github.com/timodeist/multi_objective_learning) | It is a gradient-based HV method.                                      | 2/3                | Y       | CEC 2023     | $O(m^2 n K^2 )$ |   
+| Method                         | Property                         | Paper                                                                                                      |
+|--------------------------------|----------------------------------|------------------------------------------------------------------------------------------------------------|
+| EPO (Mahapatra et al 2020)     | Exact solutions                  | [paper](https://proceedings.mlr.press/v119/mahapatra20a.html)                                              |
+| MGDA-UB (Sener et al 2018)     | Arbitrary solutions              | [paper](https://arxiv.org/abs/1810.04650)                                                                  |
+| PMGDA (Zhang et al 2024)       | Specific solutions               | [paper](https://arxiv.org/abs/2402.09492)                                                                  |
+| Random (Lin et al 2021)        | Arbitrary solutions              | [paper](https://arxiv.org/abs/2111.10603)                                                                  |
+| MOO-SVGD (Liu et al 2021)      | Diverse solutions                | [paper](https://papers.nips.cc/paper_files/paper/2021/hash/7bb16972da003e87724f048d76b7e0e1-Abstract.html) |
+| PMTL (Lin et al 2019)          | Sector solutions                 | [paper](https://arxiv.org/abs/1912.12854)                                                                  |
+| HVGrad (Deist et al 2021)      | Maximal HV solutions             | [paper](https://arxiv.org/abs/2102.04523)                                                                  |
+| Agg-LS (Miettinen et al 1999)  | Convex hull solutions            | [book](https://link.springer.com/book/10.1007/978-1-4615-5563-6)                                           |
+| Agg-Tche (Zhang et al 2007)    | Exact solutions                  | [paper] (https://ieeexplore.ieee.org/document/4358754)                                                     |
+| Agg-mTche (Ma et al 2017)      | Exact solutions                  | [paper] (https://ieeexplore.ieee.org/document/7927726)                                                     |
+| Agg-PBI (Zhang et al 2007)     | Approximate exact solutions      | [paper] (https://ieeexplore.ieee.org/document/4358754)                                                     |
+| Agg-COSMOS (Ruchte et al 2007) | Approximate exact solutions      | [paper](https://arxiv.org/abs/2103.13392)                                                                  |
+| Agg-SoftTche (Lin et al 2024)  | Fast approximate exact solutions | [paper](https://arxiv.org/abs/2402.19078)                                                                                                  |
 
 Here, $m$ is the number of objectives, $K$ is the number of samples, and $n$ is the number of decision variables.
 For neural network based methods, $n$ is the number of parameters; hence $n$ is very large (>10000), $K$ is also large (

@@ -84,13 +84,12 @@ Here's a list of synthetic problems along with relevant research papers and proj
 This section details problems related to multitask learning, along with their corresponding papers and project/code
 references:
 
-| Problem                 | Paper                                                                                                                | Project/Code                                           |
-|-------------------------|----------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------|
-| MO-MNISTs               | [PMTL](https://proceedings.neurips.cc/paper_files/paper/2019/file/685bfde03eb646c27ed565881917c71c-Paper.pdf)        | [COSMOS](https://github.com/ruchtem/cosmos)            |
-| Fairness Classification | [COSMOS](https://arxiv.org/pdf/2103.13392.pdf)                                                                       | [COSMOS](https://github.com/ruchtem/cosmos)            |
-| Federated Learning      | [Federal MTL](https://proceedings.neurips.cc/paper_files/paper/2023/file/7cb2c2a8d35576c00078b6591ec26a7d-Paper.pdf) | [COSMOS](https://github.com/ruchtem/cosmos)            |
-| Synthetic (DST, FTS...) | [Envelop](https://proceedings.neurips.cc/paper_files/paper/2019/file/4a46fbfca3f1465a27b210f4bdfe6ab3-Paper.pdf)     | [Project](https://github.com/sample-repo/envelop-code) |
-| Robotics (MO-MuJoCo...) | [PGMORL](http://proceedings.mlr.press/v119/xu20h/xu20h.pdf)                                                          | [Code](https://github.com/mit-gfx/PGMORL)              |
+| Problem                     | Paper                                                                                                                | Project/Code                                           |
+|-----------------------------|----------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------|
+| MO-MNISTs                   | [PMTL](https://proceedings.neurips.cc/paper_files/paper/2019/file/685bfde03eb646c27ed565881917c71c-Paper.pdf)        | [COSMOS](https://github.com/ruchtem/cosmos)            |
+| Fairness Classification     | [COSMOS](https://arxiv.org/pdf/2103.13392.pdf)                                                                       | [COSMOS](https://github.com/ruchtem/cosmos)            |
+| MORL problems (DST, FTS...) | [Envelop](https://proceedings.neurips.cc/paper_files/paper/2019/file/4a46fbfca3f1465a27b210f4bdfe6ab3-Paper.pdf)     | [Project](https://github.com/sample-repo/envelop-code) |
+
 
 ## Current Supported Solvers
 

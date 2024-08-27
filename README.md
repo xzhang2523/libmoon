@@ -23,20 +23,29 @@ Star and fork us on GitHub — it motivates us a lot!
 
 The first three authors contribute equally to this work.
 
+
+Here’s a polished version of the reference:
+
+
+
+Is this what you had in mind, or is there a specific context you'd like this to be formatted for?
+
 ## Advisory Board
-| **Name**               | **Affiliation**                            | **Role**                                            |
-|------------------------|--------------------------------------------|-----------------------------------------------------|
-| **Xuehai Pan**         | PKU                                        | For software design                                 |
-| **Hongzong Li**        | CityUHK                                    | For local search                                    |
-| **Weiyu Chen**         | HKUST                                      | For LoRA PSL                                        |
-| **Prof. Jingda Deng**  | Xi'an Jiaotong University                  | For advice on High-D hypervolume computation        |
-| **Prof. Yifan Chen**   | Hong Kong Baptist University               | For advice on OR                                    |
-| **Prof. Ke Shang**     | Shenzhen University                        | For advice on approximate hypervolume-based methods |
-| **Prof. Genghui Li**   | Shenzhen University                        | For advice on MOEAs                                 |
-| **Prof. Han Zhao**     | University of Illinois at Urbana-Champaign | For advice on fairness classification               |
-| **Prof. Zhenkun Wang** | SusTech                                    | Paper writing and maintenance of community          |
-| **Prof. Tao Qin**      | MSRA                                       | Industry application                                |
-| **Prof. Qingfu Zhang** | CityUHK                                    | Corresponding                                       |
+| **Name**                                                                        | **Affiliation**                            | **Role**                                          |
+|---------------------------------------------------------------------------------|--------------------------------------------|---------------------------------------------------|
+| **Xuehai Pan**                                                                  | PKU                                        | For software design                               |
+| **Hongzong Li**                                                                 | CityUHK                                    | For local search                                  |
+| **Zhe Zhao**                                                                    | CityUHK/USTC                               | MODL                                              |
+| **Weiduo Liao**                                                                 | CityUHK/SusTech                            | HV-Net/Paper writing|
+| **Weiyu Chen** | HKUST                                      | For LoRA PSL                                      |
+| **Prof. Jingda Deng**                                                           | Xi'an Jiaotong University                  | For advice on High-D hypervolume computation      |
+| **Prof. Yifan Chen**                                                            | Hong Kong Baptist University               | For advice on OR                                  |
+| **Prof. Ke Shang**                                                              | Shenzhen University                        | For advice on approximate hypervolume-based methods |
+| **Prof. Genghui Li**                                                            | Shenzhen University                        | For advice on MOEAs                               |
+| **Prof. Han Zhao**                                                              | University of Illinois at Urbana-Champaign | For advice on fairness classification             |
+| **Prof. Zhenkun Wang**                                                          | SusTech                                    | Paper writing and maintenance of community        |
+| **Prof. Tao Qin**                                                               | MSRA                                       | Industry application                              |
+| **Prof. Qingfu Zhang**                                                          | CityUHK                                    | Corresponding                                     |
 
 
 ## Contact
@@ -57,7 +66,10 @@ The first three authors contribute equally to this work.
 - Slack: https://cityu-hiv5987.slack.com/archives/C07GU3N2H2S
 
 # News
-- **[Aug 27 2024]** Added support for LoRA-PSL (ICML 2024). Many thanks to Weiyu Chen for his contribution.
+- **[Aug 27 2024]** Added support for [LoRA-PSL](https://arxiv.org/pdf/2407.20734) (ICML 2024). Many thanks to [Weiyu Chen](https://scholar.google.com/citations?user=Zbg7LycAAAAJ&hl=zh-CN) for his contribution.
+
+
+- **[July 20 2024]** Supports most popular gradient-based methods: mgdaub random epo pmgda agg_ls agg_tche agg_mtche agg_pbi agg_cosmos agg_softtche pmtl hvgrad moosvgd.
 
 
 
@@ -199,3 +211,7 @@ OptimizatioN Library in PyTorch}},
   year = {2024}
 }
 ```
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=xzhang2523/libmoon&type=Date)](https://star-history.com/#xzhang2523/libmoon&Date)

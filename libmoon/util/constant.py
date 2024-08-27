@@ -196,7 +196,7 @@ plt_2d_marker_size = 10
 plt_2d_label_size = 20
 
 
-def plot_fig_2d(folder_name, loss, prefs, use_plt='False', axis_equal=True):
+def plot_fig_2d(folder_name, loss, prefs, use_plt='False', axis_equal=True, line=True):
     plt.figure()
     rho = np.max([np.linalg.norm(elem) for elem in loss])
     prefs_l2 = prefs / np.linalg.norm(prefs, axis=1, keepdims=True)
@@ -210,12 +210,19 @@ def plot_fig_2d(folder_name, loss, prefs, use_plt='False', axis_equal=True):
     plt.yticks(fontsize=plt_2d_tickle_size)
     for pref in prefs_l2:
         plt.plot([0, rho * pref[0]], [0, rho * pref[1]], color='grey', linestyle='--', linewidth=2)
+
+
+
     plt.scatter(loss[:, 0], loss[:, 1])
+
     file_name = os.path.join(folder_name, 'res.pdf')
     plt.savefig(file_name, dpi=1200, bbox_inches='tight')
     print('Save to {}'.format(file_name))
+
     if use_plt == 'True':
         plt.show()
+
+
 
 def save_pickle(folder_name, res):
     import pickle

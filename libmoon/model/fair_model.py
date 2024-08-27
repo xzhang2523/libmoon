@@ -50,7 +50,6 @@ class FullyConnected(nn.Module):
                 nn.Linear(256, 1),
             )
 
-
     def forward(self, data):
         # x = batch['data']
         return dict(logits=self.f(data))

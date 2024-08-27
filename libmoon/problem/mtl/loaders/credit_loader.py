@@ -38,7 +38,7 @@ class Credit(torch.utils.data.Dataset):
     def __init__(self, split, sensible_attribute='SEX'):
         assert split in ['train', 'val', 'test']
 
-        from libmoon.util_global.constant import root_name
+        from libmoon.util.constant import root_name
         path = os.path.join(root_name, 'libmoon', 'problem', 'mtl', 'mtl_data', 'credit', "credit.csv")
 
         x, y, s = load_dataset(path, sensible_attribute)

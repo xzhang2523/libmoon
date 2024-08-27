@@ -43,10 +43,16 @@ The first three authors contribute equally to this work.
 - Xiaoyuan Zhang [xzhang2523-c@my.cityu.edu.hk]
 - QQ group:
 
-
  <p align="center">
   <img src="img/qq.jpg" alt="Moon" width="200">
 </p>
+
+- Wechat group:
+<p align="center">
+  <img src="img/wechat.jpg" alt="Moon" width="200">
+</p>
+
+
 
 - Slack: https://cityu-hiv5987.slack.com/archives/C07GU3N2H2S
 

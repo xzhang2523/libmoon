@@ -2,6 +2,9 @@ from libmoon.problem.morl.deep_sea_treasure import DeepSeaTreasure
 from libmoon.problem.morl.fruit_tree import FruitTree
 import numpy as np
 
+from libmoon.model.policy_model import Policy
+
+
 class MultiObjectiveEnv(object):
 
     def __init__(self, env_name="deep_sea_treasure"):
@@ -45,15 +48,18 @@ if __name__ == "__main__":
     '''
         Test ENVs
     '''
-    dst_env = MultiObjectiveEnv("ft7")
+    dst_env = MultiObjectiveEnv("dst")
     dst_env.reset()
     terminal = False
     print("DST STATE SPEC:", dst_env.state_spec)
     print("DST ACTION SPEC:", dst_env.action_spec)
     print("DST REWARD SPEC:", dst_env.reward_spec)
+    total_reward = 0
     while not terminal:
         state = dst_env.observe()
         action = np.random.choice(2, 1)[0]
         next_state, reward, terminal = dst_env.step(action)
+        total_reward += reward
         print("s:", state, "\ta:", action, "\ts':", next_state, "\tr:", reward)
+    print("TOTAL REWARD:", total_reward)
     print("AN EPISODE ENDS")

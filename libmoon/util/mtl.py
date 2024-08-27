@@ -3,7 +3,7 @@ from libmoon.problem.mtl.loaders import Adult, Credit, Compas, MultiMNISTData
 from libmoon.util.constant import nadir_point_dict, ideal_point_dict
 from libmoon.model import MultiLeNet, FullyConnected
 from libmoon.problem.mtl.settings import adult_setting, credit_setting, compass_setting, mnist_setting, fashion_setting, fmnist_setting
-
+import torch
 
 mtl_dim_dict = {
     'adult' : (88,),
@@ -55,17 +55,21 @@ def get_angle_range(dataset, return_degrees=False):
         th2 = np.rad2deg(th2)
     return th1, th2
 
-def get_mtl_prefs(problem_name, n_prob, obj_normalization=False):
-    if obj_normalization:
-        theta_arr = np.linspace(0, np.pi/2, n_prob)
-    else:
-        p1 = [nadir_point_dict[problem_name][0], ideal_point_dict[problem_name][1]]
-        p2 = [ideal_point_dict[problem_name][0], nadir_point_dict[problem_name][1]]
-        th1 = np.arctan2(p1[1], p1[0])
-        th2 = np.arctan2(p2[1], p2[0])
-        theta_arr = np.linspace(th1, th2, n_prob)
+def get_mtl_prefs(problem_name, n_prob, type='Tensor'):
+    '''
+        Input: problem_name: str, n_prob: int.
+        Return prefs: np.array of shape (n_prob, 2)
+    '''
+    p1 = [nadir_point_dict[problem_name][0], ideal_point_dict[problem_name][1]]
+    p2 = [ideal_point_dict[problem_name][0], nadir_point_dict[problem_name][1]]
+    th1 = np.arctan2(p1[1], p1[0])
+    th2 = np.arctan2(p2[1], p2[0])
+    theta_arr = np.linspace(th1, th2, n_prob)
+
     prefs = np.c_[np.cos(theta_arr), np.sin(theta_arr)]
     prefs = prefs / np.sum(prefs, axis=1)[:, None]
+    if type == 'Tensor':
+        prefs = torch.Tensor(prefs)
     return prefs
 
 

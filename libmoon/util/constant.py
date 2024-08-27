@@ -196,11 +196,14 @@ plt_2d_marker_size = 10
 plt_2d_label_size = 20
 
 
-def plot_fig_2d(folder_name, loss, prefs, use_plt='False'):
+def plot_fig_2d(folder_name, loss, prefs, use_plt='False', axis_equal=True):
     plt.figure()
     rho = np.max([np.linalg.norm(elem) for elem in loss])
     prefs_l2 = prefs / np.linalg.norm(prefs, axis=1, keepdims=True)
-    plt.axis('equal')
+
+    if axis_equal:
+        plt.axis('equal')
+
     plt.xlabel('$L_1$', fontsize=plt_2d_label_size)
     plt.ylabel('$L_2$', fontsize=plt_2d_label_size)
     plt.xticks(fontsize=plt_2d_tickle_size)
@@ -231,4 +234,4 @@ def plot_loss(folder_name, loss_arr):
     plt.grid()
     file_name = os.path.join(folder_name, 'loss.pdf')
     plt.savefig(file_name, format='pdf', dpi=1200, bbox_inches='tight')
-
+    print('Loss save to {}'.format(file_name))

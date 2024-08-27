@@ -13,9 +13,10 @@ from libmoon.util.constant import save_pickle, plot_loss, plot_fig_2d
 import os
 from libmoon.model.fair_model import FullyConnected
 from libmoon.util.mtl import model_from_dataset, mtl_dim_dict, mtl_setting_dict
-from libmoon.util.mtl import get_dataset
+from libmoon.util.mtl import get_dataset, get_mtl_prefs
 from libmoon.problem.mtl.objectives import from_name
 import numpy as np
+
 
 class MTLPSLLoRAModel(torch.nn.Module):
     def __init__(self, problem_name, step_size=1e-3, batch_size=128, solver_name='agg_mtche'):
@@ -26,28 +27,21 @@ class MTLPSLLoRAModel(torch.nn.Module):
         self.train_loader = torch.utils.data.DataLoader(self.dataset, batch_size=batch_size, shuffle=True)
         self.settings = mtl_setting_dict[self.problem_name]
         self.batch_size = batch_size
-
         self.base_model = model_from_dataset(self.problem_name)
         self.params = list(self.base_model.parameters())
         self.params_shape = [p.shape for p in self.params]
         # [torch.Size([128, 88]), torch.Size([128]), torch.Size([128, 128]), torch.Size([128]), torch.Size([1, 128]),
         #  torch.Size([1])]
-        self.free_rank = 4
+        self.free_rank = 5
         self.A1 = torch.nn.Parameter((torch.rand(self.params_shape[0][0], self.free_rank) * 1e-3))
         self.B1 = torch.nn.Parameter((torch.rand(self.free_rank, self.params_shape[0][1]) * 1e-3))
-
         self.A2 = torch.nn.Parameter((torch.rand(self.params_shape[2][0], self.free_rank) * 1e-3 ))
         self.B2 = torch.nn.Parameter((torch.rand(self.free_rank, self.params_shape[2][1]) * 1e-3))
-
         all_parameters = [self.A1, self.B1, self.A2, self.B2] + list(self.base_model.parameters())
-        self.optimizer = torch.optim.Adam(all_parameters, lr=self.step_size)
+        self.optimizer = torch.optim.SGD(all_parameters, lr=self.step_size)
         self.obj_arr = from_name( self.settings['objectives'], self.dataset.task_names() )
-
         self.n_obj = 2
         self.agg_name = solver_name.split('_')[-1]
-
-
-
 
     # def forward(self, x):
     #     def get_pref_model(prefs):
@@ -81,31 +75,26 @@ class MTLPSLLoRAModel(torch.nn.Module):
                 loss.backward()
                 self.optimizer.step()
                 loss_batch.append(loss.clone().detach().item())
-            # loss_history = np.mean(torch.tensor(loss_batch))
             loss_epoch.append(np.mean(loss_batch))
         return loss_epoch
 
 
     def evaluate(self, prefs_batch):
-        loss_pref = []
-        for prefs in prefs_batch:
-            loss_batch = []
-            for batch_idx, batch in enumerate(self.train_loader):
-                prefs = get_random_prefs(1, self.n_obj).squeeze()
+        '''
+            Input: prefs_batch: (n_prob, n_obj)
+            Output: loss_pref: (n_prob, n_obj)
+        '''
+        with torch.no_grad():
+            loss_pref = []
+            for prefs in prefs_batch:
                 self.set_pref(prefs)
-                # self.optimizer.zero_grad()
-                logits = self.base_model(batch['data'])
-                loss_vec = torch.stack([obj(logits['logits'], **batch) for obj in self.obj_arr])
-                loss = get_agg_func('ls')(torch.atleast_2d(loss_vec), torch.atleast_2d(prefs))
-                self.optimizer.zero_grad()
-                loss.backward()
-                self.optimizer.step()
-                loss_batch.append(loss_vec.clone().detach().numpy())
-            loss_pref.append(np.mean(loss_batch, axis=0))
-        return np.array(loss_pref)
-
-
-
+                loss_batch = []
+                for batch_idx, batch in enumerate(self.train_loader):
+                    logits = self.base_model(batch['data'])
+                    loss_vec = torch.stack([obj(logits['logits'], **batch) for obj in self.obj_arr])
+                    loss_batch.append(loss_vec.clone().detach().numpy())
+                loss_pref.append( np.mean(loss_batch, axis=0) )
+            return np.array(loss_pref)
 
 class SimplePSLLoRAModel(torch.nn.Module):
     def __init__(self, n_obj, n_var, step_size=1e-3):
@@ -141,7 +130,6 @@ class SimplePSLLoRAModel(torch.nn.Module):
             loss_arr.append(loss.clone().detach().item())
         return loss_arr
 
-
     def evaluate(self, prefs):
         variable = self.forward(prefs)
         objective = self.problem.evaluate(variable)
@@ -163,7 +151,6 @@ def evaluate_synthetic(problem, model):
     psl_model = SimplePSLLoRAModel( n_var=args.n_var, n_obj=args.n_obj, step_size=args.step_size)
     loss_arr = psl_model.optimize(problem, args.epoch)
 
-    # plt.figure()
     uniform_prefs = get_uniform_pref(n_prob=10, n_obj=args.n_obj)
     objective_np, variable_np = psl_model.evaluate(uniform_prefs)
     plt.scatter(objective_np[:, 0], objective_np[:, 1])
@@ -181,33 +168,29 @@ def evaluate_synthetic(problem, model):
 
 if __name__ == '__main__':
     '''
-        Evaluate the performance on fairness classification problem. 
+        Evaluate the performance on fairness classification problem.
     '''
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--epoch', type=int, default=100)
+    parser.add_argument('--epoch', type=int, default=20)
     parser.add_argument('--eval-num', type=int, default=20)
-
     parser.add_argument('--batch-size', type=int, default=128)
-    parser.add_argument('--step-size', type=float, default=1e-4)
+    parser.add_argument('--step-size', type=float, default=1e-3)
     parser.add_argument('--n-obj', type=int, default=2)
     parser.add_argument('--problem-name', type=str, default='adult')
-    parser.add_argument('--solver-name', type=str, default='agg_mtche')
-
+    parser.add_argument('--solver-name', type=str, default='agg_ls')
     args = parser.parse_args()
-
     psl_model = MTLPSLLoRAModel(problem_name=args.problem_name, step_size=args.step_size,
                                 batch_size=args.batch_size, solver_name=args.solver_name)
 
     print('Training...')
     history = psl_model.optimize(epoch=args.epoch)
-    uniform_prefs = get_uniform_pref(n_prob=args.eval_num, n_obj=args.n_obj)
-
+    uniform_prefs = get_uniform_pref(n_prob=args.eval_num, n_obj=psl_model.n_obj)
     print('Evaluating...')
     eval_res = psl_model.evaluate(uniform_prefs)
-
     folder_name = os.path.join('D:\\pycharm_project\\libmoon\\Output\\psl_lora', args.problem_name)
     os.makedirs(folder_name, exist_ok=True)
+
     res = {}
     res['y'] = eval_res
     res['loss'] = history
@@ -215,4 +198,4 @@ if __name__ == '__main__':
 
     plot_loss(folder_name=folder_name, loss_arr=res['loss'])
     save_pickle(folder_name=folder_name, res=res)
-    plot_fig_2d(folder_name=folder_name, loss=res['y'], prefs=uniform_prefs)
+    plot_fig_2d(folder_name=folder_name, loss=res['y'], prefs=uniform_prefs, axis_equal=False)

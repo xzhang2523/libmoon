@@ -1,20 +1,22 @@
+'''
+    Main algorithm framework for  Decomposition-based Multi-objective Bayesian Optimization.
+
+    [1] Liang Zhao and Qingfu Zhang. Hypervolume-Guided Decomposition for Parallel
+    Expensive Multiobjective Optimization. IEEE Transactions on Evolutionary
+    Computation, 28(2): 432-444, 2024.
+'''
+
+
 import numpy as np
 import torch 
 
- 
 from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting
 from pymoo.util.ref_dirs import get_reference_directions
-from utils.lhs import lhs
-from surrogate_models import GaussianProcess 
+from libmoon.solver.mobo.utils.lhs import lhs
+from libmoon.solver.mobo.surrogate_models import GaussianProcess
 import math
 from tqdm import tqdm
-'''
-    Main algorithm framework for  Decomposition-based Multi-objective Bayesian Optimization.
-    
-    [1] Liang Zhao and Qingfu Zhang. Hypervolume-Guided Decomposition for Parallel 
-    Expensive Multiobjective Optimization. IEEE Transactions on Evolutionary 
-    Computation, 28(2): 432-444, 2024.
-'''
+
 
 
 
@@ -165,7 +167,7 @@ class MOBOD(object):
         # Polynomial mutation
         Lower = self.bounds[0:1,...]
         Upper = self.bounds[1:2,...]
-      
+
         U_L = Upper - Lower
         Site = torch.rand(N, D) < proM / D
         mu = torch.rand(N, D)

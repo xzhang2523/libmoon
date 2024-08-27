@@ -5,7 +5,7 @@ Expensive Multiobjective Optimization. IEEE Transactions on Evolutionary
 Computation, 28(2): 432-444, 2024.
 """
 import torch
-from methods.base_solver_mobod import MOBOD
+from libmoon.solver.mobo.methods.base_solver_mobod import MOBOD
 from botorch.utils.probability.utils import (
     log_ndtr as log_Phi,
     log_phi, # Logarithm of standard normal pdf

@@ -5,6 +5,8 @@ A simple FC Pareto Set model.
 import torch
 import torch.nn as nn
 torch.set_default_dtype(torch.float64)
+
+
 class ParetoSetModel(torch.nn.Module):
     def __init__(self, n_dim, n_obj):
         super(ParetoSetModel, self).__init__()

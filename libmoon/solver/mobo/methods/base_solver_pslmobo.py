@@ -4,8 +4,8 @@ import torch
  
 from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting
 from pymoo.util.ref_dirs import get_reference_directions
-from utils.lhs import lhs
-from surrogate_models import GaussianProcess 
+from libmoon.solver.mobo.utils.lhs import lhs
+from libmoon.solver.mobo.surrogate_models import GaussianProcess
 import math
 from tqdm import tqdm
 from botorch.utils.transforms import unnormalize, normalize

@@ -16,14 +16,14 @@ from botorch.utils.sampling import sample_simplex
 from botorch.utils.multi_objective.hypervolume import Hypervolume
 import math
 from .base_psl_model import ParetoSetModel
-from utils import lhs
+from libmoon.solver.mobo.utils import lhs
 from botorch.utils.transforms import unnormalize, normalize
 from tqdm import tqdm
 import numpy as np
 from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting
-from surrogate_models import GaussianProcess
+from libmoon.solver.mobo.surrogate_models import GaussianProcess
 torch.set_default_dtype(torch.float64)
-from methods.base_solver_pslmobo import PSLMOBO
+from libmoon.solver.mobo.methods.base_solver_pslmobo import PSLMOBO
 from botorch.utils.probability.utils import (
     log_ndtr as log_Phi,
     log_phi, # Logarithm of standard normal pdf

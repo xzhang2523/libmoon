@@ -6,7 +6,7 @@ from scipy.optimize import minimize
 from scipy.linalg import solve_triangular
 from scipy.spatial.distance import cdist
 
-from surrogate_models.base import SurrogateModel
+from libmoon.solver.mobo.surrogate_models.base import SurrogateModel
  
 
 

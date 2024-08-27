@@ -23,13 +23,6 @@ Star and fork us on GitHub — it motivates us a lot!
 
 The first three authors contribute equally to this work.
 
-
-Here’s a polished version of the reference:
-
-
-
-Is this what you had in mind, or is there a specific context you'd like this to be formatted for?
-
 ## Advisory Board
 | **Name**                                                                        | **Affiliation**                            | **Role**                                          |
 |---------------------------------------------------------------------------------|--------------------------------------------|---------------------------------------------------|

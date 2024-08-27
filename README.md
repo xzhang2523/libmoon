@@ -56,6 +56,11 @@ The first three authors contribute equally to this work.
 
 - Slack: https://cityu-hiv5987.slack.com/archives/C07GU3N2H2S
 
+# News
+- **[Aug 27 2024]** Added support for LoRA-PSL (ICML 2024). Many thanks to Weiyu Chen for his contribution.
+
+
+
 ### Synthetic Problems
 
 Here's a list of synthetic problems along with relevant research papers and project/code links:

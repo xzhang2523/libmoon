@@ -110,21 +110,21 @@ currently:
 (*) The original MOO-SVGD code does not include an implementation for Multitask Learning (MTL). Our release of MOO-SVGD
 is the first open-source code that supports MTL.
 
-| Method                         | Property                         | Paper                                                                                                      |
-|--------------------------------|----------------------------------|------------------------------------------------------------------------------------------------------------|
-| EPO (Mahapatra et al 2020)     | Exact solutions                  | [paper](https://proceedings.mlr.press/v119/mahapatra20a.html)                                              |
-| MGDA-UB (Sener et al 2018)     | Arbitrary solutions              | [paper](https://arxiv.org/abs/1810.04650)                                                                  |
-| PMGDA (Zhang et al 2024)       | Specific solutions               | [paper](https://arxiv.org/abs/2402.09492)                                                                  |
-| Random (Lin et al 2021)        | Arbitrary solutions              | [paper](https://arxiv.org/abs/2111.10603)                                                                  |
+| Method                         | Property                         | Paper                                                                                                   |
+|--------------------------------|----------------------------------|---------------------------------------------------------------------------------------------------------|
+| EPO (Mahapatra et al 2020)     | Exact solutions                  | [paper](https://proceedings.mlr.press/v119/mahapatra20a.html)                                           |
+| MGDA-UB (Sener et al 2018)     | Arbitrary solutions              | [paper](https://arxiv.org/abs/1810.04650)                                                               |
+| PMGDA (Zhang et al 2024)       | Specific solutions               | [paper](https://arxiv.org/abs/2402.09492)                                                               |
+| Random (Lin et al 2021)        | Arbitrary solutions              | [paper](https://arxiv.org/abs/2111.10603)                                                               |
 | MOO-SVGD (Liu et al 2021)      | Diverse solutions                | [paper](https://papers.nips.cc/paper_files/paper/2021/hash/7bb16972da003e87724f048d76b7e0e1-Abstract.html) |
-| PMTL (Lin et al 2019)          | Sector solutions                 | [paper](https://arxiv.org/abs/1912.12854)                                                                  |
-| HVGrad (Deist et al 2021)      | Maximal HV solutions             | [paper](https://arxiv.org/abs/2102.04523)                                                                  |
-| Agg-LS (Miettinen et al 1999)  | Convex hull solutions            | [book](https://link.springer.com/book/10.1007/978-1-4615-5563-6)                                           |
-| Agg-Tche (Zhang et al 2007)    | Exact solutions                  | [paper] (https://ieeexplore.ieee.org/document/4358754)                                                     |
-| Agg-mTche (Ma et al 2017)      | Exact solutions                  | [paper] (https://ieeexplore.ieee.org/document/7927726)                                                     |
-| Agg-PBI (Zhang et al 2007)     | Approximate exact solutions      | [paper] (https://ieeexplore.ieee.org/document/4358754)                                                     |
-| Agg-COSMOS (Ruchte et al 2007) | Approximate exact solutions      | [paper](https://arxiv.org/abs/2103.13392)                                                                  |
-| Agg-SoftTche (Lin et al 2024)  | Fast approximate exact solutions | [paper](https://arxiv.org/abs/2402.19078)                                                                                                  |
+| PMTL (Lin et al 2019)          | Sector solutions                 | [paper](https://arxiv.org/abs/1912.12854)                                                               |
+| HVGrad (Deist et al 2021)      | Maximal HV solutions             | [paper](https://arxiv.org/abs/2102.04523)                                                               |
+| Agg-LS (Miettinen et al 1999)  | Convex hull solutions            | [book](https://link.springer.com/book/10.1007/978-1-4615-5563-6)                                        |
+| Agg-Tche (Zhang et al 2007)    | Exact solutions                  | [paper](https://ieeexplore.ieee.org/document/4358754)                                                   |
+| Agg-mTche (Ma et al 2017)      | Exact solutions                  | [paper](https://ieeexplore.ieee.org/document/7927726)                                                   |
+| Agg-PBI (Zhang et al 2007)     | Approximate exact solutions      | [paper](https://ieeexplore.ieee.org/document/4358754)                                                   |
+| Agg-COSMOS (Ruchte et al 2007) | Approximate exact solutions      | [paper](https://arxiv.org/abs/2103.13392)                                                               |
+| Agg-SoftTche (Lin et al 2024)  | Fast approximate exact solutions | [paper](https://arxiv.org/abs/2402.19078)                                                                                               |
 
 Here, $m$ is the number of objectives, $K$ is the number of samples, and $n$ is the number of decision variables.
 For neural network based methods, $n$ is the number of parameters; hence $n$ is very large (>10000), $K$ is also large (

@@ -2,11 +2,9 @@
 
 
 [![Documentation Status](https://readthedocs.org/projects/libmoondocs/badge/?version=latest)](https://libmoondocs.readthedocs.io/en/latest/)
-[![Documentation Status](https://readthedocs.org/projects/libmoondocs/?version=latest)](https://libmoondocs.readthedocs.io/en/latest/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/xzhang2523/libmoon/blob/main/LICENSE)
 [![PyPI version](https://badge.fury.io/py/LibMOON.svg)](https://badge.fury.io/py/LibMOON)
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/LibMOON.svg?logo=python&logoColor=FFE873)](https://github.com/xzhang2523/libmoon)
-[![CodeFactor](https://www.codefactor.io/repository/github/median-research-group/libmoon/badge/main)](https://www.codefactor.io/repository/github/median-research-group/libmoon/overview/main)
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fxzhang2523%2Flibmoon&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 [![Made With Friends](https://img.shields.io/badge/Made%20With-Love-orange.svg)](https://github.com/xzhang2523/libmoon) 
 

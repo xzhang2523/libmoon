@@ -34,32 +34,19 @@ class MTLPSLLoRAModel(torch.nn.Module):
         self.params = list(self.base_model.parameters())
         self.params_shape = [p.shape for p in self.params]
         self.free_rank = 5
-        # Scale factor
         scale = 1e-3
         self.A1 = torch.nn.Parameter(
             torch.nn.init.kaiming_uniform_(torch.empty(self.params_shape[0][0], self.free_rank)) * scale)
-        # self.A1.requires_grad = True
         self.B1 = torch.nn.Parameter(
             torch.nn.init.kaiming_uniform_(torch.empty(self.free_rank, self.params_shape[0][1])) * scale)
-        # self.A1.requires_grad = True
         self.A2 = torch.nn.Parameter(
             torch.nn.init.kaiming_uniform_(torch.empty(self.params_shape[2][0], self.free_rank)) * scale)
         self.B2 = torch.nn.Parameter(
             torch.nn.init.kaiming_uniform_(torch.empty(self.free_rank, self.params_shape[2][1])) * scale)
-        #
-        # all_parameters = [self.A1, self.B1, self.A2, self.B2] + list(self.base_model.parameters())
         self.optimizer = torch.optim.Adam(self.parameters(), lr=self.step_size)
         self.obj_arr = from_name(self.settings['objectives'], self.dataset.task_names())
         self.n_obj = 2
         self.agg_name = solver_name.split('_')[-1]
-
-    # def set_pref(self, prefs):
-    #     W0 = prefs[0] * torch.matmul(self.A1, self.B1)
-    #     W1 = prefs[0] * torch.matmul(self.A2, self.B2)
-
-    # params = list(self.base_model.parameters())
-    # params[0] = torch.nn.Parameter(params[0] + W0)
-    # params[2] = torch.nn.Parameter(params[2] + W1)
 
     def forward(self, x, prefs):
         # params = list(self.base_model.parameters())

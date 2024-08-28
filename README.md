@@ -21,22 +21,10 @@ Star and fork us on GitHub — it motivates us a lot!
 - **[April 20 2024]** Supports [PMTL](https://arxiv.org/abs/1912.12854), [HvGrad](https://arxiv.org/abs/2102.04523). Many thanks for Dr [Xi Lin's](https://scholar.google.com/citations?user=QB_MUboAAAAJ&hl=en) contribution. Thanks for previous helpful communications from Dr [Hao Wang](https://scholar.google.com/citations?user=Pz9c6XwAAAAJ&hl=en).  
 
 
-## Contact
-- Xiaoyuan Zhang [xzhang2523-c@my.cityu.edu.hk]
-- QQ group:
 
- <p align="center">
-  <img src="img/qq.jpg" alt="Moon" width="200">
-</p>
 
-- Wechat group:
-<p align="center">
-  <img src="img/wechat.jpg" alt="Moon" width="200">
-</p>
-
-- Slack: https://cityu-hiv5987.slack.com/archives/C07GU3N2H2S
-
-### Synthetic Problems
+# 1. Supported Problems
+## Synthetic Problems
 
 Here's a list of synthetic problems along with relevant research papers and project/code links:
 
@@ -61,7 +49,7 @@ references:
 | MORL problems (DST, FTS...) | [Envelop](https://proceedings.neurips.cc/paper_files/paper/2019/file/4a46fbfca3f1465a27b210f4bdfe6ab3-Paper.pdf)     | [Project](https://github.com/sample-repo/envelop-code) |
 
 
-## Current Supported Solvers
+## Supported Solvers
 
 LibMOON includes a variety of solvers tailored for different needs as img below shows. The following solvers are
 currently:
@@ -80,23 +68,27 @@ currently:
 (*) The original MOO-SVGD code does not include an implementation for Multitask Learning (MTL). Our release of MOO-SVGD
 is the first open-source code that supports MTL.
 
-| Method                         | Property                         | Paper                                                                                                   |
-|--------------------------------|----------------------------------|---------------------------------------------------------------------------------------------------------|
-| EPO (Mahapatra et al 2020)     | Exact solutions                  | [paper](https://proceedings.mlr.press/v119/mahapatra20a.html)                                           |
-| MGDA-UB (Sener et al 2018)     | Arbitrary solutions              | [paper](https://arxiv.org/abs/1810.04650)                                                               |
-| PMGDA (Zhang et al 2024)       | Specific solutions               | [paper](https://arxiv.org/abs/2402.09492)                                                               |
-| Random (Lin et al 2021)        | Arbitrary solutions              | [paper](https://arxiv.org/abs/2111.10603)                                                               |
-| MOO-SVGD (Liu et al 2021)      | Diverse solutions                | [paper](https://papers.nips.cc/paper_files/paper/2021/hash/7bb16972da003e87724f048d76b7e0e1-Abstract.html) |
-| PMTL (Lin et al 2019)          | Sector solutions                 | [paper](https://arxiv.org/abs/1912.12854)                                                               |
-| HVGrad (Deist et al 2021)      | Maximal HV solutions             | [paper](https://arxiv.org/abs/2102.04523)                                                               |
-| Agg-LS (Miettinen et al 1999)  | Convex hull solutions            | [book](https://link.springer.com/book/10.1007/978-1-4615-5563-6)                                        |
-| Agg-Tche (Zhang et al 2007)    | Exact solutions                  | [paper](https://ieeexplore.ieee.org/document/4358754)                                                   |
-| Agg-mTche (Ma et al 2017)      | Exact solutions                  | [paper](https://ieeexplore.ieee.org/document/7927726)                                                   |
-| Agg-PBI (Zhang et al 2007)     | Approximate exact solutions      | [paper](https://ieeexplore.ieee.org/document/4358754)                                                   |
-| Agg-COSMOS (Ruchte et al 2007) | Approximate exact solutions      | [paper](https://arxiv.org/abs/2103.13392)                                                               |
-| Agg-SoftTche (Lin et al 2024)  | Fast approximate exact solutions | [paper](https://arxiv.org/abs/2402.19078)                                                                                               |
+| Method  | Property  | Paper|
+|--------------------------------|---------------------------------|------------------------------------------------------------------------------------------------------|
+| EPO (Mahapatra et al 2020)     | Exact solutions                 | [paper](https://proceedings.mlr.press/v119/mahapatra20a.html)                                        |
+| MGDA-UB (Sener et al 2018)     | Arbitrary solutions             | [paper](https://arxiv.org/abs/1810.04650)                                                            |
+| PMGDA (Zhang et al 2024)       | Specific solutions              | [paper](https://arxiv.org/abs/2402.09492)                                                            |
+| Random (Lin et al 2021)        | Arbitrary solutions             | [paper](https://arxiv.org/abs/2111.10603)                                                            |
+| MOO-SVGD (Liu et al 2021)      | Diverse solutions               | [paper](https://papers.nips.cc/paper_files/paper/2021/hash/7bb16972da003e87724f048d76b7e0e1-Abstract.html) |
+| PMTL (Lin et al 2019)          | Sector solutions                | [paper](https://arxiv.org/abs/1912.12854)                                                            |
+| HVGrad (Deist et al 2021)      | Maximal HV solutions            | [paper](https://arxiv.org/abs/2102.04523)                                                            |
+| Agg-LS (Miettinen et al 1999)  | Convex hull solutions           | [book](https://link.springer.com/book/10.1007/978-1-4615-5563-6)                                     |
+| Agg-Tche (Zhang et al 2007)    | Exact solutions                 | [paper](https://ieeexplore.ieee.org/document/4358754)                                                |
+| Agg-mTche (Ma et al 2017)      | Exact solutions                 | [paper](https://ieeexplore.ieee.org/document/7927726)                                                |
+| Agg-PBI (Zhang et al 2007)     | Approximate exact solutions     | [paper](https://ieeexplore.ieee.org/document/4358754)                                                |
+| Agg-COSMOS (Ruchte et al 2007) | Approximate exact solutions     | [paper](https://arxiv.org/abs/2103.13392)                                                            |
+| Agg-SoftTche (Lin et al 2024)  | Fast approximate exact solutions | [paper](https://arxiv.org/abs/2402.19078)                                                                                            |
 
-Here, $m$ is the number of objectives, $K$ is the number of samples, and $n$ is the number of decision variables.
+Notations:
+- $m$ is the number of objectives.
+- $K$ is the number of subproblems.
+- $n$ is the number of decision variables.
+
 For neural network based methods, $n$ is the number of parameters; hence $n$ is very large (>10000), $K$ is also large (
 e.g., 20-50), while $m$ is small (2.g., 2-4).
 As a result, $m^2$ is not a big problem. $n^2$ is a big problem. $K^2$ is a big problem.
@@ -184,18 +176,21 @@ OptimizatioN Library in PyTorch}},
 ```
 
 ## Main Contributors
-
-| **Name**           | **Institution** | **Role**                              |
-|--------------------|-----------------|---------------------------------------|
-| **Xiaoyuan Zhang** | CityUHK         | Pareto set learning, gradient-based solver, project lead |
-| **Liang Zhao**     | CityUHK         | MOBO                                  |
-| **Yingying Yu**    | CityUHK         | Software design                       |
-| **Xi Lin**         | CityUHK         | Software design                       |
-
 The first three authors contribute equally to this work.
 
+| **Name**           | **Institution** | **Role**                                                    |
+|--------------------|-----------------|-------------------------------------------------------------|
+| **Xiaoyuan Zhang** | CityUHK         | Pareto set learning/Discrete solutions solvers/Project lead |
+| **Liang Zhao**     | CityUHK         | MOBO                                                        |
+| **Yingying Yu**    | CityUHK         | Software design                                             |
+| **Xi Lin**         | CityUHK         | Software design                                             |
+
+
+
+
+We sincernely thank the following contributors for their valuable contributions or feedbacks:
 ## Advisory Board
-| **Name**               | **Affiliation**            | **Role**                                            |
+| **Name**               | **Institution**            | **Role**                                            |
 |------------------------|----------------------------|-----------------------------------------------------|
 | **Xuehai Pan**         | PKU                        | For software design                                 |
 | **Hongzong Li**        | CityUHK                    | For local search                                    |
@@ -210,8 +205,25 @@ The first three authors contribute equally to this work.
 | **Prof. Han Zhao**     | University of Illinois at Urbana-Champaign | For advice on fairness classification               |
 | **Prof. Zhenkun Wang** | SusTech                    | Paper writing and maintenance of community          |
 | **Prof. Tao Qin**      | MSRA                       | Industry application                                |
-| **Prof. Qingfu Zhang** | CityUHK                    | Corresponding                                       |
+| **Prof. Qingfu Zhang** | CityUHK                    | Corresponding author                                |
+
+## Contact
+- Xiaoyuan Zhang [xzhang2523-c@my.cityu.edu.hk]
+- QQ group:
+
+ <p align="center">
+  <img src="img/qq.jpg" alt="Moon" width="200">
+</p>
+
+- Wechat group:
+<p align="center">
+  <img src="img/wechat.jpg" alt="Moon" width="200">
+</p>
+
+- Slack group: https://cityu-hiv5987.slack.com/archives/C07GU3N2H2S
 
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=xzhang2523/libmoon&type=Date)](https://star-history.com/#xzhang2523/libmoon&Date)
+
+

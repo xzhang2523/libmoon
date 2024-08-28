@@ -78,15 +78,15 @@ def save_pickle(folder_name, res):
         pickle.dump(res, f)
     print('Save pickle to {}'.format(pickle_name))
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    # solver array: ['agg_ls', 'agg_tche', 'agg_pbi', 'agg_cosmos', 'epo']
-    parser.add_argument('--solver-name', type=str, default='pmgda')
-    parser.add_argument('--problem-name', type=str, default='RE37')
+    parser.add_argument('--solver-name', type=str, default='agg_softtche')
+    parser.add_argument('--problem-name', type=str, default='VLMOP1')
     parser.add_argument('--device', type=str, default='gpu')
     parser.add_argument('--draw-fig', type=str, default='True')
     parser.add_argument('--eval-num', type=int, default=20)
-    parser.add_argument('--epoch', type=int, default=5000)
+    parser.add_argument('--epoch', type=int, default=1000)
     parser.add_argument('--seed-idx', type=int, default=0)
     parser.add_argument('--lr', type=float, default=1e-3)
 

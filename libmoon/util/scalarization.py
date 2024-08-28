@@ -7,7 +7,7 @@ from torch import Tensor
     I.e., the optimas may not be Pareto optimal.
 '''
 
-def soft_tche(f_arr, w, mu=0.1, z=0, normalization=False):
+def soft_tche(f_arr, w, mu=1, z=0, normalization=False):
     inner = w * (f_arr - z) / mu
 
     if type(f_arr) == Tensor:
@@ -27,7 +27,18 @@ def soft_mtche(f_arr, w, mu=0.1, z=0, normalization=False):
 
 
 
+
+
+
 def tche(f_arr, w, z=0):
+    '''
+        Tchebycheff scalarization function
+        Input:
+            f_arr: (n_prob, n_obj)
+            w: (n_prob, n_obj).
+        Return:
+            (n_prob, )
+    '''
     if type(f_arr) == Tensor:
         idx = torch.argmax(w * (f_arr - z), axis=1)
         return f_arr[torch.arange(f_arr.shape[0]), idx]
@@ -86,13 +97,12 @@ def cosmos(f_arr, w, coeff=10, z=0):
         return d1 - coeff * d2
     else:
         w0 = w / np.linalg.norm(w)
-        d1 = f_arr @ w0
-        d2 = f_arr @ w0 / np.linalg.norm(f_arr, axis=1)
+        d1 = np.sum(f_arr * w0, axis=1)
+        d2 = d1 / np.linalg.norm(f_arr, axis=1)
         return d1 - coeff * d2
 
 
-def draw_contour(func, x_range, y_range, n_points=100):
-    print()
+
 
 
 if __name__ == '__main__':

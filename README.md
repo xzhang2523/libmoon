@@ -132,7 +132,6 @@ LibMOON supports various models of PSL solvers, categorized as follows:
 
 ## MultiObjective Bayesian Optimization (MOBO) Solvers
 
-
 - PSL-MONO
 - PSL-DirHV-EI
 - DirHV-EGO

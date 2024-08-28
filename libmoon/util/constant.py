@@ -1,17 +1,13 @@
 import numpy as np
-
 from .scalarization import ls, mtche, tche, pbi, cosmos, invagg, soft_tche, soft_mtche
 from libmoon.util.problems import get_problem
-
 import os
 from numpy import array
 import torch
-
 FONT_SIZE = 20
 FONT_SIZE_2D = 20
 FONT_SIZE_3D = 20
 solution_eps = 1e-5
-
 from matplotlib import pyplot as plt
 
 

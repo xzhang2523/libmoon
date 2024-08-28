@@ -21,17 +21,14 @@ def plot_psl_figure_3d(folder_name, eval_y_np):
     ax.set_xlabel('$f_1$', fontsize=FONT_SIZE)
     ax.set_ylabel('$f_2$', fontsize=FONT_SIZE)
     ax.set_zlabel('$f_3$', fontsize=FONT_SIZE)
-
     ax.tick_params(axis='x', labelsize=8)
     ax.tick_params(axis='y', labelsize=8)
     ax.tick_params(axis='z', labelsize=8)
-
     ax.view_init(elev=45, azim=30)
     fig_svg_name = os.path.join(folder_name, '{}.svg'.format('res'))
     plt.savefig(fig_svg_name, bbox_inches='tight', format='svg', pad_inches=0.2)
     fig_pdf_name = os.path.join(folder_name, '{}.pdf'.format('res'))
     plt.savefig(fig_pdf_name, bbox_inches='tight', pad_inches=0.4)
-
 
 
 def plot_psl_figure_2d(folder_name, eval_y_np, prefs, draw_fig):

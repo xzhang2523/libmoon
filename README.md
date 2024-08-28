@@ -10,7 +10,7 @@
 
 ``LibMoon`` is an open-source library built on [PyTorch](https://pytorch.org/) for gradient-based MultiObjective (MOO). See the [latest documentation](https://libmoon.readthedocs.io/en/latest/) for detailed introductions and API instructions.
 
-Star and fork us on GitHub — it motivates us a lot!
+Star or fork us on GitHub — it motivates us a lot!
 
 # News
 - **[Aug 27 2024]** Added support for [LoRA-PSL](https://arxiv.org/pdf/2407.20734) (ICML 2024). Many thanks to [Weiyu Chen](https://scholar.google.com/citations?user=Zbg7LycAAAAJ&hl=zh-CN) for his contribution.
@@ -18,14 +18,13 @@ Star and fork us on GitHub — it motivates us a lot!
 
 - **[July 20 2024]** Supports most popular gradient-based methods: mgdaub random epo pmgda agg_ls agg_tche agg_mtche agg_pbi agg_cosmos agg_softtche pmtl hvgrad moosvgd.
 
-- **[April 20 2024]** Supports [PMTL](https://arxiv.org/abs/1912.12854), [HvGrad](https://arxiv.org/abs/2102.04523). Many thanks for Dr [Xi Lin's](https://scholar.google.com/citations?user=QB_MUboAAAAJ&hl=en) contribution. Thanks for previous helpful communications from Dr [Hao Wang](https://scholar.google.com/citations?user=Pz9c6XwAAAAJ&hl=en).  
+- **[April 20 2024]** Supports [PMTL](https://arxiv.org/abs/1912.12854), [HvGrad](https://arxiv.org/abs/2102.04523). Many thanks for Dr. [Xi Lin](https://scholar.google.com/citations?user=QB_MUboAAAAJ&hl=en)'s contribution. Thanks for previous helpful communications from Dr. [Hao Wang](https://scholar.google.com/citations?user=Pz9c6XwAAAAJ&hl=en).  
+
+- **[March 17 2024]** Supports MOBO-PSL methods. Many thanks to [Liang Zhao](https://scholar.google.com.hk/citations?user=DDGCxNkAAAAJ&hl=zh-CN)'s contribution.
 
 
-
-
-# 1. Supported Problems
+# 1. LibMOON Supported Problems
 ## Synthetic Problems
-
 Here's a list of synthetic problems along with relevant research papers and project/code links:
 
 | Problem | Paper                                                                | Project/Code                                         |
@@ -37,19 +36,19 @@ Here's a list of synthetic problems along with relevant research papers and proj
 | Fi's    | [Paper](https://ieeexplore.ieee.org/document/996017)                 | [Code](https://github.com/sample-repo/fis-code)      |
 | RE      | [Paper](https://arxiv.org/abs/2009.12867)                            | [Code](https://github.com/ryojitanabe/reproblems)    |
 
-### Multitask Learning Problems
+## Multitask Learning Problems
 
 This section details problems related to multitask learning, along with their corresponding papers and project/code
 references:
 
-| Problem                     | Paper                                                                                                                | Project/Code                                           |
+| Problem                     | Paper   | Project/Code                                           |
 |-----------------------------|----------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------|
-| MO-MNISTs                   | [PMTL](https://proceedings.neurips.cc/paper_files/paper/2019/file/685bfde03eb646c27ed565881917c71c-Paper.pdf)        | [COSMOS](https://github.com/ruchtem/cosmos)            |
+| MO-MNIST                    | [PMTL](https://proceedings.neurips.cc/paper_files/paper/2019/file/685bfde03eb646c27ed565881917c71c-Paper.pdf)        | [COSMOS](https://github.com/ruchtem/cosmos)            |
 | Fairness Classification     | [COSMOS](https://arxiv.org/pdf/2103.13392.pdf)                                                                       | [COSMOS](https://github.com/ruchtem/cosmos)            |
 | MORL problems (DST, FTS...) | [Envelop](https://proceedings.neurips.cc/paper_files/paper/2019/file/4a46fbfca3f1465a27b210f4bdfe6ab3-Paper.pdf)     | [Project](https://github.com/sample-repo/envelop-code) |
 
 
-## Supported Solvers
+# 2. LibMOON Supported Solvers
 
 LibMOON includes a variety of solvers tailored for different needs as img below shows. The following solvers are
 currently:
@@ -59,30 +58,27 @@ currently:
 ## Gradient-based MOO Solver
   - GradAggSolver
   - EPOSolver
-  - MOO-SVGDSolver (*)
+  - MOO-SVGDSolver
   - MGDASolver
   - PMGDASolver
   - PMTLSolver
   - HVGradSolver
 
-(*) The original MOO-SVGD code does not include an implementation for Multitask Learning (MTL). Our release of MOO-SVGD
-is the first open-source code that supports MTL.
-
-| Method  | Property  | Paper|
-|--------------------------------|---------------------------------|------------------------------------------------------------------------------------------------------|
-| EPO (Mahapatra et al 2020)     | Exact solutions                 | [paper](https://proceedings.mlr.press/v119/mahapatra20a.html)                                        |
-| MGDA-UB (Sener et al 2018)     | Arbitrary solutions             | [paper](https://arxiv.org/abs/1810.04650)                                                            |
-| PMGDA (Zhang et al 2024)       | Specific solutions              | [paper](https://arxiv.org/abs/2402.09492)                                                            |
-| Random (Lin et al 2021)        | Arbitrary solutions             | [paper](https://arxiv.org/abs/2111.10603)                                                            |
-| MOO-SVGD (Liu et al 2021)      | Diverse solutions               | [paper](https://papers.nips.cc/paper_files/paper/2021/hash/7bb16972da003e87724f048d76b7e0e1-Abstract.html) |
-| PMTL (Lin et al 2019)          | Sector solutions                | [paper](https://arxiv.org/abs/1912.12854)                                                            |
-| HVGrad (Deist et al 2021)      | Maximal HV solutions            | [paper](https://arxiv.org/abs/2102.04523)                                                            |
-| Agg-LS (Miettinen et al 1999)  | Convex hull solutions           | [book](https://link.springer.com/book/10.1007/978-1-4615-5563-6)                                     |
-| Agg-Tche (Zhang et al 2007)    | Exact solutions                 | [paper](https://ieeexplore.ieee.org/document/4358754)                                                |
-| Agg-mTche (Ma et al 2017)      | Exact solutions                 | [paper](https://ieeexplore.ieee.org/document/7927726)                                                |
-| Agg-PBI (Zhang et al 2007)     | Approximate exact solutions     | [paper](https://ieeexplore.ieee.org/document/4358754)                                                |
-| Agg-COSMOS (Ruchte et al 2007) | Approximate exact solutions     | [paper](https://arxiv.org/abs/2103.13392)                                                            |
-| Agg-SoftTche (Lin et al 2024)  | Fast approximate exact solutions | [paper](https://arxiv.org/abs/2402.19078)                                                                                            |
+| Method | Property  | Paper| Complexity|
+|----|----|--------|-------|
+| EPO (Mahapatra et al 2020)   | Exact solutions                 | [paper](https://proceedings.mlr.press/v119/mahapatra20a.html)| $O(m^2nK)$|
+| MGDA-UB (Sener et al 2018)   | Arbitrary solutions             | [paper](https://arxiv.org/abs/1810.04650)                                              |
+| PMGDA (Zhang et al 2024)     | Specific solutions              | [paper](https://arxiv.org/abs/2402.09492)                                              |
+| Random (Lin et al 2021)      | Arbitrary solutions             | [paper](https://arxiv.org/abs/2111.10603)                                              |
+| MOO-SVGD (Liu et al 2021)    | Diverse solutions               | [paper](https://papers.nips.cc/paper_files/paper/2021/hash/7bb16972da003e87724f048d76b7e0e1-Abstract.html) |
+| PMTL (Lin et al 2019)        | Sector solutions                | [paper](https://arxiv.org/abs/1912.12854)                                              |
+| HVGrad (Deist et al 2021)    | Maximal HV solutions            | [paper](https://arxiv.org/abs/2102.04523)                                              |
+| Agg-LS (Miettinen et al 1999) | Convex hull solutions           | [book](https://link.springer.com/book/10.1007/978-1-4615-5563-6)                       |
+| Agg-Tche (Zhang et al 2007)  | Exact solutions                 | [paper](https://ieeexplore.ieee.org/document/4358754)                                  |
+| Agg-mTche (Ma et al 2017)    | Exact solutions                 | [paper](https://ieeexplore.ieee.org/document/7927726)                                  |
+| Agg-PBI (Zhang et al 2007)   | Approximate exact solutions     | [paper](https://ieeexplore.ieee.org/document/4358754)                                  |
+| Agg-COSMOS (Ruchte et al 2007) | Approximate exact solutions     | [paper](https://arxiv.org/abs/2103.13392)                                              |
+| Agg-SoftTche (Lin et al 2024) | Fast approximate exact solutions | [paper](https://arxiv.org/abs/2402.19078)                                                                              |
 
 Notations:
 - $m$ is the number of objectives.

@@ -2,7 +2,7 @@ from libmoon.problem.synthetic.mop import BaseMOP
 import torch
 import numpy as np
 from torch import Tensor
-
+from torch import nn
 '''
     Adpats from: Hu et al. Revisiting Scalarization in Multi-Task Learning: A Theoretical Perspective. NeurIPS 2023. 
 '''
@@ -45,6 +45,46 @@ class LinearRegreesion(BaseMOP):
         return loss_prob
     def _evaluate_numpy(self, x: np.ndarray):
         pass
+
+
+class NNRegression(BaseMOP):
+    '''
+        Paper: .
+    '''
+    def __init__(self, n_var=5, n_obj=2):
+        lbound = np.zeros(n_var)
+        ubound = np.ones(n_var)
+        super().__init__(n_var=n_var,
+                         n_obj=n_obj,
+                         lbound=lbound,
+                         ubound=ubound)
+        # k : n_obj. k regression tasks.
+        # n is the sample numble
+        self.problem_name = 'regression_nn'
+        self.p = 5
+        self.q = n_var // self.p
+        self.n_var = n_var
+        self.n = 40
+
+        # self.k = n_obj
+        self.X = Tensor( np.random.rand(self.n, self.p) )
+        # self.Y = Tensor( np.random.rand(self.n, n_obj) )
+
+
+        self.backbone = nn.sequential(
+            nn.Linear(self.p, 60),
+            nn.ReLU(),
+            nn.Linear(60, 25),
+            nn.ReLU(),
+            nn.Linear(25, self.n_obj)
+        )
+
+
+
+    def generate_data(self):
+        pass
+
+
 
 
 

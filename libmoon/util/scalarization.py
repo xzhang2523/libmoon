@@ -7,19 +7,20 @@ from torch import Tensor
     I.e., the optimas may not be Pareto optimal.
 '''
 
-def soft_tche(f_arr, w, mu=1, z=0, normalization=False):
+def soft_tche(f_arr, w, mu=1e-1, z=0, normalization=False):
     inner = w * (f_arr - z) / mu
-
     if type(f_arr) == Tensor:
-        if normalization:
-            inner = inner - torch.max(inner, axis=1).values.unsqueeze(1)
         val = mu * torch.logsumexp(inner, axis=1)
         return val
     else:
-        if normalization:
-            inner = inner - np.max(inner, axis=1).reshape(-1, 1)
-        val = mu * np.log(np.sum(inner, axis=1))
+        val = mu * np.log( np.sum(np.exp(inner), axis=1) )
         return val
+
+# def asf(F, weights, weight_0=1e-10, **kwargs):
+#     _weights = weights.astype(float)
+#     _weights[weights == 0] = weight_0
+#     asf = ((F - self.utopian_point) / _weights).max(axis=1)
+#     return asf
 
 
 def soft_mtche(f_arr, w, mu=0.1, z=0, normalization=False):

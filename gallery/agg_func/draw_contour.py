@@ -15,7 +15,6 @@ if __name__ == '__main__':
         y = np.linspace(-5, 5, 1000)
         prefs = array([0.5, 0.5])
         X, Y = np.meshgrid(x, y)
-        # Z = f(X, Y)
         Z = np.zeros_like(X)
         for i in range(X.shape[0]):
             for j in range(X.shape[1]):
@@ -31,4 +30,5 @@ if __name__ == '__main__':
 
         fig_name = os.path.join('D:\\pycharm_project\\libmoon\\gallery', '{}.pdf'.format(function_name))
         plt.savefig(fig_name, dpi=1200, bbox_inches='tight')
+        print('Save fig to {}'.format(fig_name))
     # plt.show()

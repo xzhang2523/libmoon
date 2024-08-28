@@ -12,6 +12,14 @@
 
 Star and fork us on GitHub — it motivates us a lot!
 
+# News
+- **[Aug 27 2024]** Added support for [LoRA-PSL](https://arxiv.org/pdf/2407.20734) (ICML 2024). Many thanks to [Weiyu Chen](https://scholar.google.com/citations?user=Zbg7LycAAAAJ&hl=zh-CN) for his contribution.
+
+
+- **[July 20 2024]** Supports most popular gradient-based methods: mgdaub random epo pmgda agg_ls agg_tche agg_mtche agg_pbi agg_cosmos agg_softtche pmtl hvgrad moosvgd.
+
+- **[April 20 2024]** Supports [PMTL](https://arxiv.org/abs/1912.12854), [HvGrad](https://arxiv.org/abs/2102.04523). Many thanks for Dr [Xi Lin's](https://scholar.google.com/citations?user=QB_MUboAAAAJ&hl=en) contribution. Thanks for previous helpful communications from Dr [Hao Wang](https://scholar.google.com/citations?user=Pz9c6XwAAAAJ&hl=en).  
+
 ## Main Contributors
 
 | **Name**           | **Institution** | **Role**                              |
@@ -58,11 +66,7 @@ The first three authors contribute equally to this work.
 
 - Slack: https://cityu-hiv5987.slack.com/archives/C07GU3N2H2S
 
-# News
-- **[Aug 27 2024]** Added support for [LoRA-PSL](https://arxiv.org/pdf/2407.20734) (ICML 2024). Many thanks to [Weiyu Chen](https://scholar.google.com/citations?user=Zbg7LycAAAAJ&hl=zh-CN) for his contribution.
 
-
-- **[July 20 2024]** Supports most popular gradient-based methods: mgdaub random epo pmgda agg_ls agg_tche agg_mtche agg_pbi agg_cosmos agg_softtche pmtl hvgrad moosvgd.
 
 
 

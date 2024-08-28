@@ -16,8 +16,6 @@ class LinearRegreesion(BaseMOP):
                          ubound=ubound)
         # k : n_obj. k regression tasks.
         # n is the sample numble
-        # q, K ?
-        # X.shape: n*p. n samples, p features.
         self.problem_name = 'regression'
         self.p = 5
         self.q = n_var // self.p
@@ -45,17 +43,12 @@ class LinearRegreesion(BaseMOP):
             loss_prob.append(loss)
         loss_prob = torch.stack(loss_prob)
         return loss_prob
-        # y_hat = W @ self.X.T
-        # shape: (n_prob, self.n)
-        # loss_prob = []
-        # for prob_idx in range( n_prob ):
-        #     loss = torch.sum(torch.pow(self.Y - y_hat[prob_idx,:].unsqueeze(1), 2), axis=0)
-        #     loss_prob.append(loss)
-        # loss_prob = torch.stack(loss_prob, axis=0)
-        # return loss_prob
-
     def _evaluate_numpy(self, x: np.ndarray):
         pass
+
+
+
+
 
 
 if __name__ == '__main__':

@@ -3,6 +3,8 @@ from libmoon.problem.morl.fruit_tree import FruitTree
 import numpy as np
 
 from libmoon.model.policy_model import Policy
+import torch
+from torch import Tensor
 
 
 class MultiObjectiveEnv(object):
@@ -56,9 +58,12 @@ if __name__ == "__main__":
     print("DST ACTION SPEC:", dst_env.action_spec)
     print("DST REWARD SPEC:", dst_env.reward_spec)
     total_reward = 0
+    step = 0
+    policy = Policy(dst_env.state_spec, dst_env.action_spec)
     while not terminal:
         state = dst_env.observe()
-        action = np.random.choice(2, 1)[0]
+        # action = np.random.choice(2, 1)[0]
+        action = policy(torch.Tensor(state), stochastic=True)
         next_state, reward, terminal = dst_env.step(action)
         total_reward += reward
         print("s:", state, "\ta:", action, "\ts':", next_state, "\tr:", reward)

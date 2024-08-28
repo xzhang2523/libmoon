@@ -3,7 +3,9 @@ import torch
 import numpy as np
 from torch import Tensor
 from torch import nn
-# from
+
+from matplotlib import pyplot as plt
+
 
 '''
     Adpats from: Hu et al. Revisiting Scalarization in Multi-Task Learning: A Theoretical Perspective. NeurIPS 2023. 
@@ -49,32 +51,28 @@ class LinearRegreesion(BaseMOP):
         pass
 
 
-class NNRegression(BaseMOP):
+class NNRegression(nn.Module):
     '''
-        Paper: .
     '''
     def __init__(self, n_var=5, n_obj=2):
+        super(NNRegression, self).__init__()
         lbound = np.zeros(n_var)
         ubound = np.ones(n_var)
-        super().__init__(n_var=n_var,
-                         n_obj=n_obj,
-                         lbound=lbound,
-                         ubound=ubound)
+        # super().__init__(n_var=n_var,
+        #                  n_obj=n_obj,
+        #                  lbound=lbound,
+        #                  ubound=ubound)
+
         # k : n_obj. k (m) regression tasks.
         # n is the sample numble.
         # p is the input dimension.
         # q is the task specific layer.
         self.problem_name = 'regression_nn'
         self.p = 5
-
         self.q = 1
         self.n_var = n_var
         self.n = 40
-
-        # self.k = n_obj
         self.X = Tensor( np.random.rand(self.n, self.p) )
-        # self.Y = Tensor( np.random.rand(self.n, n_obj) )
-
         self.backbone = nn.Sequential(
             nn.Linear(self.p, 60),
             nn.ReLU(),
@@ -82,42 +80,43 @@ class NNRegression(BaseMOP):
             nn.ReLU(),
             nn.Linear(60, self.q)
         )
-
         self.task1 = nn.Sequential(
             nn.Linear(self.q, 60),
             nn.ReLU(),
             nn.Linear(60, 1)
         )
-
         self.task2 = nn.Sequential(
             nn.Linear(self.q, 60),
             nn.ReLU(),
             nn.Linear(60, 1)
         )
 
-
-
-
-
     def generate_data(self):
         mid = self.backbone(self.X)
         self.Y1 = self.task1(mid)
         self.Y2 = self.task2(mid)
         self.Y = torch.cat((self.Y1, self.Y2), dim=1)
-        return self.Y
-
-
-
-
+        return self.X, self.Y
 
 
 if __name__ == '__main__':
-    lr_problem = LinearRegreesion()
-    p = 5
-    W = torch.squeeze(torch.rand(p))
-    loss = lr_problem.evaluate( W )
-    print(loss)
+    # problem = LinearRegreesion()
+    lr=1e-3
     problem = NNRegression()
-    data = problem.generate_data()
-    data_np = data.detach().numpy()
-    plt.scatter(data_np[:,0], data_np[:,1])
+
+    optmizer = torch.optim.Adam(problem.parameters(), lr=lr)
+    # criterion = nn.MSELoss()
+    for _ in range(100):
+        X, Y = problem.generate_data()
+        optmizer.zero_grad()
+        loss = torch.sum(Y**2)
+        loss.backward()
+        optmizer.step()
+    print(loss)
+
+
+
+    # data_np = data_y.detach().numpy()
+    # plt.scatter(data_np[:,0], data_np[:,1])
+    # plt.show()
+

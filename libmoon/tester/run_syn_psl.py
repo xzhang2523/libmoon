@@ -78,7 +78,7 @@ def save_pickle(folder_name, res):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--solver-name', type=str, default='agg_softtche')
+    parser.add_argument('--solver-name', type=str, default='agg_ls')
     parser.add_argument('--problem-name', type=str, default='VLMOP1')
     parser.add_argument('--device', type=str, default='gpu')
     parser.add_argument('--draw-fig', type=str, default='True')

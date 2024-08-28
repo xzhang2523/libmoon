@@ -84,7 +84,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser( description= 'example script')
     # mgdaub random epo pmgda agg_ls agg_tche agg_pbi agg_cosmos, agg_softtche pmtl hvgrad moosvgd
     parser.add_argument('--solver-name', type=str, default='agg_cosmos')
-    parser.add_argument( '--problem-name', type=str, default='regression')
+    parser.add_argument( '--problem-name', type=str, default='VLMOP1')
     parser.add_argument('--step-size', type=float, default=1e-2)
     parser.add_argument('--tol', type=float, default=1e-2)
     parser.add_argument('--draw-fig', type=str, default='True')

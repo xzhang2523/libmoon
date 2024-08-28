@@ -15,13 +15,6 @@ def soft_tche(f_arr, w, mu=1e-1, z=0, normalization=False):
         val = mu * np.log( np.sum(np.exp(inner), axis=1) )
         return val
 
-# def asf(F, weights, weight_0=1e-10, **kwargs):
-#     _weights = weights.astype(float)
-#     _weights[weights == 0] = weight_0
-#     asf = ((F - self.utopian_point) / _weights).max(axis=1)
-#     return asf
-
-
 def soft_mtche(f_arr, w, mu=0.1, z=0, normalization=False):
     return soft_tche(f_arr, 1/w, mu, z, normalization)
 

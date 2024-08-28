@@ -1,5 +1,5 @@
 import numpy as np
-from .scalarization import ls, mtche, tche, pbi, cosmos, invagg, soft_tche, soft_mtche
+from .scalarization import ls, mtche, tche, pbi, cosmos, invagg, soft_tche, soft_mtche, aasf, pnorm
 from libmoon.util.problems import get_problem
 import os
 from numpy import array
@@ -40,6 +40,10 @@ def normalize_vec(x, problem ):
 def get_agg_func(agg, cosmos_hp=8.0):
     if agg == 'ls':
         return ls
+    elif agg == 'aasf':
+        return aasf
+    elif agg == 'pnorm':
+        return pnorm
     elif agg == 'mtche':
         return mtche
     elif agg == 'tche':
@@ -150,6 +154,8 @@ beautiful_dict = {
     'agg-ls': 'AGG-LS',
     'uniform': 'UMOD',
     'agg_ls': 'Agg-LS',
+    'agg_pnorm': 'Agg-pNorm',
+    'agg_aasf': 'Agg-AASF',
     'agg_tche': 'Agg-Tche',
     'agg_softtche': 'Agg-SoftTche',
     'agg_softmtche': 'Agg-SoftmTche',

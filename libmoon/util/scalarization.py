@@ -6,7 +6,6 @@ from torch import Tensor
     Here, an interesting thing is that, PBI and COSMOS are not MOO agg functions.
     I.e., the optimas may not be Pareto optimal.
 '''
-
 def soft_tche(f_arr, w, mu=1e-1, z=0, normalization=False):
     inner = w * (f_arr - z) / mu
     if type(f_arr) == Tensor:
@@ -26,7 +25,19 @@ def soft_tche(f_arr, w, mu=1e-1, z=0, normalization=False):
 def soft_mtche(f_arr, w, mu=0.1, z=0, normalization=False):
     return soft_tche(f_arr, 1/w, mu, z, normalization)
 
+def aasf(f_arr, w, z=0, rho=0.1):
+    return soft_mtche(f_arr, w, z=z) + rho * ls(f_arr, w, z=z)
 
+def pnorm(f_arr, w, z=0, rho=0.1, p=2):
+    # return soft_mtche(f_arr, w, z=z) + rho * ls(f_arr, w, z=z)
+    inner = w * (f_arr - z)
+    if type(f_arr) == Tensor:
+        val = torch.norm(inner, p=p, dim=1)
+        # return torch.pow(val, 1/p)
+    else:
+        val = np.linalg.norm(inner, ord=p, axis=1)
+        # return np.power(val, 1/p)
+    return val
 
 
 

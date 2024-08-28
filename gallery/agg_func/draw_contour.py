@@ -7,7 +7,7 @@ import os
 
 if __name__ == '__main__':
     # agg_name_arr = ['agg_ls', 'agg_mtche', 'agg_tche', 'agg_pbi', 'agg_softtche', 'agg_softmtche']
-    agg_name_arr = ['agg_softtche',]
+    agg_name_arr = ['agg_pnorm',]
     for agg_name in agg_name_arr:
         function_name = agg_name.split('_')[1]
         function = get_agg_func(function_name)

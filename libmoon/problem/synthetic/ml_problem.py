@@ -58,11 +58,14 @@ class NNRegression(BaseMOP):
                          n_obj=n_obj,
                          lbound=lbound,
                          ubound=ubound)
-        # k : n_obj. k regression tasks.
-        # n is the sample numble
+        # k : n_obj. k (m) regression tasks.
+        # n is the sample numble.
+        # p is the input dimension.
+        # q is the task specific layer.
         self.problem_name = 'regression_nn'
         self.p = 5
-        self.q = n_var // self.p
+
+        self.q = 1
         self.n_var = n_var
         self.n = 40
 
@@ -70,21 +73,36 @@ class NNRegression(BaseMOP):
         self.X = Tensor( np.random.rand(self.n, self.p) )
         # self.Y = Tensor( np.random.rand(self.n, n_obj) )
 
-
-        self.backbone = nn.sequential(
+        self.backbone = nn.Sequential(
             nn.Linear(self.p, 60),
             nn.ReLU(),
-            nn.Linear(60, 25),
+            nn.Linear(60, 60),
             nn.ReLU(),
-            nn.Linear(25, self.n_obj)
+            nn.Linear(60, self.q)
+        )
+
+        self.task1 = nn.Sequential(
+            nn.Linear(self.q, 60),
+            nn.ReLU(),
+            nn.Linear(60, 1)
+        )
+
+        self.task2 = nn.Sequential(
+            nn.Linear(self.q, 60),
+            nn.ReLU(),
+            nn.Linear(60, 1)
         )
 
 
 
+
+
     def generate_data(self):
-        pass
-
-
+        mid = self.backbone(self.X)
+        self.Y1 = self.task1(mid)
+        self.Y2 = self.task2(mid)
+        self.Y = torch.cat((self.Y1, self.Y2), dim=1)
+        return self.Y
 
 
 
@@ -97,4 +115,7 @@ if __name__ == '__main__':
     W = torch.squeeze(torch.rand(p))
     loss = lr_problem.evaluate( W )
     print(loss)
-    # print(lr_problem.X)
+    problem = NNRegression()
+    data = problem.generate_data()
+    data_np = data.detach().numpy()
+    plt.scatter(data_np[:,0], data_np[:,1])

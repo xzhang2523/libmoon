@@ -20,34 +20,6 @@ Star and fork us on GitHub — it motivates us a lot!
 
 - **[April 20 2024]** Supports [PMTL](https://arxiv.org/abs/1912.12854), [HvGrad](https://arxiv.org/abs/2102.04523). Many thanks for Dr [Xi Lin's](https://scholar.google.com/citations?user=QB_MUboAAAAJ&hl=en) contribution. Thanks for previous helpful communications from Dr [Hao Wang](https://scholar.google.com/citations?user=Pz9c6XwAAAAJ&hl=en).  
 
-## Main Contributors
-
-| **Name**           | **Institution** | **Role**                              |
-|--------------------|-----------------|---------------------------------------|
-| **Xiaoyuan Zhang** | CityUHK         | Pareto set learning, gradient-based solver, project lead |
-| **Liang Zhao**     | CityUHK         | MOBO                                  |
-| **Yingying Yu**    | CityUHK         | Software design                       |
-| **Xi Lin**         | CityUHK         | Software design                       |
-
-The first three authors contribute equally to this work.
-
-## Advisory Board
-| **Name**                                                                        | **Affiliation**                            | **Role**                                          |
-|---------------------------------------------------------------------------------|--------------------------------------------|---------------------------------------------------|
-| **Xuehai Pan**                                                                  | PKU                                        | For software design                               |
-| **Hongzong Li**                                                                 | CityUHK                                    | For local search                                  |
-| **Zhe Zhao**                                                                    | CityUHK/USTC                               | MODL                                              |
-| **Weiduo Liao**                                                                 | CityUHK/SusTech                            | HV-Net/Paper writing|
-| **Weiyu Chen** | HKUST                                      | For LoRA PSL                                      |
-| **Prof. Jingda Deng**                                                           | Xi'an Jiaotong University                  | For advice on High-D hypervolume computation      |
-| **Prof. Yifan Chen**                                                            | Hong Kong Baptist University               | For advice on OR                                  |
-| **Prof. Ke Shang**                                                              | Shenzhen University                        | For advice on approximate hypervolume-based methods |
-| **Prof. Genghui Li**                                                            | Shenzhen University                        | For advice on MOEAs                               |
-| **Prof. Han Zhao**                                                              | University of Illinois at Urbana-Champaign | For advice on fairness classification             |
-| **Prof. Zhenkun Wang**                                                          | SusTech                                    | Paper writing and maintenance of community        |
-| **Prof. Tao Qin**                                                               | MSRA                                       | Industry application                              |
-| **Prof. Qingfu Zhang**                                                          | CityUHK                                    | Corresponding                                     |
-
 
 ## Contact
 - Xiaoyuan Zhang [xzhang2523-c@my.cityu.edu.hk]
@@ -149,12 +121,17 @@ The original code MOO-SVGD does not offer a MTL implement. Our code is the first
 
 LibMOON supports various models of PSL solvers, categorized as follows:
 
-- EPO-based PSL
-- Agg-based PSL
-- PMGDA-based PSL
-- Evolutionary-based PSL
+| Method| Property | Paper                                                                      |
+|-----|------|----------------------------------------------------------------------------|
+| EPO-based PSL (Navon et al 2021) | Exact solutions  | [paper](https://openreview.net/pdf/9c01e8c47f7e80e87af0175ac2a5e9a356f518bd.pdf) |
+| PMGDA-based PSL (Zhang et al 2024) | Specific solutions| [paper](https://arxiv.org/abs/2402.09492)                                  |
+| Aggregation-baed PSL (Sener et al 2018) | Minimal aggregation function solutions | [paper](https://openreview.net/pdf/9c01e8c47f7e80e87af0175ac2a5e9a356f518bd.pdf) |
+| Evolutionary PSL (Sener et al 2018) | Mitigate local minimal by ES | [paper](https://arxiv.org/pdf/2310.20426)                                                                  |
+| LoRA PSL (Chen et al 2024)     | Arbitrary solutions | [paper](https://openreview.net/pdf?id=a2uFstsHPb)|
+
 
 ## MultiObjective Bayesian Optimization (MOBO) Solvers
+
 
 - PSL-MONO
 - PSL-DirHV-EI
@@ -172,9 +149,9 @@ pip install libmoon==0.1.11
 
 ```python
 from libmoon.solver.gradient.methods import EPOSolver
-from libmoon.util_global.initialization import synthetic_init
-from libmoon.util_global.weight_factor import uniform_pref
-from libmoon.util_global import get_problem
+from libmoon.util.initialization import synthetic_init
+from libmoon.util.weight_factor import uniform_pref
+from libmoon.util import get_problem
 
 problem = get_problem(problem_name='ZDT1')
 prefs = uniform_pref(n_prob=5, n_obj=problem.n_obj, clip_eps=1e-2)
@@ -187,8 +164,8 @@ res = solver.solve(x=synthetic_init(problem, prefs), prefs=prefs)
 
 ```python
 from libmoon.solver.psl.core_psl import AggPSLSolver
-from libmoon.util_global import get_problem
-from libmoon.util_global.weight_factor import uniform_pref
+from libmoon.util import get_problem
+from libmoon.util.weight_factor import uniform_pref
 from torch import Tensor
 
 problem = get_problem(problem_name='ZDT1')
@@ -212,6 +189,34 @@ OptimizatioN Library in PyTorch}},
   year = {2024}
 }
 ```
+
+## Main Contributors
+
+| **Name**           | **Institution** | **Role**                              |
+|--------------------|-----------------|---------------------------------------|
+| **Xiaoyuan Zhang** | CityUHK         | Pareto set learning, gradient-based solver, project lead |
+| **Liang Zhao**     | CityUHK         | MOBO                                  |
+| **Yingying Yu**    | CityUHK         | Software design                       |
+| **Xi Lin**         | CityUHK         | Software design                       |
+
+The first three authors contribute equally to this work.
+
+## Advisory Board
+| **Name**                                                                        | **Affiliation**                            | **Role**                                          |
+|---------------------------------------------------------------------------------|--------------------------------------------|---------------------------------------------------|
+| **Xuehai Pan**                                                                  | PKU                                        | For software design                               |
+| **Hongzong Li**                                                                 | CityUHK                                    | For local search                                  |
+| **Zhe Zhao**                                                                    | CityUHK/USTC                               | MODL                                              |
+| **Weiduo Liao**                                                                 | CityUHK/SusTech                            | HV-Net/Paper writing|
+| **Weiyu Chen** | HKUST                                      | For LoRA PSL                                      |
+| **Prof. Jingda Deng**                                                           | Xi'an Jiaotong University                  | For advice on High-D hypervolume computation      |
+| **Prof. Yifan Chen**                                                            | Hong Kong Baptist University               | For advice on OR                                  |
+| **Prof. Ke Shang**                                                              | Shenzhen University                        | For advice on approximate hypervolume-based methods |
+| **Prof. Genghui Li**                                                            | Shenzhen University                        | For advice on MOEAs                               |
+| **Prof. Han Zhao**                                                              | University of Illinois at Urbana-Champaign | For advice on fairness classification             |
+| **Prof. Zhenkun Wang**                                                          | SusTech                                    | Paper writing and maintenance of community        |
+| **Prof. Tao Qin**                                                               | MSRA                                       | Industry application                              |
+| **Prof. Qingfu Zhang**                                                          | CityUHK                                    | Corresponding                                     |
 
 ## Star History
 

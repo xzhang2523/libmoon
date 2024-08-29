@@ -8,35 +8,33 @@
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fxzhang2523%2Flibmoon&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 [![Made With Friends](https://img.shields.io/badge/Made%20With-Love-orange.svg)](https://github.com/xzhang2523/libmoon) 
 
-``LibMoon`` is an open-source library built on [PyTorch](https://pytorch.org/) for gradient-based MultiObjective (MOO). See the [latest documentation](https://libmoon.readthedocs.io/en/latest/) for detailed introductions and API instructions.
+``LibMoon`` is an open-source library built on [PyTorch](https://pytorch.org/) for gradient-based MultiObjective (MOO). See the [latest documentation](https://readthedocs.org/projects/libmoondocs/badge/?version=latest) for detailed introductions and API instructions.
 
 Star or fork us on GitHub — it motivates us a lot!
 
 # News
 - **[Aug 27 2024]** Added support for [LoRA-PSL](https://arxiv.org/pdf/2407.20734) (ICML 2024). Many thanks to [Weiyu Chen](https://scholar.google.com/citations?user=Zbg7LycAAAAJ&hl=zh-CN) for his contribution.
 
-
 - **[July 20 2024]** Supports most popular gradient-based methods: mgdaub random epo pmgda agg_ls agg_tche agg_mtche agg_pbi agg_cosmos agg_softtche pmtl hvgrad moosvgd.
 
 - **[April 20 2024]** Supports [PMTL](https://arxiv.org/abs/1912.12854), [HvGrad](https://arxiv.org/abs/2102.04523). Many thanks for Dr. [Xi Lin](https://scholar.google.com/citations?user=QB_MUboAAAAJ&hl=en)'s contribution. Thanks for previous helpful communications from Dr. [Hao Wang](https://scholar.google.com/citations?user=Pz9c6XwAAAAJ&hl=en).  
 
-- **[March 17 2024]** Supports MOBO-PSL methods. Many thanks to [Liang Zhao](https://scholar.google.com.hk/citations?user=DDGCxNkAAAAJ&hl=zh-CN)'s contribution.
-
+- **[March 17 2024]** Supports three [MOBO-PSL]() methods. Many thanks to [Liang Zhao](https://scholar.google.com.hk/citations?user=DDGCxNkAAAAJ&hl=zh-CN)'s contribution.
 
 # 1. LibMOON Supported Problems
-## Synthetic Problems
+## 1.1 Synthetic Problems
 Here's a list of synthetic problems along with relevant research papers and project/code links:
 
-| Problem | Paper                                                                | Project/Code                                         |
-|---------|----------------------------------------------------------------------|------------------------------------------------------|
-| ZDT     | [Paper](https://ieeexplore.ieee.org/document/996017)                 | [Project](https://pymoo.org/problems/multi/zdt.html) |
-| DTLZ    | [Paper](https://ieeexplore.ieee.org/document/996017)                 | [Project](https://pymoo.org/problems/many/dtlz.html) |
+| Problem | Paper | Project/Code|
+|---------|--------|---------|
+| ZDT     | [Paper](https://ieeexplore.ieee.org/document/996017)               | [Project](https://pymoo.org/problems/multi/zdt.html) |
+| DTLZ    | [Paper](https://ieeexplore.ieee.org/document/996017)               | [Project](https://pymoo.org/problems/many/dtlz.html) |
 | MAF     | [Paper](https://link.springer.com/article/10.1007/s40747-017-0039-7) | [Project](https://pymoo.org/problems/multi/maf.html) |
-| WFG     | [Paper](https://ieeexplore.ieee.org/document/996017)                 | [Code](https://github.com/sample-repo/wfg-code)      |
-| Fi's    | [Paper](https://ieeexplore.ieee.org/document/996017)                 | [Code](https://github.com/sample-repo/fis-code)      |
-| RE      | [Paper](https://arxiv.org/abs/2009.12867)                            | [Code](https://github.com/ryojitanabe/reproblems)    |
+| WFG     | [Paper](https://ieeexplore.ieee.org/document/996017)               | [Code](https://github.com/sample-repo/wfg-code) |
+| Fi's    | [Paper](https://ieeexplore.ieee.org/document/996017)               | [Code](https://github.com/sample-repo/fis-code) |
+| RE      | [Paper](https://arxiv.org/abs/2009.12867)                          | [Code](https://github.com/ryojitanabe/reproblems) |
 
-## Multitask Learning Problems
+## 1.2 Multiobjective Multitask Learning (MO-MTL) Problems
 
 This section details problems related to multitask learning, along with their corresponding papers and project/code
 references:
@@ -55,7 +53,7 @@ currently:
 
 <img src="img/supported_methods.png" width="500"></img>
 
-## Gradient-based MOO Solver
+## 2.1 Finite solution solvers
   - GradAggSolver
   - EPOSolver
   - MOO-SVGDSolver
@@ -86,16 +84,6 @@ Notations:
 - $n$ is the number of decision variables.
 
 In neural network methods, $n$ (number of parameters) is very large (>10,000), $K$ (number of classes) is also large (e.g., 20-50), and $m$ (data features) is relatively small (e.g., 2-4). Consequently, $m^2$ is not a significant issue, but $n^2$ and $K^2$ are major concerns.
-
-Time complexity of gradient based methods are as follows,
-
-1. Tier 1. GradAggSolver.
-2. Tier 2. MGDASolver, EPOSolver, PMTLSolver.
-3. Tier 3. GradHVSolver
-4. Tier 4. MOOSVGDSolver
-
-Important things to notice:
-The original code MOO-SVGD does not offer a MTL implement. Our code is the first open source code for MTL MOO-SVGD.
 
 ## Pareto set learning(PSL) Solvers
 

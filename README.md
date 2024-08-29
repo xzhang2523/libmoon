@@ -92,13 +92,13 @@ In neural network methods, $n$ (number of parameters) is very large (>10,000), $
 
 LibMOON supports various models of PSL solvers, categorized as follows:
 
-| Method| Property | Paper                                                                      |
-|-----|------|----------------------------------------------------------------------------|
-| EPO-based PSL (Navon et al 2021) | Exact solutions  | [paper](https://openreview.net/pdf/9c01e8c47f7e80e87af0175ac2a5e9a356f518bd.pdf) |
-| PMGDA-based PSL (Zhang et al 2024) | Specific solutions| [paper](https://arxiv.org/abs/2402.09492)                                  |
+| Method| Property                               | Paper                                                                      |
+|-----|----------------------------------------|----------------------------------------------------------------------------|
+| EPO-based PSL (Navon et al 2021) | Exact solutions                        | [paper](https://openreview.net/pdf/9c01e8c47f7e80e87af0175ac2a5e9a356f518bd.pdf) |
+| PMGDA-based PSL (Zhang et al 2024) | Specific solutions                     | [paper](https://arxiv.org/abs/2402.09492)                                  |
 | Aggregation-baed PSL (Sener et al 2018) | Minimal aggregation function solutions | [paper](https://openreview.net/pdf/9c01e8c47f7e80e87af0175ac2a5e9a356f518bd.pdf) |
-| Evolutionary PSL (Sener et al 2018) | Mitigate local minimal by ES | [paper](https://arxiv.org/pdf/2310.20426)                                                                  |
-| LoRA PSL (Chen et al 2024)     | Arbitrary solutions | [paper](https://openreview.net/pdf?id=a2uFstsHPb)|
+| Evolutionary PSL (Sener et al 2018) | Mitigate local minimal by ES           | [paper](https://arxiv.org/pdf/2310.20426)                                                                  |
+| LoRA PSL (Chen et al 2024)     | Light model structure | [paper](https://openreview.net/pdf?id=a2uFstsHPb)|
 
 
 ## 2.3 MultiObjective Bayesian Optimization (MOBO) Solvers
@@ -176,22 +176,22 @@ The first three authors contribute equally to this work.
 ## 4.3 Advisory Board
 We sincernely thank the following contributors for their valuable contributions or feedbacks:
 
-| **Name**               | **Institution**         | **Role**  |
-|------------------------|-------------------------|------------------|
-| **Xuehai Pan**         | PKU                     | For software design                                 |
-| **Hongzong Li**        | CityUHK                 | For local search                                    |
-| **Zhe Zhao**           | CityUHK/USTC            | MODL                                                |
-| **Meitong Liu**        | HKU| Feedback                                            |
-| **Weiduo Liao**        | CityUHK/SusTech         | HV-Net/Paper writing                                |
-| **Weiyu Chen**         | HKUST| For LoRA PSL                                        |
-| **Prof. Jingda Deng**  | Xi'an Jiaotong University | For advice on High-D hypervolume computation        |
-| **Prof. Yifan Chen**   | Hong Kong Baptist University | For advice on OR                                    |
-| **Prof. Ke Shang**     | Shenzhen University     | For advice on approximate hypervolume-based methods |
-| **Prof. Genghui Li**   | Shenzhen University     | For advice on MOEAs                                 |
-| **Prof. Han Zhao**     | University of Illinois at Urbana-Champaign | For advice on fairness classification               |
-| **Prof. Zhenkun Wang** | SusTech                 | Paper writing and maintenance of community          |
-| **Prof. Tao Qin**      | MSRA  | Industry application                                |
-| **Prof. Qingfu Zhang** | CityUHK | Corresponding author                                |
+| **Name**               | **Institution** | **Role** |
+|------------------------|-----|-----|
+| **Xuehai Pan**         | PKU | For software design     |
+| **Hongzong Li**        | CityUHK | For local search                          |
+| **Zhe Zhao**           | CityUHK/USTC | MODL                                      |
+| **Meitong Liu**        | HKU| Feedback|
+| **Weiduo Liao**        | CityUHK/SusTech        | HV-Net/Paper writing                      |
+| **Weiyu Chen**         | HKUST| For LoRA PSL                              |
+| **Prof. Jingda Deng**  | Xi'an Jiaotong University | For advice on High-D hypervolume computation |
+| **Prof. Yifan Chen**   | Hong Kong Baptist University | For advice on OR                          |
+| **Prof. Ke Shang**     | Shenzhen University    | For advice on approximate hypervolume-based methods |
+| **Prof. Genghui Li**   | Shenzhen University    | For advice on MOEAs                       |
+| **Prof. Han Zhao**     | University of Illinois at Urbana-Champaign | For advice on fairness classification     |
+| **Prof. Zhenkun Wang** | SusTech                | Paper writing and maintenance of community|
+| **Prof. Tao Qin**      | MSRA  | Industry application |
+| **Prof. Qingfu Zhang** | CityUHK | Corresponding author|
 
 ## 4.4 Contact
 - Xiaoyuan Zhang [xzhang2523-c@my.cityu.edu.hk]

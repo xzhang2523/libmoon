@@ -21,6 +21,9 @@ Star or fork us on GitHub — it motivates us a lot!
 
 - **[March 17 2024]** Supports three [MOBO-PSL](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=QB_MUboAAAAJ&citation_for_view=QB_MUboAAAAJ:W7OEmFMy1HYC) methods. Many thanks to [Liang Zhao](https://scholar.google.com.hk/citations?user=DDGCxNkAAAAJ&hl=zh-CN)'s contribution.
 
+- **[March 10 2024]** Supports hypernetwork-based Pareto set learning methods. 
+
+
 # 1. LibMOON Supported Problems
 ## 1.1 Synthetic Problems
 Here's a list of synthetic problems along with relevant research papers and project/code links:
@@ -85,7 +88,7 @@ Notations:
 
 In neural network methods, $n$ (number of parameters) is very large (>10,000), $K$ (number of classes) is also large (e.g., 20-50), and $m$ (data features) is relatively small (e.g., 2-4). Consequently, $m^2$ is not a significant issue, but $n^2$ and $K^2$ are major concerns.
 
-## Pareto set learning(PSL) Solvers
+## 2.2 Pareto set learning(PSL) Solvers
 
 LibMOON supports various models of PSL solvers, categorized as follows:
 
@@ -98,13 +101,13 @@ LibMOON supports various models of PSL solvers, categorized as follows:
 | LoRA PSL (Chen et al 2024)     | Arbitrary solutions | [paper](https://openreview.net/pdf?id=a2uFstsHPb)|
 
 
-## MultiObjective Bayesian Optimization (MOBO) Solvers
+## 2.3 MultiObjective Bayesian Optimization (MOBO) Solvers
 
 - PSL-MONO
 - PSL-DirHV-EI
 - DirHV-EGO
 
-## Installation
+## 3. Installation and quick start
 
 Libmoon is available on PyPI. You can install it using pip:
 
@@ -144,7 +147,9 @@ eval_y = problem.evaluate(model(Tensor(prefs).cuda()))
 
 ```
 
-If you find our code useful, please cite our paper:
+## 4. Citing LibMOON and Acknowledgements
+
+### 4.1 If you find our code useful, please cite our codebase:
 
 ```bibtex
 @software{libmoon_2024,
@@ -157,7 +162,7 @@ OptimizatioN Library in PyTorch}},
 }
 ```
 
-## Main Contributors
+## 4.2 Main Contributors
 The first three authors contribute equally to this work.
 
 | **Name**           | **Institution** | **Role**                                                    |
@@ -168,28 +173,27 @@ The first three authors contribute equally to this work.
 | **Xi Lin**         | CityUHK         | Software design                                             |
 
 
-
-
+## 4.3 Advisory Board
 We sincernely thank the following contributors for their valuable contributions or feedbacks:
-## Advisory Board
-| **Name**               | **Institution**            | **Role**                                            |
-|------------------------|----------------------------|-----------------------------------------------------|
-| **Xuehai Pan**         | PKU                        | For software design                                 |
-| **Hongzong Li**        | CityUHK                    | For local search                                    |
-| **Zhe Zhao**           | CityUHK/USTC               | MODL                                                |
-| **Meitong Liu**        | HKU| Feedback                                            |
-| **Weiduo Liao**        | CityUHK/SusTech            | HV-Net/Paper writing                                |
-| **Weiyu Chen**         | HKUST| For LoRA PSL                                        |
-| **Prof. Jingda Deng**  | Xi'an Jiaotong University  | For advice on High-D hypervolume computation        |
-| **Prof. Yifan Chen**   | Hong Kong Baptist University | For advice on OR                                    |
-| **Prof. Ke Shang**     | Shenzhen University        | For advice on approximate hypervolume-based methods |
-| **Prof. Genghui Li**   | Shenzhen University        | For advice on MOEAs                                 |
-| **Prof. Han Zhao**     | University of Illinois at Urbana-Champaign | For advice on fairness classification               |
-| **Prof. Zhenkun Wang** | SusTech                    | Paper writing and maintenance of community          |
-| **Prof. Tao Qin**      | MSRA                       | Industry application                                |
-| **Prof. Qingfu Zhang** | CityUHK                    | Corresponding author                                |
 
-## Contact
+| **Name**               | **Institution**         | **Role**  |
+|------------------------|-------------------------|------------------|
+| **Xuehai Pan**         | PKU                     | For software design                                 |
+| **Hongzong Li**        | CityUHK                 | For local search                                    |
+| **Zhe Zhao**           | CityUHK/USTC            | MODL                                                |
+| **Meitong Liu**        | HKU| Feedback                                            |
+| **Weiduo Liao**        | CityUHK/SusTech         | HV-Net/Paper writing                                |
+| **Weiyu Chen**         | HKUST| For LoRA PSL                                        |
+| **Prof. Jingda Deng**  | Xi'an Jiaotong University | For advice on High-D hypervolume computation        |
+| **Prof. Yifan Chen**   | Hong Kong Baptist University | For advice on OR                                    |
+| **Prof. Ke Shang**     | Shenzhen University     | For advice on approximate hypervolume-based methods |
+| **Prof. Genghui Li**   | Shenzhen University     | For advice on MOEAs                                 |
+| **Prof. Han Zhao**     | University of Illinois at Urbana-Champaign | For advice on fairness classification               |
+| **Prof. Zhenkun Wang** | SusTech                 | Paper writing and maintenance of community          |
+| **Prof. Tao Qin**      | MSRA  | Industry application                                |
+| **Prof. Qingfu Zhang** | CityUHK | Corresponding author                                |
+
+## 4.4 Contact
 - Xiaoyuan Zhang [xzhang2523-c@my.cityu.edu.hk]
 - QQ group:
 
@@ -204,7 +208,7 @@ We sincernely thank the following contributors for their valuable contributions 
 
 - Slack group: https://cityu-hiv5987.slack.com/archives/C07GU3N2H2S
 
-## Star History
+## 4.5 Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=xzhang2523/libmoon&type=Date)](https://star-history.com/#xzhang2523/libmoon&Date)
 

@@ -19,7 +19,7 @@ Star or fork us on GitHub — it motivates us a lot!
 
 - **[April 20 2024]** Supports [PMTL](https://arxiv.org/abs/1912.12854), [HvGrad](https://arxiv.org/abs/2102.04523). Many thanks for Dr. [Xi Lin](https://scholar.google.com/citations?user=QB_MUboAAAAJ&hl=en)'s contribution. Thanks for previous helpful communications from Dr. [Hao Wang](https://scholar.google.com/citations?user=Pz9c6XwAAAAJ&hl=en).  
 
-- **[March 17 2024]** Supports three [MOBO-PSL]() methods. Many thanks to [Liang Zhao](https://scholar.google.com.hk/citations?user=DDGCxNkAAAAJ&hl=zh-CN)'s contribution.
+- **[March 17 2024]** Supports three [MOBO-PSL](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=QB_MUboAAAAJ&citation_for_view=QB_MUboAAAAJ:W7OEmFMy1HYC) methods. Many thanks to [Liang Zhao](https://scholar.google.com.hk/citations?user=DDGCxNkAAAAJ&hl=zh-CN)'s contribution.
 
 # 1. LibMOON Supported Problems
 ## 1.1 Synthetic Problems
@@ -27,12 +27,12 @@ Here's a list of synthetic problems along with relevant research papers and proj
 
 | Problem | Paper | Project/Code|
 |---------|--------|---------|
-| ZDT     | [Paper](https://ieeexplore.ieee.org/document/996017)               | [Project](https://pymoo.org/problems/multi/zdt.html) |
-| DTLZ    | [Paper](https://ieeexplore.ieee.org/document/996017)               | [Project](https://pymoo.org/problems/many/dtlz.html) |
+| ZDT     | [Paper](https://ieeexplore.ieee.org/document/996017)  | [Project](https://pymoo.org/problems/multi/zdt.html) |
+| DTLZ    | [Paper](https://ieeexplore.ieee.org/document/996017) | [Project](https://pymoo.org/problems/many/dtlz.html) |
 | MAF     | [Paper](https://link.springer.com/article/10.1007/s40747-017-0039-7) | [Project](https://pymoo.org/problems/multi/maf.html) |
-| WFG     | [Paper](https://ieeexplore.ieee.org/document/996017)               | [Code](https://github.com/sample-repo/wfg-code) |
-| Fi's    | [Paper](https://ieeexplore.ieee.org/document/996017)               | [Code](https://github.com/sample-repo/fis-code) |
-| RE      | [Paper](https://arxiv.org/abs/2009.12867)                          | [Code](https://github.com/ryojitanabe/reproblems) |
+| WFG     | [Paper](https://ieeexplore.ieee.org/document/996017)  | [Code](https://github.com/sample-repo/wfg-code) |
+| Fi's    | [Paper](https://ieeexplore.ieee.org/document/996017)  | [Code](https://github.com/sample-repo/fis-code) |
+| RE      | [Paper](https://arxiv.org/abs/2009.12867) | [Code](https://github.com/ryojitanabe/reproblems) |
 
 ## 1.2 Multiobjective Multitask Learning (MO-MTL) Problems
 

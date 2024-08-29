@@ -64,30 +64,28 @@ currently:
   - PMTLSolver
   - HVGradSolver
 
-| Method | Property  | Paper| Complexity|
-|----|----|--------|-------|
-| EPO (Mahapatra et al 2020)   | Exact solutions                 | [paper](https://proceedings.mlr.press/v119/mahapatra20a.html)| $O(m^2nK)$|
-| MGDA-UB (Sener et al 2018)   | Arbitrary solutions             | [paper](https://arxiv.org/abs/1810.04650)                                              |
-| PMGDA (Zhang et al 2024)     | Specific solutions              | [paper](https://arxiv.org/abs/2402.09492)                                              |
-| Random (Lin et al 2021)      | Arbitrary solutions             | [paper](https://arxiv.org/abs/2111.10603)                                              |
-| MOO-SVGD (Liu et al 2021)    | Diverse solutions               | [paper](https://papers.nips.cc/paper_files/paper/2021/hash/7bb16972da003e87724f048d76b7e0e1-Abstract.html) |
-| PMTL (Lin et al 2019)        | Sector solutions                | [paper](https://arxiv.org/abs/1912.12854)                                              |
-| HVGrad (Deist et al 2021)    | Maximal HV solutions            | [paper](https://arxiv.org/abs/2102.04523)                                              |
-| Agg-LS (Miettinen et al 1999) | Convex hull solutions           | [book](https://link.springer.com/book/10.1007/978-1-4615-5563-6)                       |
-| Agg-Tche (Zhang et al 2007)  | Exact solutions                 | [paper](https://ieeexplore.ieee.org/document/4358754)                                  |
-| Agg-mTche (Ma et al 2017)    | Exact solutions                 | [paper](https://ieeexplore.ieee.org/document/7927726)                                  |
-| Agg-PBI (Zhang et al 2007)   | Approximate exact solutions     | [paper](https://ieeexplore.ieee.org/document/4358754)                                  |
-| Agg-COSMOS (Ruchte et al 2007) | Approximate exact solutions     | [paper](https://arxiv.org/abs/2103.13392)                                              |
-| Agg-SoftTche (Lin et al 2024) | Fast approximate exact solutions | [paper](https://arxiv.org/abs/2402.19078)                                                                              |
+| Method | Property  | Paper| Complexity |
+|----|----|--------|---------|
+| EPO (Mahapatra et al 2020)| Exact solutions| [paper](https://proceedings.mlr.press/v119/mahapatra20a.html)| $O(m^2nK)$ |
+| MGDA-UB (Sener et al 2018) | Arbitrary solutions | [paper](https://arxiv.org/abs/1810.04650)| $O(m^2nK)$ |
+| PMGDA (Zhang et al 2024)  | Specific solutions | [paper](https://arxiv.org/abs/2402.09492)| $O(m^2nK)$ |
+| Random (Lin et al 2021)   | Arbitrary solutions | [paper](https://arxiv.org/abs/2111.10603)| $O(m^2nK)$ |
+| MOO-SVGD (Liu et al 2021) | Diverse solutions | [paper](https://papers.nips.cc/paper_files/paper/2021/hash/7bb16972da003e87724f048d76b7e0e1-Abstract.html)| $O(m^2nK^2)$|
+| PMTL (Lin et al 2019)     | Sector solutions | [paper](https://arxiv.org/abs/1912.12854)|$O(m^2nK^2)$|
+| HVGrad (Deist et al 2021) | Maximal HV solutions | [paper](https://arxiv.org/abs/2102.04523)|$O(m^2nK^2)$|
+| Agg-LS (Miettinen et al 1999) | Convex hull solutions | [book](https://link.springer.com/book/10.1007/978-1-4615-5563-6)| $O(mnK)$|
+| Agg-Tche (Zhang et al 2007) | Exact solutions | [paper](https://ieeexplore.ieee.org/document/4358754)|$O(mnK)$| 
+| Agg-mTche (Ma et al 2017) | Exact solutions | [paper](https://ieeexplore.ieee.org/document/7927726)|$O(mnK)$| 
+| Agg-PBI (Zhang et al 2007) | Approximate exact solutions | [paper](https://ieeexplore.ieee.org/document/4358754)|$O(mnK)$|
+| Agg-COSMOS (Ruchte et al 2007) | Approximate exact solutions | [paper](https://arxiv.org/abs/2103.13392)|$O(mnK)$|
+| Agg-SoftTche (Lin et al 2024) | Fast approximate exact solutions | [paper](https://arxiv.org/abs/2402.19078)|$O(mnK)$|
 
 Notations:
 - $m$ is the number of objectives.
 - $K$ is the number of subproblems.
 - $n$ is the number of decision variables.
 
-For neural network based methods, $n$ is the number of parameters; hence $n$ is very large (>10000), $K$ is also large (
-e.g., 20-50), while $m$ is small (2.g., 2-4).
-As a result, $m^2$ is not a big problem. $n^2$ is a big problem. $K^2$ is a big problem.
+In neural network methods, $n$ (number of parameters) is very large (>10,000), $K$ (number of classes) is also large (e.g., 20-50), and $m$ (data features) is relatively small (e.g., 2-4). Consequently, $m^2$ is not a significant issue, but $n^2$ and $K^2$ are major concerns.
 
 Time complexity of gradient based methods are as follows,
 

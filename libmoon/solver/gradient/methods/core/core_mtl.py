@@ -139,8 +139,7 @@ class GradBaseMTLSolver:
                 loss_mat = [0] * n_prob
                 Jacobian_array = [0] * n_prob
                 for pref_idx, pref in enumerate(self.prefs):
-                    logits = self.model_arr[pref_idx](batch)
-                    # batch.update(logits)
+                    logits = self.model_arr[pref_idx](batch['data'])
                     loss_vec = torch.stack( [obj(logits['logits'], **batch) for obj in self.obj_arr] )
                     loss_mat[pref_idx] = loss_vec
                     if not self.is_agg:
@@ -188,10 +187,6 @@ class GradBaseMTLSolver:
         res = {'loss_history': loss_history,
                'loss' : loss_history[-1]}
         return res
-
-
-
-
 
 if __name__ == '__main__':
     print()

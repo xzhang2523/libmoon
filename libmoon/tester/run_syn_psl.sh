@@ -12,9 +12,9 @@ for seed in $(seq 0 $(($seed_num-1)))
 #        python run_syn_psl.py --solver-name $solver_name --draw-fig False --epoch 1000 --problem-name $problem --seed-idx $seed
 #      done
 
-      for solver_name in pmgda epo
+      for solver_name in pmgda epo agg_ls agg_tche agg_softtche agg_cosmos
       do
-        python run_syn_psl.py --solver-name $solver_name --draw-fig False --epoch 100 --problem-name $problem --seed-idx 2
+        python run_syn_psl.py --solver-name $solver_name --draw-fig False --epoch 1000 --problem-name $problem --seed-idx 2
       done
   done
 done

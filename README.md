@@ -21,7 +21,7 @@ Star or fork us on GitHub — it motivates us a lot!
 
 - **[March 17 2024]** Supports three [MOBO-PSL](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=QB_MUboAAAAJ&citation_for_view=QB_MUboAAAAJ:W7OEmFMy1HYC) methods. Many thanks to [Liang Zhao](https://scholar.google.com.hk/citations?user=DDGCxNkAAAAJ&hl=zh-CN)'s contribution.
 
-- **[March 10 2024]** Supports hypernetwork-based Pareto set learning methods. 
+- **[March 10 2024]** Supports [hypernetwork-based](https://openreview.net/pdf/9c01e8c47f7e80e87af0175ac2a5e9a356f518bd.pdf) Pareto set learning methods. 
 
 
 # 1. LibMOON Supported Problems
@@ -37,22 +37,22 @@ Here's a list of synthetic problems along with relevant research papers and proj
 | Fi's    | [Paper](https://ieeexplore.ieee.org/document/996017)  | [Code](https://github.com/sample-repo/fis-code) |
 | RE      | [Paper](https://arxiv.org/abs/2009.12867) | [Code](https://github.com/ryojitanabe/reproblems) |
 
+
 ## 1.2 Multiobjective Multitask Learning (MO-MTL) Problems
 
 This section details problems related to multitask learning, along with their corresponding papers and project/code
 references:
 
-| Problem                     | Paper   | Project/Code                                           |
-|-----------------------------|----------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------|
-| MO-MNIST                    | [PMTL](https://proceedings.neurips.cc/paper_files/paper/2019/file/685bfde03eb646c27ed565881917c71c-Paper.pdf)        | [COSMOS](https://github.com/ruchtem/cosmos)            |
-| Fairness Classification     | [COSMOS](https://arxiv.org/pdf/2103.13392.pdf)                                                                       | [COSMOS](https://github.com/ruchtem/cosmos)            |
-| MORL problems (DST, FTS...) | [Envelop](https://proceedings.neurips.cc/paper_files/paper/2019/file/4a46fbfca3f1465a27b210f4bdfe6ab3-Paper.pdf)     | [Project](https://github.com/sample-repo/envelop-code) |
+| Problem | Paper |
+|----|----|
+| MO-MNIST | [PMTL](https://proceedings.neurips.cc/paper_files/paper/2019/file/685bfde03eb646c27ed565881917c71c-Paper.pdf) | 
+| Fairness Classification | [COSMOS](https://arxiv.org/pdf/2103.13392.pdf)   |
+| MORL problems (DST, FTS...) | [Envelop](https://proceedings.neurips.cc/paper_files/paper/2019/file/4a46fbfca3f1465a27b210f4bdfe6ab3-Paper.pdf) |
 
 
 # 2. LibMOON Supported Solvers
 
-LibMOON includes a variety of solvers tailored for different needs as img below shows. The following solvers are
-currently:
+LibMOON includes a variety of solvers tailored for different needs as img below shows. 
 
 <img src="img/supported_methods.png" width="500"></img>
 

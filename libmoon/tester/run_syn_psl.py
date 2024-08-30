@@ -49,7 +49,7 @@ def plot_psl_figure_2d(folder_name, eval_y_np, prefs, draw_fig, draw_pf, problem
     plt.yticks(fontsize=16)
     plt.xlabel('$f_1$', fontsize=FONT_SIZE)
     plt.ylabel('$f_2$', fontsize=FONT_SIZE)
-    plt.legend(fontsize=FONT_SIZE)
+    plt.legend(fontsize=FONT_SIZE, loc='upper right')
     fig_name = os.path.join( folder_name, '{}.pdf'.format('res') )
     plt.savefig(fig_name, bbox_inches='tight')
     fig_name_svg = os.path.join(folder_name, '{}.svg'.format('res'))

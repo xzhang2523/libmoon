@@ -28,8 +28,8 @@ def plot_fig_2d(folder_name, loss, prefs):
     for pref in prefs_l2:
         plt.plot([0, rho * pref[0]], [0, rho * pref[1]], color='grey', linestyle='--', linewidth=2)
     plt.scatter(loss[:, 0], loss[:, 1])
-    file_name = os.path.join(folder_name, 'res.svg')
-    plt.savefig(file_name, format='svg', dpi=1200, bbox_inches='tight')
+    file_name = os.path.join(folder_name, 'res.pdf')
+    plt.savefig(file_name, bbox_inches='tight')
     print('Save to {}'.format(file_name))
     if args.use_plt == 'True':
         plt.show()

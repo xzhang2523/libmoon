@@ -74,6 +74,8 @@ def compute_hv( sols, problem_name):
 
 # Preference specific indiators
 def compute_pbi(sols, prefs, coeff=5.0):
+    if type(prefs) == torch.Tensor:
+        prefs = prefs.cpu().numpy()
     pref_l2 = prefs / np.linalg.norm(prefs, axis=1, keepdims=True)
     pbi_arr = []
     for sol, pref in zip(sols, pref_l2):
@@ -84,7 +86,9 @@ def compute_pbi(sols, prefs, coeff=5.0):
     return np.mean(pbi_arr)
 
 def compute_inner_product(sols, prefs):
-    sum_value = sols * prefs
+    if type(prefs) == torch.Tensor:
+        prefs_np = prefs.cpu().numpy()
+    sum_value = sols * prefs_np
     ip_values_vec = np.sum(sum_value, axis=1)
     return np.mean(ip_values_vec)
 

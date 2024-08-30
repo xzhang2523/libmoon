@@ -31,7 +31,7 @@ def plot_psl_figure_3d(folder_name, eval_y_np):
     plt.savefig(fig_pdf_name, bbox_inches='tight', pad_inches=0.4)
 
 
-def plot_psl_figure_2d(folder_name, eval_y_np, prefs, draw_fig):
+def plot_psl_figure_2d(folder_name, eval_y_np, prefs, draw_fig, draw_pf, problem):
     prefs_scale = prefs * 0.4
     for pref, y in zip(prefs_scale, eval_y_np):
         plt.scatter(pref[0], pref[1], color='blue', s=40)
@@ -40,6 +40,11 @@ def plot_psl_figure_2d(folder_name, eval_y_np, prefs, draw_fig):
     plt.plot(prefs_scale[:, 0], prefs_scale[:, 1], color='blue', linewidth=1, label='Preference')
     plt.plot(eval_y_np[:, 0], eval_y_np[:, 1], color='orange', linewidth=1, label='Objectives')
     plt.axis('equal')
+
+    pf = problem.get_pf(n_pareto_points=1000)
+    if draw_pf == 'True':
+        plt.plot(pf[:, 0], pf[:, 1], color='red', linewidth=2, label='True PF')
+
     plt.xticks(fontsize=16)
     plt.yticks(fontsize=16)
     plt.xlabel('$f_1$', fontsize=FONT_SIZE)
@@ -81,7 +86,10 @@ if __name__ == '__main__':
     parser.add_argument('--solver-name', type=str, default='agg_ls')
     parser.add_argument('--problem-name', type=str, default='VLMOP1')
     parser.add_argument('--device', type=str, default='gpu')
+
     parser.add_argument('--draw-fig', type=str, default='True')
+    parser.add_argument('--draw-pf', type=str, default='True')
+
     parser.add_argument('--eval-num', type=int, default=20)
     parser.add_argument('--epoch', type=int, default=1000)
     parser.add_argument('--seed-idx', type=int, default=0)
@@ -109,7 +117,7 @@ if __name__ == '__main__':
     os.makedirs(folder_name, exist_ok=True)
 
     if problem.n_obj==2:
-        plot_psl_figure_2d(folder_name, eval_y, prefs, args.draw_fig)
+        plot_psl_figure_2d(folder_name, eval_y, prefs, args.draw_fig, args.draw_pf, problem)
     elif problem.n_obj==3:
         plot_psl_figure_3d(folder_name, eval_y_np=eval_y)
     else:

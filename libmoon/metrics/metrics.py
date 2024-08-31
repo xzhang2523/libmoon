@@ -88,6 +88,8 @@ def compute_pbi(sols, prefs, coeff=5.0):
 def compute_inner_product(sols, prefs):
     if type(prefs) == torch.Tensor:
         prefs_np = prefs.cpu().numpy()
+    else:
+        prefs_np = prefs
     sum_value = sols * prefs_np
     ip_values_vec = np.sum(sum_value, axis=1)
     return np.mean(ip_values_vec)

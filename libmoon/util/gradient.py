@@ -35,14 +35,13 @@ def flatten_grads(grads_dict):
     return torch.cat( [v.view(-1) for _, v in grads_dict.items()] )
 
 
-def calc_gradients_mtl(batch, model, objectives):
+def calc_gradients_mtl(data, batch, model, objectives):
     # store gradients and objective values
     gradients = []
     obj_values = []
     for i, objective in enumerate(objectives):
         model.zero_grad()
-        logits = model(batch)
-        # batch.update(logits)
+        logits = model(data)
         output = objective(logits['logits'], **batch)
         output.backward()
         obj_values.append(output.item())

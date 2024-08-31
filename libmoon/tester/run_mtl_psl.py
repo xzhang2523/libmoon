@@ -51,7 +51,7 @@ if __name__ == '__main__':
     parse.add_argument('--seed-idx', type=int, default=0)
     parse.add_argument('--step-size', type=int, default=1e-4)
     parse.add_argument('--n-obj', type=int, default=2)
-    parse.add_argument('--solver-name', type=str, default='agg_ls')
+    parse.add_argument('--solver-name', type=str, default='epo')
     # problem_name: ['mnist', 'fashion', 'fmnist', 'adult', 'credit', 'compass']
     parse.add_argument('--problem-name', type=str, default='mnist')
     parse.add_argument('--device', type=str, default='gpu')

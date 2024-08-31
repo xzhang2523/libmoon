@@ -8,14 +8,14 @@
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fxzhang2523%2Flibmoon&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 [![Made With Friends](https://img.shields.io/badge/Made%20With-Love-orange.svg)](https://github.com/xzhang2523/libmoon) 
 
-``LibMoon`` is an open-source library built on [PyTorch](https://pytorch.org/) for gradient-based MultiObjective (MOO). See the [latest documentation](https://readthedocs.org/projects/libmoondocs/badge/?version=latest) for detailed introductions and API instructions.
+``LibMoon`` is an open-sourc[e library built on [PyTorch](https://pytorch.org/) for gradient-b]()ased MultiObjective (MOO). See the [latest documentation](https://readthedocs.org/projects/libmoondocs/badge/?version=latest) for detailed introductions and API instructions.
 
 Star or fork us on GitHub — it motivates us a lot!
 
 # News
 - **[Aug 27 2024]** Added support for [LoRA-PSL](https://arxiv.org/pdf/2407.20734) (ICML 2024). Many thanks to [Weiyu Chen](https://scholar.google.com/citations?user=Zbg7LycAAAAJ&hl=zh-CN) for his contribution.
 
-- **[July 20 2024]** Supports most popular gradient-based methods: mgdaub random epo pmgda agg_ls agg_tche agg_mtche agg_pbi agg_cosmos agg_softtche pmtl hvgrad moosvgd.
+- **[June 20 2024]** Supports most popular gradient-based methods: MGDAUB, Random, EPO, PMGDA, Aggregation-based methods, PMTL, HVGrad, MOOSVGD.
 
 - **[April 20 2024]** Supports [PMTL](https://arxiv.org/abs/1912.12854), [HvGrad](https://arxiv.org/abs/2102.04523). Many thanks for Dr. [Xi Lin](https://scholar.google.com/citations?user=QB_MUboAAAAJ&hl=en)'s contribution. Thanks for previous helpful communications from Dr. [Hao Wang](https://scholar.google.com/citations?user=Pz9c6XwAAAAJ&hl=en).  
 

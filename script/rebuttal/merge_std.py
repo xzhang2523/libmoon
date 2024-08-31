@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     mtd_arr = ['epo', 'mgdaub', 'pmgda', 'random', 'moosvgd', 'pmtl', 'hvgrad',
                'agg_ls', 'agg_tche','agg_mtche', 'agg_pbi', 'agg_cosmos', 'agg_softtche']  # for mtl discrete usage
-    task = 'task_arxiv_2'    #Task 3, synthetic psl
+    task = 'task_arxiv_4'    #Task 3, synthetic psl
     if task == 'task2':
         args.problem_name = 'adult'
         args.task = 'discrete'
@@ -46,6 +46,16 @@ if __name__ == '__main__':
         args.problem_name = 'VLMOP2'
         args.task = 'psl'
         mtd_arr = ['agg_cosmos', 'agg_ls', 'agg_tche', 'agg_softtche', 'epo', 'pmgda']  # For syn psl usage
+    elif task == 'task_arxiv_3':
+        args.seed_num = 3
+        args.problem_name = 'adult'
+        args.task = 'discrete'
+        mtd_arr = ['agg_cosmos','agg_ls', 'agg_pbi', 'agg_softmtche', 'agg_mtche', 'epo', 'mgdaub', 'random', 'pmtl', 'moosvgd', 'hvgrad']  # For syn psl usage
+    elif task == 'task_arxiv_4':
+        args.seed_num = 3
+        args.problem_name = 'mnist'
+        args.task = 'psl'
+        mtd_arr = ['agg_cosmos','agg_ls', 'agg_pbi', 'agg_softmtche', 'agg_mtche']  # For syn psl usage
     else:
         assert False, 'Unknown task'
 

@@ -58,10 +58,10 @@ class GradBasePSLMTLSolver:
                 self.hnet.train()
                 self.optimizer.zero_grad()
                 weights = self.hnet(ray)      # len(weights) = 10
+                num_target = numel(weights)    # numel(weights) = 31910
                 logits_l, logits_r = self.net(batch['data'], weights)
                 logits_array = [logits_l, logits_r]
                 loss_vec = torch.stack([obj(logits, **batch) for (logits,obj) in zip(logits_array, self.obj_arr)])
-
                 if self.is_agg:
                     loss_vec = torch.atleast_2d(loss_vec)
                     ray = torch.atleast_2d(ray)
@@ -69,6 +69,7 @@ class GradBasePSLMTLSolver:
                 elif self.solver_name in ['epo', 'pmgda']:
                     # Here, we also need the Jacobian matrix.
                     print()
+
                 else:
                     assert False, 'Unknown solver_name'
                 loss_batch.append( loss.cpu().detach().numpy() )
@@ -139,11 +140,12 @@ class GradBaseMTLSolver:
                 loss_mat = [0] * n_prob
                 Jacobian_array = [0] * n_prob
                 for pref_idx, pref in enumerate(self.prefs):
+                    # model input: data
                     logits = self.model_arr[pref_idx](batch['data'])
                     loss_vec = torch.stack( [obj(logits['logits'], **batch) for obj in self.obj_arr] )
                     loss_mat[pref_idx] = loss_vec
                     if not self.is_agg:
-                        Jacobian_ = calc_gradients_mtl(batch, self.model_arr[pref_idx], self.obj_arr)
+                        Jacobian_ = calc_gradients_mtl(batch['data'], batch, self.model_arr[pref_idx], self.obj_arr)
                         Jacobian = torch.stack([flatten_grads(elem) for elem in Jacobian_])
                         Jacobian_array[pref_idx] = Jacobian
                 if not self.is_agg:

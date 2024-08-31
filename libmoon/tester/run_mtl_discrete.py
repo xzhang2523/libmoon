@@ -47,7 +47,7 @@ if __name__ == '__main__':
     parser.add_argument('--architecture', type=str, default='M1')
     # mgdaub random epo pmgda agg_ls agg_tche agg_pbi agg_cosmos, agg_softtche pmtl hvgrad moosvgd
     parser.add_argument('--problem-name', type=str, default='adult')
-    parser.add_argument('--solver-name', type=str, default='agg_ls')
+    parser.add_argument('--solver-name', type=str, default='mgdaub')
     parser.add_argument('--use-plt', type=str, default='True')
 
     parser.add_argument('--epoch', type=int, default=6)

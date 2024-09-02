@@ -23,11 +23,9 @@ from libmoon.solver.mobo.methods.base_solver_pslmobo import PSLMOBO
 class PSLMOBOSolver(PSLMOBO):
     def __init__(self, problem, n_init, MAX_FE, BATCH_SIZE):
         super().__init__(problem, n_init, MAX_FE, BATCH_SIZE)
-      
+        self.solver_name = 'pslmobo'
         self.coef_lcb = 0.1 # coefficient of LCB
-       
-        
-        
+
     def _train_psl(self):
         self.psmodel = ParetoSetModel(self.n_var, self.n_obj)
         # optimizer
@@ -53,15 +51,12 @@ class PSLMOBOSolver(PSLMOBO):
             value = torch.from_numpy(mean - self.coef_lcb * std)    # n_pref_update *  n_obj  
             # n_pref_update *  n_obj * n_var   
             value_grad = torch.from_numpy(mean_grad - self.coef_lcb * std_grad)
-           
             tch_idx = torch.argmax((pref_vec) * (value - self.z), axis = 1)
             tch_idx_mat = [torch.arange(len(tch_idx)),tch_idx]
             # n_pref_update *  n_var  
             tch_grad = (pref_vec)[tch_idx_mat].view(self.n_pref_update,1) *  value_grad[tch_idx_mat] #+ 0.01 * torch.sum(value_grad, axis = 1) 
-
-            tch_grad = tch_grad / torch.norm(tch_grad, dim = 1, keepdim=True) 
-            
-            # gradient-based pareto set model update 
+            tch_grad = tch_grad / torch.norm(tch_grad, dim = 1, keepdim=True)
+            # gradient-based pareto set model update
             optimizer.zero_grad()
             self.psmodel(pref_vec).backward(tch_grad)
             optimizer.step()  
@@ -71,10 +66,9 @@ class PSLMOBOSolver(PSLMOBO):
         self.psmodel.eval()  # Sets the module in evaluation mode.
         pref = sample_simplex(d=self.n_obj, n=self.n_candidate).to(torch.float64)
         pref = torch.clamp(pref, min=1.e-6) 
-        
         # generate correponding solutions, get the predicted mean/std
         with torch.no_grad():
-            candidate_x = self.psmodel(pref).to(torch.float64) 
+            candidate_x = self.psmodel(pref).to(torch.float64)
             # TODO, train GPs using Gpytorch
             out = self.gps.evaluate(candidate_x.detach().cpu().numpy(), cal_std=True, cal_grad=False)
             candidate_mean, candidata_std = torch.from_numpy(out['F']), torch.from_numpy(out['S'])

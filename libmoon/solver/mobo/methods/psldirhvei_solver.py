@@ -34,7 +34,9 @@ from botorch.utils.probability.utils import (
 class PSLDirHVEISolver(PSLMOBO):
     def __init__(self, problem, n_init, MAX_FE, BATCH_SIZE):
         super().__init__(problem, n_init, MAX_FE, BATCH_SIZE)
-   
+        self.solver_name = 'psldirhvei'
+
+
     def _get_xis(self, ref_vecs):
         # ref_vecs is generated via simplex-lattice design
         # temp = 1.1 * ref_vecs - self.z
@@ -48,10 +50,8 @@ class PSLDirHVEISolver(PSLMOBO):
         
         # minimum of mTch for each direction vector
         Lmin = torch.min(G, dim=1, keepdim=True).values.data  # N*1  one for each direction vector
-        
         # N*M  Intersection points
         xis = self.z + torch.mul(Lmin, dir_vecs)
-        
         return xis, dir_vecs
 	
     def _train_psl(self):

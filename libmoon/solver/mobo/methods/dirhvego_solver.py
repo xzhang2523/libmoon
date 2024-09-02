@@ -17,6 +17,7 @@ from botorch.utils.probability.utils import (
 class DirHVEGOSolver(MOBOD):
     def __init__(self, problem, n_init, MAX_FE, BATCH_SIZE):
         super().__init__(problem, n_init, MAX_FE, BATCH_SIZE)
+        self.solver_name = 'dirhvego'
 
     def _get_acquisition(self, u, sigma, ref_vec, pref_inc):
         '''

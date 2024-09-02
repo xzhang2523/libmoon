@@ -8,7 +8,6 @@ from libmoon.solver.gradient.methods.core.core_mtl import GradBasePSLMTLSolver
 import os
 from libmoon.util.constant import root_name, plt_2d_tickle_size, plt_2d_marker_size, plt_2d_label_size
 
-
 def save_pickle(folder_name, res):
     pickle_name = os.path.join(folder_name, 'res.pickle')
     with open(pickle_name, 'wb') as f:
@@ -43,6 +42,7 @@ def plot_train_process(folder_name, loss_history, draw_fig):
     print('Save training loss fig to {}'.format(fig_name))
 
 
+
 if __name__ == '__main__':
     parse = argparse.ArgumentParser()
     parse.add_argument('--epoch', type=int, default=20)
@@ -63,6 +63,7 @@ if __name__ == '__main__':
     device = torch.device('cuda') if args.device == 'gpu' else torch.device('cpu')
     solver = GradBasePSLMTLSolver(problem_name=args.problem_name, batch_size=args.batch_size,
                                   step_size=args.step_size, epoch=args.epoch, device=device, solver_name=args.solver_name)
+
     # Training Loss
     print('Training...')
     train_res = solver.solve()

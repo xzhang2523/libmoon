@@ -61,6 +61,7 @@ class GradBasePSLMTLSolver:
                 num_target = numel(weights)    # numel(weights) = 31910
                 logits_l, logits_r = self.net(batch['data'], weights)
                 logits_array = [logits_l, logits_r]
+
                 loss_vec = torch.stack([obj(logits, **batch) for (logits,obj) in zip(logits_array, self.obj_arr)])
                 if self.is_agg:
                     loss_vec = torch.atleast_2d(loss_vec)
@@ -68,6 +69,11 @@ class GradBasePSLMTLSolver:
                     loss = torch.sum( get_agg_func(self.agg_name)(loss_vec, ray) )
                 elif self.solver_name in ['epo', 'pmgda']:
                     # Here, we also need the Jacobian matrix.
+                    grads = []
+                    for i, loss in enumerate(loss_vec):
+                        g = torch.autograd.grad(loss, weights, retain_graph=True)
+                        flat_grad = self._flattening(g)
+                        grads.append(flat_grad.data)
                     print()
 
                 else:

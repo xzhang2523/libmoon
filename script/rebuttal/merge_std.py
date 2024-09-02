@@ -18,7 +18,6 @@ if __name__ == '__main__':
 
     mtd_arr = ['epo', 'mgdaub', 'random',]
     mtd_arr = ['agg_tche', 'agg_mtche', 'agg_pbi', 'agg_cosmos', 'agg_softtche',]     # For syn psl usage
-
     mtd_arr = ['epo', 'mgdaub', 'pmgda', 'random', 'moosvgd', 'pmtl', 'hvgrad',
                'agg_ls', 'agg_tche','agg_mtche', 'agg_pbi', 'agg_cosmos', 'agg_softtche']  # for mtl discrete usage
     task = 'task_arxiv_4'    #Task 3, synthetic psl
@@ -55,7 +54,7 @@ if __name__ == '__main__':
         args.seed_num = 3
         args.problem_name = 'mnist'
         args.task = 'psl'
-        mtd_arr = ['agg_cosmos','agg_ls', 'agg_pbi', 'agg_softmtche', 'agg_mtche']  # For syn psl usage
+        mtd_arr = ['agg_cosmos','agg_ls', 'agg_pbi', 'agg_softtche', 'agg_tche']  # For syn psl usage
     else:
         assert False, 'Unknown task'
 

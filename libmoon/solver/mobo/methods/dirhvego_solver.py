@@ -34,7 +34,7 @@ class DirHVEGOSolver(MOBOD):
         alpha_i = xi_minus_u * Phi(tau) + sigma * phi(tau)  # N*M
         return torch.prod(alpha_i, dim=1)
 
-    def _step(self,batch_size):
+    def _step(self, batch_size):
         # Calculate the Intersection points and Direction vectors
         xis, dir_vecs = self._get_xis(self.ref_vecs)
         # Use MOEA/D to maximize DirHV-EI

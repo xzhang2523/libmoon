@@ -45,3 +45,13 @@ def angle2pref(angle):
         return torch.squeeze(torch.stack([torch.cos(angle), torch.sin(angle)], dim=1))
     else:
         return np.stack([np.cos(angle), np.sin(angle)], axis=1)
+
+
+def random_everything(seed):
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
+    # torch.backends.cudnn.deterministic = True
+    # torch.backends.cudnn.benchmark = False

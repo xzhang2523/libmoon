@@ -53,8 +53,9 @@ references:
 # 2. LibMOON Supported Solvers
 
 LibMOON includes a variety of solvers tailored for different needs as img below shows. 
+<img src="img/libMOON.svg" width="500"></img>
 
-<img src="img/supported_methods.png" width="500"></img>
+[//]: # (<img src="img/supported_methods.png" width="500"></img>)
 
 ## 2.1 Finite solution solvers
   - GradAggSolver

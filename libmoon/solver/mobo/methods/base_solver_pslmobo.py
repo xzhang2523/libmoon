@@ -9,7 +9,7 @@ from libmoon.solver.mobo.surrogate_models import GaussianProcess
 import math
 from tqdm import tqdm
 from botorch.utils.transforms import unnormalize, normalize
-
+from libmoon.metrics import compute_hv
 '''
     Main algorithm framework for  Decomposition-based Multi-objective Bayesian Optimization.
     
@@ -17,9 +17,6 @@ from botorch.utils.transforms import unnormalize, normalize
     Expensive Multiobjective Optimization. IEEE Transactions on Evolutionary 
     Computation, 28(2): 432-444, 2024.
 '''
-
-
-
 class PSLMOBO(object):
     def __init__(self, problem, n_init, MAX_FE, BATCH_SIZE):
         self.n_var = problem.n_var
@@ -48,7 +45,8 @@ class PSLMOBO(object):
         x_init = self.bounds[0,...] + (self.bounds[1,...] - self.bounds[0,...]) *  x_init
         y_init = self.problem.evaluate(x_init) 
         self._record(x_init, y_init)
-        
+
+        hv_dict = {}
         for i in tqdm(range(self.max_iter)):
             # solution normalization x: [0,1]^d, y: [0,1]^m
             train_x = normalize(self.x, self.bounds) 
@@ -73,11 +71,18 @@ class PSLMOBO(object):
             new_x = unnormalize(X_new, bounds=self.bounds)
             new_obj = self.problem.evaluate(new_x)
             self._record(new_x, new_obj)
+            # self.y: HV
+            # print()
+            hv_val = compute_hv(self.y.detach().cpu().numpy(), self.problem.problem_name)
+            print('Iteration: %d, HV: %.4f' % (i, hv_val))
+            hv_dict[i * batch_size + self.n_init] = hv_val
             
         res = {}
         res['x'] = self.x.detach().numpy()
         res['y'] = self.y.detach().numpy()
         res['idx_nds'] = self.idx_nds
+        # res['idx_nds'] = self.idx_nds
+        res['hv'] = hv_dict
         return res
             
     def _record(self, new_x, new_obj):

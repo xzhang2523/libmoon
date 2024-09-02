@@ -16,7 +16,7 @@ from libmoon.solver.mobo.utils.lhs import lhs
 from libmoon.solver.mobo.surrogate_models import GaussianProcess
 import math
 from tqdm import tqdm
-
+from libmoon.metrics import compute_hv
 
 
 
@@ -57,14 +57,15 @@ class MOBOD(object):
         else:
             # TODO
             pass
-        
+
+        hv_dict = {}
         for i in tqdm(range(self.max_iter)):
             # Scale the objective values 
             train_x = self.x.clone()
             min_vals, _ = torch.min(self.y, dim=0)
             max_vals, _ = torch.max(self.y, dim=0)
             train_y = torch.div(torch.sub(self.y, min_vals), torch.sub(max_vals, min_vals)) 
-            self.z =  -0.01*torch.ones((1,self.n_obj))  
+            self.z = -0.01*torch.ones((1,self.n_obj))
             self.train_y_nds = train_y[self.idx_nds[0]].clone()
             
             # Bulid GP model for each objective function
@@ -79,11 +80,15 @@ class MOBOD(object):
             # observe new values
             new_obj = self.problem.evaluate(new_x)
             self._record(new_x, new_obj)
-            
+            hv_val = compute_hv(self.y.detach().cpu().numpy(), self.problem.problem_name)
+            print('Iteration: %d, HV: %.4f'%(i,hv_val))
+            hv_dict[i*batch_size + self.n_init] = hv_val
+
         res = {}
         res['x'] = self.x.detach().numpy()
         res['y'] = self.y.detach().numpy()
         res['idx_nds'] = self.idx_nds
+        res['hv'] = hv_dict
         return res
             
       

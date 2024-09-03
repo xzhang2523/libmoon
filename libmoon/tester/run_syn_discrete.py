@@ -9,6 +9,8 @@ from libmoon.solver.gradient.methods.core.core_solver import PMGDACore
 
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
+
+
 from matplotlib import pyplot as plt
 from libmoon.util.constant import FONT_SIZE_2D, FONT_SIZE_3D, color_arr, beautiful_dict, root_name, min_key_array
 from libmoon.util.constant import plt_2d_tickle_size, plt_2d_label_size
@@ -31,9 +33,9 @@ def plot_figure_2d(problem):
     if hasattr(problem, 'get_pf'):
         pf = problem.get_pf(n_pareto_points=1000)
         plt.plot(pf[:, 0], pf[:, 1], color='red', linewidth=2, label='True PF')
-
-    plt.legend(fontsize=15)
+        plt.legend(fontsize=15)
     draw_2d_prefs(prefs, rho)
+
 
 def plot_figure_3d(folder_name):
     sub_sample = 1
@@ -83,8 +85,8 @@ def save_pickles(folder_name):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser( description= 'example script')
     # mgdaub random epo pmgda agg_ls agg_tche agg_pbi agg_cosmos, agg_softtche pmtl hvgrad moosvgd
-    parser.add_argument('--solver-name', type=str, default='agg_cosmos')
-    parser.add_argument( '--problem-name', type=str, default='VLMOP1')
+    parser.add_argument('--solver-name', type=str, default='agg_ls')
+    parser.add_argument( '--problem-name', type=str, default='divergence')
     parser.add_argument('--step-size', type=float, default=1e-2)
     parser.add_argument('--tol', type=float, default=1e-2)
     parser.add_argument('--draw-fig', type=str, default='True')
@@ -94,10 +96,11 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     np.random.seed(args.seed_idx)
+
     print('Synthetic discrete')
     print('Running {} on {} with seed {}'.format(args.solver_name, args.problem_name, args.seed_idx) )
     np.random.seed(args.seed_idx)
-    problem = get_problem(problem_name=args.problem_name, n_var=10)
+    problem = get_problem(problem_name=args.problem_name, n_var=1)
     prefs = get_uniform_pref(n_prob=args.n_prob, n_obj = problem.n_obj, clip_eps=1e-2)
 
     # Actually a bit waste to implement so many solvers. Just import Core solvers.
@@ -122,11 +125,10 @@ if __name__ == '__main__':
 
     solver = GradBaseSolver(step_size=args.step_size, epoch=args.epoch, tol=args.tol, core_solver=core_solver)
     res = solver.solve(problem=problem, x=synthetic_init(problem, prefs), prefs=prefs )
-    # res.keys()
     res['prefs'] = prefs
-
     folder_name = os.path.join(root_name, 'Output', 'discrete', args.problem_name, args.solver_name,
                                'seed_{}'.format(args.seed_idx))
+
     os.makedirs(folder_name, exist_ok=True)
     if problem.n_obj == 2:
         plot_figure_2d(problem=problem)

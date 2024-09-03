@@ -1,24 +1,15 @@
 """
-[1] Xi Lin, Zhiyuan Yang, Xiaoyuan Zhang, Qingfu Zhang. Pareto Set Learning for
-Expensive Multiobjective Optimization. Advances in Neural Information Processing
-Systems (NeurIPS) , 2022
+    [1] Xi Lin, Zhiyuan Yang, Xiaoyuan Zhang, Qingfu Zhang. Pareto Set Learning for
+    Expensive Multiobjective Optimization. Advances in Neural Information Processing
+    Systems (NeurIPS) , 2022.
 """
 import torch
-import torch.nn as nn
-from torch import Tensor 
 from botorch.utils.sampling import sample_simplex
 from botorch.utils.multi_objective.hypervolume import Hypervolume
 import math
 from .base_psl_model import ParetoSetModel
-from libmoon.solver.mobo.utils import lhs
-from botorch.utils.transforms import unnormalize, normalize
-from tqdm import tqdm
-import numpy as np
-from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting
-from libmoon.solver.mobo.surrogate_models import GaussianProcess
 torch.set_default_dtype(torch.float64)
 from libmoon.solver.mobo.methods.base_solver_pslmobo import PSLMOBO
-
 
 class PSLMOBOSolver(PSLMOBO):
     def __init__(self, problem, x_init, MAX_FE, BATCH_SIZE):

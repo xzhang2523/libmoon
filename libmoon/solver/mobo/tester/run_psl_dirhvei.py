@@ -31,14 +31,10 @@ if __name__ == '__main__':
     random_everything(args.seed)
     print('seed: {} on problem: {}'.format(args.seed, args.problem_name) )
 
-    # MAX_FE = 200
-    # BATCH_SIZE = 5  # batch size
-    # minimization
     problem = get_problem(args.problem_name, n_var=args.n_var)
     n_init = 11*problem.n_var-1
     ts = time.time()
-
-    x_init = torch.from_numpy(lhs(args.n_var, samples=n_init))
+    x_init = torch.from_numpy(lhs(problem.n_var, samples=n_init))
     solver = PSLDirHVEISolver(problem, x_init, args.FE, args.batch_size)
 
     res = solver.solve()

@@ -16,6 +16,8 @@ from libmoon.util import random_everything, save_pickle
 from libmoon.util.problems import get_problem
 from libmoon.solver.mobo.utils.lhs import lhs
 
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--batch-size', type=int, default=5)
@@ -34,7 +36,7 @@ if __name__ == '__main__':
     n_init = 11*problem.n_var-1
     ts = time.time()
 
-    x_init = torch.from_numpy(lhs(args.n_var, samples=n_init))
+    x_init = torch.from_numpy(lhs(problem.n_var, samples=n_init))
     solver = PSLMOBOSolver(problem, x_init, args.FE, args.batch_size)
     res = solver.solve()
     elapsed = time.time() - ts
@@ -44,7 +46,6 @@ if __name__ == '__main__':
     plt.scatter(res['y'][res['idx_nds'][0],0], res['y'][res['idx_nds'][0],1], label='Solutions')
     if hasattr(problem, '_get_pf'):
         plt.plot(problem._get_pf()[:,0], problem._get_pf()[:,1], label='PF')
-    # plt.plot(problem._get_pf()[:,0], problem._get_pf()[:,1], label='PF')
 
     plt.legend(fontsize=16)
     plt.xlabel('$f_1$', fontsize=18)

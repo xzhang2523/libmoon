@@ -15,26 +15,25 @@ from libmoon.util import random_everything, save_pickle
 from libmoon.solver.mobo.utils.lhs import lhs
 import torch
 
+
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--batch-size', type=int, default=5)
     parser.add_argument('--FE', type=int, default=100)
-    parser.add_argument('--problem-name', type=str, default='ZDT1')
+    parser.add_argument('--problem-name', type=str, default='RE37')
     parser.add_argument('--use-fig', type=str, default='True')
     parser.add_argument('--n-var', type=int, default=8)
     parser.add_argument('--seed', type=int, default=0)
 
-
     args = parser.parse_args()
     random_everything(args.seed)
     print('seed: {} on problem: {}'.format(args.seed, args.problem_name) )
-    # problem = ZDT2(n_var=args.n_var, n_obj=2)
     problem = get_problem(args.problem_name, n_var=args.n_var)
 
     n_init = 11*problem.n_var-1
-    x_init = torch.from_numpy(lhs(args.n_var, samples=n_init))
-
+    x_init = torch.from_numpy(lhs(problem.n_var, samples=n_init))
     solver = DirHVEGOSolver(problem, x_init, args.FE, args.batch_size)
     ts = time.time()
     res = solver.solve()

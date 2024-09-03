@@ -13,8 +13,12 @@ class BaseMOP():
         self.n_var = n_var
         self.n_obj = n_obj
         self.n_cons = n_cons
-        self.lbound=lbound
-        self.ubound=ubound
+
+        if type(lbound) != type(None):
+            self.lbound = lbound
+
+        if type(ubound) != type(None):
+            self.ubound = ubound
 
     @property
     def get_number_variable(self) -> int:

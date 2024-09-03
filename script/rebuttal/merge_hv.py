@@ -4,16 +4,19 @@ import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy import array
+from libmoon.util.constant import beautiful_dict
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--batch-size', type=int, default=5)
-    parser.add_argument('--seed-num', type=int, default=3)
+    parser.add_argument('--seed-num', type=int, default=1)
     parser.add_argument('--problem-name', type=str, default='ZDT1')
     args = parser.parse_args()
 
-    # mtd_arr = ['dirhvego', 'psldirhvei', 'pslmobo']
-    mtd_arr = ['dirhvego', ]
+    mtd_arr = ['dirhvego', 'psldirhvei', 'pslmobo']
+    # mtd_arr = ['dirhvego', 'psldirhvei']
+
+    # mtd_arr = ['dirhvego', ]
 
 
     tmp_name = 'D:\\pycharm_project\\libmoon\\Output\\mobo\\{}\\{}\\seed_{}\\res.pickle'
@@ -24,15 +27,15 @@ if __name__ == '__main__':
             file_name = tmp_name.format(args.problem_name, mtd, seed)
             with open(file_name, 'rb') as f:
                 res = pickle.load(f)
-                idx = np.array(list(res['hv'].keys()))
-                val = np.array(list(res['hv'].values()))
+                idx = np.sort(np.array(list(res['hv'].keys())))
+                val = np.sort(np.array(list(res['hv'].values())) )
                 extended_idx = np.repeat(idx, 2)[1:]
                 extended_val = np.repeat(val, 2)[:-1]
                 val_arr.append(extended_val)
 
         val_mean = np.mean(array(val_arr), axis=0)
         val_std = np.std(array(val_arr), axis=0)
-        plt.step(extended_idx, val_mean, where='pre', label=mtd)
+        plt.step(extended_idx, val_mean, where='pre', label=beautiful_dict[mtd], linewidth=2)
         plt.fill_between(extended_idx, val_mean - val_std, val_mean + val_std, alpha=0.2)
 
     plt.xlabel('FE', fontsize=18)

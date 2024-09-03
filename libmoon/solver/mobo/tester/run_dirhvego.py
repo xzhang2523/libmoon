@@ -12,7 +12,8 @@ from libmoon.util.problems import get_problem
 import os
 from libmoon.util import random_everything, save_pickle
 
-
+from libmoon.solver.mobo.utils.lhs import lhs
+import torch
 
 if __name__ == '__main__':
 
@@ -32,7 +33,9 @@ if __name__ == '__main__':
     problem = get_problem(args.problem_name, n_var=args.n_var)
 
     n_init = 11*problem.n_var-1
-    solver = DirHVEGOSolver(problem, n_init, args.FE, args.batch_size)
+    x_init = torch.from_numpy(lhs(args.n_var, samples=n_init))
+
+    solver = DirHVEGOSolver(problem, x_init, args.FE, args.batch_size)
     ts = time.time()
     res = solver.solve()
     elapsed = time.time() - ts

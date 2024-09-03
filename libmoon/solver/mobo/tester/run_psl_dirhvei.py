@@ -14,6 +14,7 @@ import os
 import argparse
 from libmoon.util import random_everything, save_pickle
 from libmoon.util.problems import get_problem
+from libmoon.solver.mobo.utils.lhs import lhs
 
 
 if __name__ == '__main__':
@@ -23,8 +24,8 @@ if __name__ == '__main__':
     parser.add_argument('--n-var', type=int, default=8)
     parser.add_argument('--seed', type=int, default=0)
     parser.add_argument('--problem-name', type=str, default='ZDT1')
+    parser.add_argument('--mtd', type=str, default='ZDT1')
     parser.add_argument('--use-fig', type=str, default='True')
-
 
     args = parser.parse_args()
     random_everything(args.seed)
@@ -36,7 +37,10 @@ if __name__ == '__main__':
     problem = get_problem(args.problem_name, n_var=args.n_var)
     n_init = 11*problem.n_var-1
     ts = time.time()
-    solver = PSLDirHVEISolver(problem, n_init, args.FE, args.batch_size)
+
+    x_init = torch.from_numpy(lhs(args.n_var, samples=n_init))
+    solver = PSLDirHVEISolver(problem, x_init, args.FE, args.batch_size)
+
     res = solver.solve()
     elapsed = time.time() - ts
     res['elapsed'] = elapsed

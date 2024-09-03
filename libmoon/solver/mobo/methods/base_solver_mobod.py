@@ -21,13 +21,14 @@ from libmoon.metrics import compute_hv
 
 
 class MOBOD(object):
-    def __init__(self, problem, n_init, MAX_FE, BATCH_SIZE):
+    def __init__(self, problem, x_init, MAX_FE, BATCH_SIZE):
         self.n_var = problem.n_var
         self.n_obj = problem.n_obj
-        self.n_init = n_init
+        self.x_init = x_init
+        self.n_init = x_init.shape[0]
         self.MAX_FE = MAX_FE
         self.BATCH_SIZE = BATCH_SIZE
-        self.max_iter = math.ceil((MAX_FE - n_init)/BATCH_SIZE)
+        self.max_iter = math.ceil((MAX_FE - self.n_init)/BATCH_SIZE)
         self.problem = problem
         self.bounds = torch.from_numpy(np.vstack((problem.lbound,problem.ubound)))
          
@@ -45,8 +46,8 @@ class MOBOD(object):
      
     def solve(self):
         # get initial samples
-        x_init = torch.from_numpy(lhs(self.n_var,samples=self.n_init))
-        x_init = self.bounds[0,...] + (self.bounds[1,...] - self.bounds[0,...]) *  x_init
+        # x_init = torch.from_numpy(lhs(self.n_var,samples=self.n_init))
+        x_init = self.bounds[0,...] + (self.bounds[1,...] - self.bounds[0,...]) *  self.x_init
         y_init = self.problem.evaluate(x_init) 
         self._record(x_init, y_init)
         # generate reference vectors
@@ -59,6 +60,7 @@ class MOBOD(object):
             pass
 
         hv_dict = {}
+        hv_dict[self.n_init] = compute_hv(self.y.detach().cpu().numpy(), self.problem.problem_name)
         for i in tqdm(range(self.max_iter)):
             # Scale the objective values 
             train_x = self.x.clone()
@@ -82,7 +84,7 @@ class MOBOD(object):
             self._record(new_x, new_obj)
             hv_val = compute_hv(self.y.detach().cpu().numpy(), self.problem.problem_name)
             print('Iteration: %d, HV: %.4f'%(i,hv_val))
-            hv_dict[i*batch_size + self.n_init] = hv_val
+            hv_dict[(i+1)*batch_size + self.n_init] = hv_val
 
         res = {}
         res['x'] = self.x.detach().numpy()

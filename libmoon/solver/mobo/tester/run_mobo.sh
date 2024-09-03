@@ -1,6 +1,6 @@
-FE=100
+FE=200
 n_var=8
-  for problem in ZDT1 RE21 RE37
+for problem in ZDT1 RE21 ZDT2 ZDT3 RE37
   do
   for seed in {0..4}
   do
@@ -9,3 +9,9 @@ n_var=8
     python run_pslmobo.py --seed $seed --problem-name $problem --FE $FE --use-fig False --n-var $n_var
   done
 done
+
+
+
+
+
+

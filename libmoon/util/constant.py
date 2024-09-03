@@ -165,7 +165,11 @@ beautiful_dict = {
     'hvgrad': 'HVGrad',
     'pmtl': 'PMTL',
     'random' : 'Random',
-    'moosvgd' : 'MOO-SVGD'
+    'moosvgd' : 'MOO-SVGD',
+    'dirhvego' : 'DirHV-EGO',
+    'psldirhvei': 'PSL-DirHV-EI',
+    'pslmobo': 'PSL-MOBO',
+
 }
 
 paper_dict = {

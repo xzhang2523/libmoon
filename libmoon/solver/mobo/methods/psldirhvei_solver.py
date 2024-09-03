@@ -32,8 +32,8 @@ from botorch.utils.probability.utils import (
     phi, # Standard normal PDF
 )
 class PSLDirHVEISolver(PSLMOBO):
-    def __init__(self, problem, n_init, MAX_FE, BATCH_SIZE):
-        super().__init__(problem, n_init, MAX_FE, BATCH_SIZE)
+    def __init__(self, problem, x_init, MAX_FE, BATCH_SIZE):
+        super().__init__(problem, x_init, MAX_FE, BATCH_SIZE)
         self.solver_name = 'psldirhvei'
 
 

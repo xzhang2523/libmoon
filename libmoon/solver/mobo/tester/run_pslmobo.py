@@ -14,6 +14,7 @@ from libmoon.problem.synthetic.zdt import ZDT1
 import argparse
 from libmoon.util import random_everything, save_pickle
 from libmoon.util.problems import get_problem
+from libmoon.solver.mobo.utils.lhs import lhs
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -32,7 +33,9 @@ if __name__ == '__main__':
     problem = get_problem(args.problem_name, n_var=args.n_var)
     n_init = 11*problem.n_var-1
     ts = time.time()
-    solver = PSLMOBOSolver(problem, n_init, args.FE, args.batch_size)
+
+    x_init = torch.from_numpy(lhs(args.n_var, samples=n_init))
+    solver = PSLMOBOSolver(problem, x_init, args.FE, args.batch_size)
     res = solver.solve()
     elapsed = time.time() - ts
     res['elapsed'] = elapsed

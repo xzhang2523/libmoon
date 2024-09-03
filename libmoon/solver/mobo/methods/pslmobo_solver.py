@@ -21,8 +21,8 @@ from libmoon.solver.mobo.methods.base_solver_pslmobo import PSLMOBO
 
 
 class PSLMOBOSolver(PSLMOBO):
-    def __init__(self, problem, n_init, MAX_FE, BATCH_SIZE):
-        super().__init__(problem, n_init, MAX_FE, BATCH_SIZE)
+    def __init__(self, problem, x_init, MAX_FE, BATCH_SIZE):
+        super().__init__(problem, x_init, MAX_FE, BATCH_SIZE)
         self.solver_name = 'pslmobo'
         self.coef_lcb = 0.1 # coefficient of LCB
 

@@ -1,0 +1,115 @@
+import matplotlib.pyplot as plt
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
+# Generator: Transforms random noise into samples resembling the target distribution
+class Generator(nn.Module):
+    def __init__(self, input_dim, output_dim):
+        super(Generator, self).__init__()
+        self.model = nn.Sequential(
+            nn.Linear(input_dim, 128),
+            nn.ReLU(),
+            nn.Linear(128, 128),
+            nn.ReLU(),
+            nn.Linear(128, output_dim)
+        )
+
+    def forward(self, z):
+        return self.model(z)
+
+# Discriminator: Classifies whether samples are real (from target Gaussian) or fake (from generator)
+class Discriminator(nn.Module):
+    def __init__(self, input_dim):
+        super(Discriminator, self).__init__()
+        self.model = nn.Sequential(
+            nn.Linear(input_dim, 128),
+            nn.ReLU(),
+            nn.Linear(128, 128),
+            nn.ReLU(),
+            nn.Linear(128, 1),
+            nn.Sigmoid()
+        )
+
+    def forward(self, x):
+        return self.model(x)
+
+# Function to sample from a target Gaussian distribution
+def sample_gaussian(batch_size, dim, mean=0, std=1):
+    return torch.normal(mean=mean, std=std, size=(batch_size, dim))
+
+# GAN Training loop
+def train_gan(generator, discriminator, g_optimizer, d_optimizer, criterion, num_epochs, batch_size, input_dim, output_dim):
+    for epoch in range(num_epochs):
+        # Discriminator training
+        for _ in range(1):  # Training discriminator more than generator improves stability
+            real_samples = sample_gaussian(batch_size, output_dim)  # Real samples from Gaussian distribution
+            z = torch.randn(batch_size, input_dim)  # Random noise
+            fake_samples = generator(z)  # Fake samples from generator
+
+            # Discriminator loss on real and fake samples
+            d_real = discriminator(real_samples)
+            d_fake = discriminator(fake_samples.detach())  # Detach to avoid backpropagating through the generator
+            real_loss = criterion(d_real, torch.ones_like(d_real))
+            fake_loss = criterion(d_fake, torch.zeros_like(d_fake))
+            d_loss = (real_loss + fake_loss) / 2
+
+            # Backpropagation for discriminator
+            d_optimizer.zero_grad()
+            d_loss.backward()
+            d_optimizer.step()
+
+        # Generator training
+        z = torch.randn(batch_size, input_dim)
+        fake_samples = generator(z)
+        d_fake = discriminator(fake_samples)
+
+        # Generator loss (want discriminator to classify fakes as real)
+        g_loss = criterion(d_fake, torch.ones_like(d_fake))
+
+        # Backpropagation for generator
+        g_optimizer.zero_grad()
+        g_loss.backward()
+        g_optimizer.step()
+
+        # Logging
+        if (epoch + 1) % 100 == 0:
+            print(f'Epoch [{epoch + 1}/{num_epochs}], d_loss: {d_loss.item():.4f}, g_loss: {g_loss.item():.4f}')
+
+
+
+if __name__ == '__main__':
+    # Hyperparameters
+    input_dim = 10  # Dimension of random noise input
+    output_dim = 2  # Dimension of the target Gaussian distribution (e.g., 2D vector)
+    batch_size = 64
+    num_epochs = 5000
+    learning_rate = 0.0002
+
+    # Model, optimizer, and loss function
+    generator = Generator(input_dim, output_dim)
+    discriminator = Discriminator(output_dim)
+    g_optimizer = optim.Adam(generator.parameters(), lr=learning_rate)
+    d_optimizer = optim.Adam(discriminator.parameters(), lr=learning_rate)
+    criterion = nn.BCELoss()
+
+    # Train GAN
+    train_gan(generator, discriminator, g_optimizer, d_optimizer, criterion, num_epochs, batch_size, input_dim, output_dim)
+    # Plot the first distribution
+    sample = sample_gaussian(batch_size, output_dim)
+    plt.scatter(sample[:, 0], sample[:, 1], label='Real samples')
+
+    # Test generator
+    z = torch.randn(300, input_dim)
+    generated_samples = generator(z)
+    print("Generated samples: ", generated_samples)
+    generated_samples_np = generated_samples.detach().numpy()
+    plt.scatter(generated_samples_np[:, 0], generated_samples_np[:, 1], label='Generated samples')
+
+    plt.legend(fontsize=15)
+    plt.xlabel('X1', fontsize=18)
+    plt.ylabel('X1', fontsize=18)
+
+
+    plt.axis('equal')
+    plt.show()

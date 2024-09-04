@@ -85,13 +85,13 @@ def save_pickles(folder_name):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser( description= 'example script')
     # mgdaub random epo pmgda agg_ls agg_tche agg_pbi agg_cosmos, agg_softtche pmtl hvgrad moosvgd
-    parser.add_argument('--solver-name', type=str, default='agg_ls')
-    parser.add_argument( '--problem-name', type=str, default='divergence')
+    parser.add_argument('--solver-name', type=str, default='agg_mtche')
+    parser.add_argument( '--problem-name', type=str, default='VLMOP1')
     parser.add_argument('--step-size', type=float, default=1e-2)
     parser.add_argument('--tol', type=float, default=1e-2)
     parser.add_argument('--draw-fig', type=str, default='True')
     parser.add_argument('--n-prob', type=int, default=10 )
-    parser.add_argument('--epoch', type=int, default=1000 )
+    parser.add_argument('--epoch', type=int, default=3000 )
     parser.add_argument('--seed-idx', type=int, default=1)
 
     args = parser.parse_args()

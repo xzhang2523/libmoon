@@ -22,7 +22,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--batch-size', type=int, default=5)
     parser.add_argument('--FE', type=int, default=100)
-    parser.add_argument('--problem-name', type=str, default='RE37')
+    parser.add_argument('--problem-name', type=str, default='RE22')
     parser.add_argument('--use-fig', type=str, default='True')
     parser.add_argument('--n-var', type=int, default=8)
     parser.add_argument('--seed', type=int, default=0)

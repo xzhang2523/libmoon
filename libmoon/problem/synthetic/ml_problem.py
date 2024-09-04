@@ -3,15 +3,14 @@ import torch
 import numpy as np
 from torch import Tensor
 from torch import nn
-
 from matplotlib import pyplot as plt
-
 from torch.nn.functional import kl_div
-
-
 '''
     Adpats from: Hu et al. Revisiting Scalarization in Multi-Task Learning: A Theoretical Perspective. NeurIPS 2023. 
 '''
+class VirationalInference():
+    def __init__(self):
+        pass
 
 class DivergenceMacthing(BaseMOP):
     def __init__(self, n_var=1, n_obj=2):

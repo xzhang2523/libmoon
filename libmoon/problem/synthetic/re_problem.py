@@ -50,7 +50,6 @@ class RE21(BaseMOP):
 
 
     def _evaluate_torch(self, x):
-
         x1 = x[:, 0]
         x2 = x[:, 1]
         x3 = x[:, 2]
@@ -122,7 +121,40 @@ class RE22(BaseMOP):
         return f_norm
 
     def _evaluate_torch(self, x):
-        pass
+        '''
+            Maybe some bugs. Convergence is not good.
+        '''
+        n_sub = len(x)
+        f = torch.zeros((n_sub, self.n_obj))
+        g = torch.zeros((n_sub, self.n_original_constraints))
+
+        # Finding the nearest feasible value
+        feasible_vals_tensor = torch.tensor(self.feasible_vals)
+        x0 = x[:, 0].unsqueeze(1)
+        idx_arr = torch.abs(feasible_vals_tensor - x0).argmin(dim=1)
+        x1 = feasible_vals_tensor[idx_arr]
+        x2 = x[:, 1]
+        x3 = x[:, 2]
+        # First original objective function
+        f[:, 0] = (29.4 * x1) + (0.6 * x2 * x3)
+
+        # Original constraint functions
+        g[:, 0] = (x1 * x3) - 7.735 * ((x1 * x1) / x2) - 180.0
+        g[:, 1] = 4.0 - (x3 / x2)
+
+        # Apply constraint penalties
+        g = torch.where(g < 0, -g, torch.zeros_like(g))
+
+        # Second objective function
+        f[:, 1] = g[:, 0] + g[:, 1]
+
+        # Normalization
+        ideal_tensor = torch.tensor(self.ideal)
+        nadir_tensor = torch.tensor(self.nadir)
+        f_norm = (f - ideal_tensor) / (nadir_tensor - ideal_tensor)
+        f_norm[:, 0] = 0.5 * f_norm[:, 0]
+
+        return f_norm
 
 
 class RE23(BaseMOP):

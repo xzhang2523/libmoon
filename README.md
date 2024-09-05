@@ -8,7 +8,7 @@
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fxzhang2523%2Flibmoon&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 [![Made With Friends](https://img.shields.io/badge/Made%20With-Love-orange.svg)](https://github.com/xzhang2523/libmoon) 
 
-``LibMoon`` is an open-sourc[e library built on [PyTorch](https://pytorch.org/) for gradient-b]()ased MultiObjective (MOO). See the [latest documentation](https://readthedocs.org/projects/libmoondocs/badge/?version=latest) for detailed introductions and API instructions.
+``LibMOON`` is an open-source[library built on [PyTorch](https://pytorch.org/) for gradient-b]()ased MultiObjective (MOO). See the [latest documentation](https://readthedocs.org/projects/libmoondocs/badge/?version=latest) for detailed introductions and API instructions.
 
 Star or fork us on GitHub — it motivates us a lot!
 
@@ -45,7 +45,7 @@ Here's a list of synthetic problems, including ZDT, DTLZ, RE, MAF, WFG, Fi and U
 # 2. LibMOON Supported Solvers
 
 LibMOON includes a variety of solvers tailored for different needs as img below shows. 
-<img src="img/frame.jpg" width="1000"></img>
+<img src="img/frame.jpg" width="800"></img>
 
 [//]: # (<img src="img/supported_methods.png" width="500"></img>)
 
@@ -200,6 +200,8 @@ We sincernely thank the following contributors for their valuable contributions 
 </p>
 
 - Slack group: https://cityu-hiv5987.slack.com/archives/C07GU3N2H2S
+
+LibMOON is not allowed for commercial use without permission. For commerical use, please contact us.
 
 ## 4.5 Star History
 

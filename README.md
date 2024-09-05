@@ -26,17 +26,7 @@ Star or fork us on GitHub — it motivates us a lot!
 
 # 1. LibMOON Supported Problems
 ## 1.1 Synthetic Problems
-Here's a list of synthetic problems along with relevant research papers and project/code links:
-
-| Problem | Paper | Project/Code|
-|---------|--------|---------|
-| ZDT     | [Paper](https://ieeexplore.ieee.org/document/996017)  | [Project](https://pymoo.org/problems/multi/zdt.html) |
-| DTLZ    | [Paper](https://ieeexplore.ieee.org/document/996017) | [Project](https://pymoo.org/problems/many/dtlz.html) |
-| MAF     | [Paper](https://link.springer.com/article/10.1007/s40747-017-0039-7) | [Project](https://pymoo.org/problems/multi/maf.html) |
-| WFG     | [Paper](https://ieeexplore.ieee.org/document/996017)  | [Code](https://github.com/sample-repo/wfg-code) |
-| Fi's    | [Paper](https://ieeexplore.ieee.org/document/996017)  | [Code](https://github.com/sample-repo/fis-code) |
-| RE      | [Paper](https://arxiv.org/abs/2009.12867) | [Code](https://github.com/ryojitanabe/reproblems) |
-
+Here's a list of synthetic problems, including ZDT, DTLZ, RE, MAF, WFG, Fi and UF problems.
 
 ## 1.2 Multiobjective Multitask Learning (MO-MTL) Problems
 
@@ -177,7 +167,7 @@ The first three authors contribute equally to this work.
 
 
 ## 4.3 Advisory Board
-We sincernely thank the following contributors for their valuable contributions or feedbacks:
+We sincernely thank the following contributors for their valuable contributions or feedbacks. We also want thanks for our collobrators from XDU, SZU, SUSTech, ECNU, NEU, SEU for their easy use of our code.
 
 | **Name**               | **Institution** | **Role** |
 |------------------------|-----|-----|

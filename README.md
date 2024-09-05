@@ -17,7 +17,7 @@ Star or fork us on GitHub — it motivates us a lot!
 
 - **[June 20 2024]** Supports most popular gradient-based methods: MGDAUB, Random, EPO, PMGDA, Aggregation-based methods, PMTL, HVGrad, MOOSVGD ... 
 
-- **[April 20 2024]** Supports [PMTL](https://arxiv.org/abs/1912.12854) (NeurIPS 2019), [HvGrad](https://arxiv.org/abs/2102.04523) (EMO 2022). Many thanks for Dr. [Xi Lin](https://scholar.google.com/citations?user=QB_MUboAAAAJ&hl=en)'s contribution. Thanks for helpful communications from Dr. [Hao Wang](https://scholar.google.com/citations?user=Pz9c6XwAAAAJ&hl=en).  
+- **[April 20 2024]** Supports [PMTL](https://arxiv.org/abs/1912.12854) (NeurIPS 2019), [HvGrad](https://arxiv.org/abs/2102.04523) (EMO 2022). Many thanks for Dr. [Xi Lin](https://scholar.google.com/citations?user=QB_MUboAAAAJ&hl=en)'s contribution and helpful communications from Dr. [Hao Wang](https://scholar.google.com/citations?user=Pz9c6XwAAAAJ&hl=en).  
 
 - **[March 17 2024]** Supports three [MOBO-PSL](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=QB_MUboAAAAJ&citation_for_view=QB_MUboAAAAJ:W7OEmFMy1HYC) methods. Many thanks to [Liang Zhao](https://scholar.google.com.hk/citations?user=DDGCxNkAAAAJ&hl=zh-CN)'s contribution.
 

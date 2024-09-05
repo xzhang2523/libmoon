@@ -201,7 +201,7 @@ We sincernely thank the following contributors for their valuable contributions 
 
 - Slack group: https://cityu-hiv5987.slack.com/archives/C07GU3N2H2S
 
-LibMOON is not allowed for commercial use without permission. For commerical use, please contact us.
+LibMOON is not allowed for commercial use without permission. For commerical use, please contact Xiaoyuan Zhang or Prof. Qingfu Zhang. 
 
 ## 4.5 Star History
 

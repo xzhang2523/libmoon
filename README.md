@@ -40,14 +40,16 @@ Here's a list of synthetic problems along with relevant research papers and proj
 
 ## 1.2 Multiobjective Multitask Learning (MO-MTL) Problems
 
-This section details problems related to multitask learning, along with their corresponding papers and project/code
-references:
+|Method|$L_1$|$L_2$ |
+|---------|----|----|
+| Fairness classification [1]     | Binary cross entropy    | DEO                     |
+| Multiobjective classification [2] | Cross entropy loss BR   | Cross entropy loss UL   |
+| MO machine learning [3]         | Mean square loss        | Mean square loss        |
+| MO distribution alignment        | Similarity 1            | Similarity 2            |
 
-| Problem | Paper |
-|----|----|
-| MO-MNIST | [PMTL](https://proceedings.neurips.cc/paper_files/paper/2019/file/685bfde03eb646c27ed565881917c71c-Paper.pdf) | 
-| Fairness Classification | [COSMOS](https://arxiv.org/pdf/2103.13392.pdf)   |
-| MORL problems (DST, FTS...) | [Envelop](https://proceedings.neurips.cc/paper_files/paper/2019/file/4a46fbfca3f1465a27b210f4bdfe6ab3-Paper.pdf) |
+**Notes:**
+- DEO: Difference of Equality of Opportunity.
+
 
 
 # 2. LibMOON Supported Solvers

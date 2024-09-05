@@ -175,14 +175,14 @@ We sincernely thank the following contributors for their valuable contributions 
 | **Hongzong Li**        | CityUHK | For local search                          |
 | **Zhe Zhao**           | CityUHK/USTC | MODL                                      |
 | **Meitong Liu**        | HKU| Feedback|
-| **Weiduo Liao**        | CityUHK/SUSTech        | HV-Net/Paper writing                      |
+| **Weiduo Liao**        | CityUHK/SUSTech   | HV-Net/Paper writing                      |
 | **Weiyu Chen**         | HKUST| For LoRA PSL                              |
 | **Prof. Jingda Deng**  | Xi'an Jiaotong University | For advice on High-D hypervolume computation |
 | **Prof. Yifan Chen**   | Hong Kong Baptist University | For advice on OR                          |
-| **Prof. Ke Shang**     | Shenzhen University    | For advice on approximate hypervolume-based methods |
-| **Prof. Genghui Li**   | Shenzhen University    | For advice on MOEAs                       |
+| **Prof. Ke Shang**     | Shenzhen University | For advice on approximate hypervolume-based methods |
+| **Prof. Genghui Li**   | Shenzhen University | For advice on MOEAs                       |
 | **Prof. Han Zhao**     | University of Illinois at Urbana-Champaign | For advice on fairness classification     |
-| **Prof. Zhenkun Wang** | SusTech                | Paper writing and maintenance of community|
+| **Prof. Zhenkun Wang** | SUSTech| Paper writing and maintenance of community|
 | **Prof. Tao Qin**      | MSRA  | Industry application |
 | **Prof. Qingfu Zhang** | CityUHK | Corresponding author|
 

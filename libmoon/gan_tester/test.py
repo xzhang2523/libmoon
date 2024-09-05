@@ -2,6 +2,28 @@ import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import argparse
+
+import os
+
+def plot_figure():
+    plt.scatter(generated_samples_np[:, 0], generated_samples_np[:, 1], label='Generated samples')
+
+    plt.scatter(sample1[:, 0], sample1[:, 1], label='Sample 1')
+    plt.scatter(sample2[:, 0], sample2[:, 1], label='Sample 1')
+
+
+    plt.legend(fontsize=18)
+    plt.xlabel('$X_1$', fontsize=18)
+    plt.ylabel('$X_2$', fontsize=18)
+
+    plt.xticks(fontsize=15)
+    plt.yticks(fontsize=15)
+
+    plt.axis('equal')
+    plt.savefig(os.path.join(folder_name, '/res.pdf'), bbox_inches='tight')
+    plt.show()
+
 
 # Generator: Transforms random noise into samples resembling the target distribution
 class Generator(nn.Module):
@@ -35,15 +57,20 @@ class Discriminator(nn.Module):
         return self.model(x)
 
 # Function to sample from a target Gaussian distribution
-def sample_gaussian(batch_size, dim, mean=0, std=1):
-    return torch.normal(mean=mean, std=std, size=(batch_size, dim))
+def sample_multiple_gaussian(batch_size, dim, mean=0, std=1):
+    dist1 = torch.normal(mean=mean, std=std, size=(batch_size, dim))
+    dist2 = torch.normal(mean=mean+4, std=std, size=(batch_size, dim))
+    return dist1, dist2
+
+
 
 # GAN Training loop
 def train_gan(generator, discriminator, g_optimizer, d_optimizer, criterion, num_epochs, batch_size, input_dim, output_dim):
+    d_loss_arr = []
     for epoch in range(num_epochs):
         # Discriminator training
         for _ in range(1):  # Training discriminator more than generator improves stability
-            real_samples = sample_gaussian(batch_size, output_dim)  # Real samples from Gaussian distribution
+            real_samples, _ = sample_multiple_gaussian(batch_size, output_dim)  # Real samples from Gaussian distribution
             z = torch.randn(batch_size, input_dim)  # Random noise
             fake_samples = generator(z)  # Fake samples from generator
 
@@ -75,41 +102,38 @@ def train_gan(generator, discriminator, g_optimizer, d_optimizer, criterion, num
         # Logging
         if (epoch + 1) % 100 == 0:
             print(f'Epoch [{epoch + 1}/{num_epochs}], d_loss: {d_loss.item():.4f}, g_loss: {g_loss.item():.4f}')
-
+        d_loss_arr.append(d_loss.item())
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='example script')
+    parser.add_argument('--input-dim', type=int, default=10)
+    parser.add_argument('--output-dim', type=int, default=2)
+    parser.add_argument('--batch-size', type=int, default=64)
+    parser.add_argument('--num-epochs', type=int, default=20000)
+    parser.add_argument('--learning-rate', type=float, default=1e-4)
     # Hyperparameters
-    input_dim = 10  # Dimension of random noise input
-    output_dim = 2  # Dimension of the target Gaussian distribution (e.g., 2D vector)
-    batch_size = 64
-    num_epochs = 5000
-    learning_rate = 0.0002
+    args = parser.parse_args()
 
     # Model, optimizer, and loss function
-    generator = Generator(input_dim, output_dim)
-    discriminator = Discriminator(output_dim)
-    g_optimizer = optim.Adam(generator.parameters(), lr=learning_rate)
-    d_optimizer = optim.Adam(discriminator.parameters(), lr=learning_rate)
+    generator = Generator(args.input_dim, args.output_dim)
+    discriminator = Discriminator(args.output_dim)
+    g_optimizer = optim.Adam(generator.parameters(), lr=args.learning_rate)
+    d_optimizer = optim.Adam(discriminator.parameters(), lr=args.learning_rate)
     criterion = nn.BCELoss()
 
     # Train GAN
-    train_gan(generator, discriminator, g_optimizer, d_optimizer, criterion, num_epochs, batch_size, input_dim, output_dim)
-    # Plot the first distribution
-    sample = sample_gaussian(batch_size, output_dim)
-    plt.scatter(sample[:, 0], sample[:, 1], label='Real samples')
+    train_gan(generator, discriminator, g_optimizer, d_optimizer, criterion, args.num_epochs,
+              args.batch_size, args.input_dim, args.output_dim)
+
+    sample1, sample2 = sample_multiple_gaussian(args.batch_size, args.output_dim)
 
     # Test generator
-    z = torch.randn(300, input_dim)
+    z = torch.randn(300, args.input_dim)
     generated_samples = generator(z)
-    print("Generated samples: ", generated_samples)
+
+    # print("Generated samples: ", generated_samples)
     generated_samples_np = generated_samples.detach().numpy()
-    plt.scatter(generated_samples_np[:, 0], generated_samples_np[:, 1], label='Generated samples')
 
-    plt.legend(fontsize=15)
-    plt.xlabel('X1', fontsize=18)
-    plt.ylabel('X1', fontsize=18)
-
-
-    plt.axis('equal')
-    plt.show()
+    folder_name = 'D:\\pycharm_project\\libmoon\\Output\\divergence'
+    plot_figure()

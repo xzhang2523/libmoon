@@ -15,9 +15,9 @@ Star or fork us on GitHub — it motivates us a lot!
 # News
 - **[Aug 27 2024]** Added support for [LoRA-PSL](https://arxiv.org/pdf/2407.20734) (ICML 2024). Many thanks to [Weiyu Chen](https://scholar.google.com/citations?user=Zbg7LycAAAAJ&hl=zh-CN) for his contribution.
 
-- **[June 20 2024]** Supports most popular gradient-based methods: MGDAUB, Random, EPO, PMGDA, Aggregation-based methods, PMTL, HVGrad, MOOSVGD.
+- **[June 20 2024]** Supports most popular gradient-based methods: MGDAUB, Random, EPO, PMGDA, Aggregation-based methods, PMTL, HVGrad, MOOSVGD ... 
 
-- **[April 20 2024]** Supports [PMTL](https://arxiv.org/abs/1912.12854), [HvGrad](https://arxiv.org/abs/2102.04523). Many thanks for Dr. [Xi Lin](https://scholar.google.com/citations?user=QB_MUboAAAAJ&hl=en)'s contribution. Thanks for previous helpful communications from Dr. [Hao Wang](https://scholar.google.com/citations?user=Pz9c6XwAAAAJ&hl=en).  
+- **[April 20 2024]** Supports [PMTL](https://arxiv.org/abs/1912.12854) (NeurIPS 2019), [HvGrad](https://arxiv.org/abs/2102.04523) (EMO 2022). Many thanks for Dr. [Xi Lin](https://scholar.google.com/citations?user=QB_MUboAAAAJ&hl=en)'s contribution. Thanks for helpful communications from Dr. [Hao Wang](https://scholar.google.com/citations?user=Pz9c6XwAAAAJ&hl=en).  
 
 - **[March 17 2024]** Supports three [MOBO-PSL](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=QB_MUboAAAAJ&citation_for_view=QB_MUboAAAAJ:W7OEmFMy1HYC) methods. Many thanks to [Liang Zhao](https://scholar.google.com.hk/citations?user=DDGCxNkAAAAJ&hl=zh-CN)'s contribution.
 
@@ -53,7 +53,7 @@ references:
 # 2. LibMOON Supported Solvers
 
 LibMOON includes a variety of solvers tailored for different needs as img below shows. 
-<img src="img/libMOON.svg" width="500"></img>
+<img src="img/frame.jpg" width="500"></img>
 
 [//]: # (<img src="img/supported_methods.png" width="500"></img>)
 

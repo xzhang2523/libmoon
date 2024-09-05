@@ -42,10 +42,10 @@ Here's a list of synthetic problems along with relevant research papers and proj
 
 |Method|$L_1$|$L_2$ |
 |---------|----|----|
-| Fairness classification [1]     | Binary cross entropy    | DEO                     |
-| Multiobjective classification [2] | Cross entropy loss BR   | Cross entropy loss UL   |
-| MO machine learning [3]         | Mean square loss        | Mean square loss        |
-| MO distribution alignment        | Similarity 1            | Similarity 2            |
+| Fairness classification| Binary cross entropy    | DEO                     |
+| Multiobjective classification| Cross entropy loss BR   | Cross entropy loss UL   |
+| MO machine learning| Mean square loss        | Mean square loss        |
+| MO distribution alignment    | Similarity 1            | Similarity 2            |
 
 **Notes:**
 - DEO: Difference of Equality of Opportunity.

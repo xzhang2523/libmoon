@@ -175,7 +175,7 @@ We sincernely thank the following contributors for their valuable contributions 
 | **Hongzong Li**        | CityUHK | For local search                          |
 | **Zhe Zhao**           | CityUHK/USTC | MODL                                      |
 | **Meitong Liu**        | HKU| Feedback|
-| **Weiduo Liao**        | CityUHK/SusTech        | HV-Net/Paper writing                      |
+| **Weiduo Liao**        | CityUHK/SUSTech        | HV-Net/Paper writing                      |
 | **Weiyu Chen**         | HKUST| For LoRA PSL                              |
 | **Prof. Jingda Deng**  | Xi'an Jiaotong University | For advice on High-D hypervolume computation |
 | **Prof. Yifan Chen**   | Hong Kong Baptist University | For advice on OR                          |

@@ -150,9 +150,9 @@ if __name__ == '__main__':
     parser.add_argument('--n-obj', type=int, default=2)
 
     parser.add_argument('--batch-size', type=int, default=64)
-    parser.add_argument('--test-size', type=int, default=100)
-    parser.add_argument('--num-epochs', type=int, default=20000)
-    parser.add_argument('--lr', type=float, default=1e-5)
+    parser.add_argument('--test-size', type=int, default=64)
+    parser.add_argument('--num-epochs', type=int, default=30000)
+    parser.add_argument('--lr', type=float, default=5e-6)
     parser.add_argument('--pref0', type=float, default=0.2)
 
 

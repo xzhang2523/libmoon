@@ -29,7 +29,7 @@ Star or fork us on GitHub — it motivates us a lot!
 
 # 1. LibMOON Supported Problems
 ## 1.1 Synthetic Problems
-Here's a list of synthetic problems, including ZDT, DTLZ, RE, MAF, WFG, Fi and UF problems.
+LibMOON supports a large number of synthetic problems, including ZDT, DTLZ, RE, MAF, WFG, Fi and UF problems.
 
 ## 1.2 Multiobjective Multitask Learning (MO-MTL) Problems
 
@@ -160,7 +160,6 @@ eval_y = problem.evaluate(model(Tensor(prefs).cuda()))
 ```
 
 ## 4.2 Main Contributors
-The first three authors contribute equally to this work.
 
 | **Name**           | **Institution** | **Role**                                                    |
 |--------------------|-----------------|-------------------------------------------------------------|
@@ -169,6 +168,7 @@ The first three authors contribute equally to this work.
 | **Yingying Yu**    | CityUHK         | Software design                                             |
 | **Xi Lin**         | CityUHK         | Software design                                             |
 
+The first three authors contribute equally to this work. 
 
 ## 4.3 Advisory Board
 We sincernely thank the following contributors for their valuable contributions or feedbacks. We also want thanks for our collobrators from XDU, SZU, SUSTech, ECNU, NEU, SEU for their easy use of our code.

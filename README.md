@@ -7,12 +7,15 @@
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/LibMOON.svg?logo=python&logoColor=FFE873)](https://github.com/xzhang2523/libmoon)
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fxzhang2523%2Flibmoon&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 [![Made With Friends](https://img.shields.io/badge/Made%20With-Love-orange.svg)](https://github.com/xzhang2523/libmoon) 
+[![Paper](https://img.shields.io/badge/Made%20With-Love-orange.svg)](https://arxiv.org/abs/2409.02969) 
 
 ``LibMOON`` is an open-source library built on [PyTorch](https://pytorch.org/) for gradient based MultiObjective (MOO). See the [latest documentation](https://readthedocs.org/projects/libmoondocs/badge/?version=latest) for detailed introductions and API instructions.
 
 Star or fork us on GitHub — it motivates us a lot!
 
 # News
+- **[Sep 6 2024]** LibMOON paper is available [online](https://arxiv.org/abs/2409.02969). 
+
 - **[Aug 27 2024]** Added support for [LoRA-PSL](https://arxiv.org/pdf/2407.20734) (ICML 2024). Many thanks to [Weiyu Chen](https://scholar.google.com/citations?user=Zbg7LycAAAAJ&hl=zh-CN) for his contribution.
 
 - **[June 20 2024]** Supports most popular gradient-based methods: MGDAUB, Random, EPO, PMGDA, Aggregation-based methods, PMTL, HVGrad, MOOSVGD ... 
@@ -44,7 +47,7 @@ Here's a list of synthetic problems, including ZDT, DTLZ, RE, MAF, WFG, Fi and U
 
 # 2. LibMOON Supported Solvers
 
-LibMOON includes a variety of solvers tailored for different needs as img below shows. 
+LibMOON includes a variety of solvers tailored for different needs as image below shows. 
 <img src="img/frame.jpg" width="800"></img>
 
 [//]: # (<img src="img/supported_methods.png" width="500"></img>)
@@ -79,7 +82,7 @@ Notations:
 - $K$ is the number of subproblems.
 - $n$ is the number of decision variables.
 
-In neural network methods, $n$ (number of parameters) is very large (>10,000), $K$ (number of classes) is also large (e.g., 20-50), and $m$ (data features) is relatively small (e.g., 2-4). Consequently, $m^2$ is not a significant issue, but $n^2$ and $K^2$ are major concerns.
+In neural network methods, $n$ is very large (>10,000), $K$ is also large (e.g., 20-50), and $m$ is relatively small (e.g., 2-4). Consequently, $m^2$ is not a significant issue, but $n^2$ and $K^2$ are major concerns.
 
 ## 2.2 Pareto set learning(PSL) Solvers
 
@@ -145,13 +148,14 @@ eval_y = problem.evaluate(model(Tensor(prefs).cuda()))
 ### 4.1 If you find our code useful, please cite our codebase:
 
 ```bibtex
-@software{libmoon_2024,
-  author = {Zhang, Xiaoyuan and Zhao, Liang and Yu, Yingying and Lin, Xi and Chen, Yifan and Zhao, Han and Zhang, Qingfu},
-  title = {{LibMOON: A Gradient-based MultiObjective
-OptimizatioN Library in PyTorch}},
-  url = {https://github.com/xzhang2523/libmoon},
-  version = {2.0.4},
-  year = {2024}
+@misc{zhang2024libmoon,
+      title={LibMOON: A Gradient-based MultiObjective OptimizatioN Library in PyTorch}, 
+      author={Xiaoyuan Zhang and Liang Zhao and Yingying Yu and Xi Lin and Zhenkun Wang and Yifan Chen and Han Zhao and Qingfu Zhang},
+      year={2024},
+      eprint={2409.02969},
+      archivePrefix={arXiv},
+      primaryClass={cs.MS},
+      url={https://arxiv.org/abs/2409.02969}, 
 }
 ```
 

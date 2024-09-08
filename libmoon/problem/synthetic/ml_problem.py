@@ -52,17 +52,15 @@ class MODM(BaseMOP):
         self.mu2 = torch.ones(n_var)
         self.Sigma2 = torch.eye(n_var)
 
-        self.dist1 = torch.distributions.multivariate_normal.MultivariateNormal(mu1, Sigma1)
-        self.dist2 = torch.distributions.multivariate_normal.MultivariateNormal(mu2, Sigma2)
+        self.dist1 = torch.distributions.MultivariateNormal(mu1, Sigma1)
+        self.dist2 = torch.distributions.MultivariateNormal(mu2, Sigma2)
         self.problem_name = 'modm'
 
 
     def _evaluate_torch(self, x):
         Sigma = torch.eye(self.n_var)
-        dist = torch.distributions.multivariate_normal.MultivariateNormal(x, Sigma)
-
+        dist = torch.distributions.MultivariateNormal(x, Sigma)
         kl1 = torch.distributions.kl.kl_divergence(self.dist1, dist)
-
         # result_arr = []
         # for idx in range(n_prob):
         #     dist = torch.distributions.Normal(x[idx], 1)
@@ -82,8 +80,6 @@ class MODM(BaseMOP):
             kl_div2 = torch.distributions.kl.kl_divergence(self.dist2, dist)
             div_arr.append([float(kl_div1.numpy()), float(kl_div2.numpy())])
         return np.array(div_arr)
-
-
 
 class LinearRegreesion(BaseMOP):
     def __init__(self, n_var=5, n_obj=2):
@@ -133,11 +129,6 @@ class NNRegression(nn.Module):
         super(NNRegression, self).__init__()
         lbound = np.zeros(n_var)
         ubound = np.ones(n_var)
-        # super().__init__(n_var=n_var,
-        #                  n_obj=n_obj,
-        #                  lbound=lbound,
-        #                  ubound=ubound)
-
         # k : n_obj. k (m) regression tasks.
         # n is the sample numble.
         # p is the input dimension.
@@ -176,17 +167,7 @@ class NNRegression(nn.Module):
 
 
 if __name__ == '__main__':
-    # problem = DivergenceMacthing()
-    # pf = problem._get_pf()
-    # plt.plot(pf[:, 0], pf[:, 1], '-')
-    # plt.show()
-
     n_var = 5
     problem = MODM(n_var=n_var)
     x = torch.rand(2, n_var)
     print(problem.evaluate(x))
-
-
-
-
-

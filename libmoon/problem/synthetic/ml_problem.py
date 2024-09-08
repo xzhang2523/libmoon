@@ -3,11 +3,12 @@ import torch
 import numpy as np
 from torch import Tensor
 from torch import nn
-from matplotlib import pyplot as plt
-from torch.nn.functional import kl_div
+
 '''
-    Adpats from: Hu et al. Revisiting Scalarization in Multi-Task Learning: A Theoretical Perspective. NeurIPS 2023. 
+    Adpats from: Hu et al. Revisiting Scalarization in Multi-Task Learning:
+            A Theoretical Perspective. NeurIPS 2023. 
 '''
+
 class VirationalInference():
     def __init__(self):
         pass
@@ -30,6 +31,47 @@ class DivergenceMacthing(BaseMOP):
             result_arr.append(result.squeeze())
         res = torch.stack(result_arr)
         return res
+
+    def _get_pf(self, n_points: int = 100):
+        mu_arr = np.linspace(0, 1, n_points)
+        div_arr = []
+        for mu in mu_arr:
+            dist = torch.distributions.Normal(mu, 1)
+            kl_div1 = torch.distributions.kl.kl_divergence(self.dist1, dist)
+            kl_div2 = torch.distributions.kl.kl_divergence(self.dist2, dist)
+            div_arr.append([float(kl_div1.numpy()), float(kl_div2.numpy())])
+        return np.array(div_arr)
+
+class MODM(BaseMOP):
+    def __init__(self, n_var=5, n_obj=2, mu1=None, Sigma1=None,
+                         mu2=None, Sigma2=None):
+        super().__init__(n_var=n_var, n_obj=n_obj)
+        self.mu1 = torch.zeros(n_var)
+        self.Sigma1 = torch.eye(n_var)
+
+        self.mu2 = torch.ones(n_var)
+        self.Sigma2 = torch.eye(n_var)
+
+        self.dist1 = torch.distributions.multivariate_normal.MultivariateNormal(mu1, Sigma1)
+        self.dist2 = torch.distributions.multivariate_normal.MultivariateNormal(mu2, Sigma2)
+        self.problem_name = 'modm'
+
+
+    def _evaluate_torch(self, x):
+        Sigma = torch.eye(self.n_var)
+        dist = torch.distributions.multivariate_normal.MultivariateNormal(x, Sigma)
+
+        kl1 = torch.distributions.kl.kl_divergence(self.dist1, dist)
+
+        # result_arr = []
+        # for idx in range(n_prob):
+        #     dist = torch.distributions.Normal(x[idx], 1)
+        #     kl1 = torch.distributions.kl.kl_divergence(self.dist1, dist)
+        #     kl2 = torch.distributions.kl.kl_divergence(self.dist2, dist)
+        #     result = torch.stack((kl1, kl2), dim=1)
+        #     result_arr.append(result.squeeze())
+        # res = torch.stack(result_arr)
+        # return res
 
     def _get_pf(self, n_points: int = 100):
         mu_arr = np.linspace(0, 1, n_points)
@@ -132,30 +174,19 @@ class NNRegression(nn.Module):
         return self.X, self.Y
 
 
+
 if __name__ == '__main__':
-    # problem = LinearRegreesion()
-    # lr=1e-3
-    # problem = NNRegression()
-    #
-    # optmizer = torch.optim.Adam(problem.parameters(), lr=lr)
-    # # criterion = nn.MSELoss()
-    # for _ in range(100):
-    #     X, Y = problem.generate_data()
-    #     optmizer.zero_grad()
-    #     loss = torch.sum(Y**2)
-    #     loss.backward()
-    #     optmizer.step()
-    # print(loss)
-
-    problem = DivergenceMacthing()
-    pf = problem._get_pf()
-    plt.plot(pf[:, 0], pf[:, 1], '-')
-    plt.show()
-
-    print()
-
-
-    # data_np = data_y.detach().numpy()
-    # plt.scatter(data_np[:,0], data_np[:,1])
+    # problem = DivergenceMacthing()
+    # pf = problem._get_pf()
+    # plt.plot(pf[:, 0], pf[:, 1], '-')
     # plt.show()
+
+    n_var = 5
+    problem = MODM(n_var=n_var)
+    x = torch.rand(2, n_var)
+    print(problem.evaluate(x))
+
+
+
+
 

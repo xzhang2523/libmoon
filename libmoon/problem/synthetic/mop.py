@@ -5,8 +5,8 @@ class BaseMOP():
     def __init__(self,
                  n_var: int,
                  n_obj: int,
-                 lbound: np.ndarray,
-                 ubound: np.ndarray,
+                 lbound: np.ndarray=None,
+                 ubound: np.ndarray=None,
                  n_cons: int=0,
                  ) -> None:
 

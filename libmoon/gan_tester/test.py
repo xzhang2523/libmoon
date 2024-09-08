@@ -3,24 +3,21 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import argparse
-
 import os
 import numpy as np
-from time import time
-
 
 
 def plot_figure(folder_name, generated_samples, sample1, sample2, pref):
-    plt.scatter(generated_samples[:, 0], generated_samples[:, 1], label='Generated', s=30)
-    plt.scatter(sample1[:, 0], sample1[:, 1], label='Sample 1', s=10, alpha=0.5)
-    plt.scatter(sample2[:, 0], sample2[:, 1], label='Sample 2', s=10, alpha=0.5)
+    plt.scatter(generated_samples[:, 0], generated_samples[:, 1], label='Generated', s=50)
+    plt.scatter(sample1[:, 0], sample1[:, 1], label='Sample 1', s=25, alpha=0.5)
+    plt.scatter(sample2[:, 0], sample2[:, 1], label='Sample 2', s=25, alpha=0.5)
     if abs(pref[0]) < 1e-6:
-        plt.legend(fontsize=13, loc='lower right')
+        plt.legend(fontsize=20, loc='lower right')
 
-    plt.xlabel('$X_1$', fontsize=18)
-    plt.ylabel('$X_2$', fontsize=18)
-    plt.xticks(fontsize=15)
-    plt.yticks(fontsize=15)
+    plt.xlabel('$X_1$', fontsize=25)
+    plt.ylabel('$X_2$', fontsize=25)
+    plt.xticks(fontsize=20)
+    plt.yticks(fontsize=20)
     plt.axis('equal')
 
     plt.plot([0,4], [0,4], linewidth=2, color='black')
@@ -166,17 +163,6 @@ if __name__ == '__main__':
                            n_obj=args.n_obj, pref=pref, batch_size=args.batch_size, input_dim=args.input_dim, output_dim=args.output_dim)
     trainer.train()
     generate_samples, sample1, sample2  = trainer.generate_samples(args.test_size)
-    # Train GAN
-    # train_gan(generator, discriminator, g_optimizer, d_optimizer, criterion, args.num_epochs,
-    #           args.batch_size, args.input_dim, args.output_dim, args.n_obj, pref)
-    # sample1, sample2 = sample_multiple_gaussian(args.batch_size, args.output_dim)
-
-    # Test generator
-    # z = torch.randn(args.test_size, args.input_dim)
-    # generated_samples = generator(z)
-
-    # print("Generated samples: ", generated_samples)
-    # generated_samples_np = generated_samples.detach().numpy()
 
     folder_name = 'D:\\pycharm_project\\libmoon\\Output\\divergence'
     plot_figure(folder_name, generate_samples, sample1, sample2, pref)

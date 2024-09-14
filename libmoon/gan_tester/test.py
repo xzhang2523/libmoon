@@ -19,14 +19,10 @@ def plot_figure(folder_name, generated_samples, sample1, sample2, pref):
     plt.xticks(fontsize=20)
     plt.yticks(fontsize=20)
     plt.axis('equal')
-
     plt.plot([0,4], [0,4], linewidth=2, color='black')
     fig_name = os.path.join(folder_name, 'res_{:.2f}.pdf'.format(pref[0]))
     plt.savefig(fig_name, bbox_inches='tight')
     print('Save fig to {}'.format(fig_name))
-
-
-
 
 # Generator: Transforms random noise into samples resembling the target distribution
 class Generator(nn.Module):

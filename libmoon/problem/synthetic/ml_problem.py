@@ -111,6 +111,14 @@ class MODM(BaseMOP):
 
 
 
+class MOOVAE:
+    def __init__(self):
+        pass
+
+    def _evaluate_torch(self, x):
+        pass
+
+
 class LinearRegreesion(BaseMOP):
     def __init__(self, n_var=5, n_obj=2):
         lbound = np.zeros(n_var)
@@ -198,13 +206,14 @@ if __name__ == '__main__':
     parser.add_argument('--n-var', type=int, default=5)
     parser.add_argument('--n-prob', type=int, default=10)
 
-    args = parser.parse_args()
-    problem = MODM(n_var=args.n_var)
-    x = torch.rand(args.n_prob, args.n_var)
-    obj = problem.evaluate(x)
+    # args = parser.parse_args()
+    # problem = MODM(n_var=args.n_var)
+    # x = torch.rand(args.n_prob, args.n_var)
+    # obj = problem.evaluate(x)
+    # pf = problem._get_pf()
+    # plt.scatter(pf[:,0], pf[:,1])
+    # plt.show()
+    # print()
 
-    pf = problem._get_pf()
-
-    plt.scatter(pf[:,0], pf[:,1])
-    plt.show()
-    print()
+    problem = MOOVAE()
+    obj = problem.evaluate(torch.rand(10, 5))

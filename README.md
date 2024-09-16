@@ -1,3 +1,8 @@
+<div align="center">
+   <img  src="img/LibmoonLogo.png" alt="Model" style="width: 60%; height: auto; " />
+</div>
+
+
 # LibMOON: A Gradient-based MultiObjective OptimizatioN Library in PyTorch
 
 

@@ -36,16 +36,10 @@ class RE21(BaseMOP):
         sigma = 10.0
         E = 2.0 * 1e5
         L = 200.0
-
         f[:,0] = L * ((2 * x1) + np.sqrt(2.0) * x2 + np.sqrt(x3) + x4)
         f[:,1] = ((F * L) / E) * ((2.0 / x1) + (2.0 * np.sqrt(2.0) / x2) - (2.0 * np.sqrt(2.0) / x3) + (2.0 / x4))
-
-        # f_arr = np.stack((f1,f2), axis=1)
-
         f_arr_norm = (f - self.ideal) / (self.nadir - self.ideal)
-        # f_arr_norm =
         f_arr_norm[:, 0] = 0.5 * f_arr_norm[:, 0]
-
         return f_arr_norm
 
 

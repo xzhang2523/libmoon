@@ -114,11 +114,9 @@ class PrefGANTrainer:
                     self.d_optimizer_arr[idx].zero_grad()
                     d_loss.backward()
                     self.d_optimizer_arr[idx].step()
-
                 # Generator training. Why here we need two z.
                 z = torch.randn(self.batch_size, self.input_dim)
                 fake_samples = self.generator(z, pref)
-
                 g_loss_arr = []
                 for idx, discriminator in enumerate(self.discriminator_arr):
                     d_fake = discriminator(fake_samples)
@@ -175,8 +173,6 @@ class PrefGANTrainer:
                 fig_name = os.path.join(folder_name, 'res_{:.2f}.pdf'.format(pref[0]))
                 plt.savefig(fig_name, bbox_inches='tight')
                 print('Save fig to {}'.format(fig_name))
-
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='example script')

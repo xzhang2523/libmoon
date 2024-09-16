@@ -64,7 +64,6 @@ class MODM(BaseMOP):
             mu2 = torch.ones(n_var)
             Sigma2 = torch.eye(n_var)
 
-
         self.mu1 = mu1
         self.Sigma1 = Sigma1
 
@@ -96,10 +95,8 @@ class MODM(BaseMOP):
     def _get_pf(self, n_points: int = 100):
         mu_10 = self.mu1[0].numpy()
         mu_20 = self.mu2[0].numpy()
-
         mu_idx = np.linspace(mu_10, mu_20, n_points)
         mu = torch.repeat(mu_idx, self.n_var, 1).T
-
         div_arr = []
         Sigma = torch.eye(self.n_var)
         for mu_i in mu:

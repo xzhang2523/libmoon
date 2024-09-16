@@ -175,7 +175,13 @@ We sincernely thank the following contributors for their valuable contributions 
 
 We also espeically thank for the following contributors:
 Xuehai Pan, Hongzong Li, Zhe Zhao, Meitong Liu, Weiduo Liao, Baijiong Lin, Weiyu Chen, Prof. Jingda Deng, Prof. Yifan Chen, Prof. Ke Shang, Prof. Genghui Li, Prof. Han Zhao, Prof. Zhenkun Wang, Prof. Tao Qin, and Prof. Qingfu Zhang (Corresponding) .
-## 4.4 Contact
+
+## 4.4 Projects using LibMOON
+(1) A telecommunication project.
+
+(2) Two top conference papers recent submitted. 
+
+## 4.5 Contact
 - Xiaoyuan Zhang [xzhang2523-c@my.cityu.edu.hk]
 - QQ group:
 

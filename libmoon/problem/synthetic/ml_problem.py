@@ -6,14 +6,12 @@ import numpy as np
 from torch import Tensor
 from torch import nn
 
-
-
 import argparse
 '''
     (1) Regression, adpats from: Hu et al. Revisiting Scalarization in Multi-Task Learning:
-            A Theoretical Perspective. NeurIPS 2023. 
-    (2) MODM, adapte from: . 
+            A Theoretical Perspective. NeurIPS 2023.
 '''
+
 
 class VirationalInference():
     def __init__(self):

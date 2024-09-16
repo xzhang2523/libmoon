@@ -1,3 +1,4 @@
+<img src="img/logo.jpg" width="600"></img>
 # LibMOON: A Gradient-based MultiObjective OptimizatioN Library in PyTorch
 
 

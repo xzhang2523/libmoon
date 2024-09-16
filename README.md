@@ -198,7 +198,7 @@ Xuehai Pan, Hongzong Li, Zhe Zhao, Meitong Liu, Weiduo Liao, Baijiong Lin, Weiyu
 
 LibMOON is not allowed for commercial use without permission. For commerical use, please contact Xiaoyuan Zhang or Prof. Qingfu Zhang. 
 
-## 4.5 Star History
+## 4.6 Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=xzhang2523/libmoon&type=Date)](https://star-history.com/#xzhang2523/libmoon&Date)
 

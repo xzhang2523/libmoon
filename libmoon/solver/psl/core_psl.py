@@ -8,12 +8,11 @@ from libmoon.util import get_problem
 from libmoon.util.constant import get_problem, FONT_SIZE, get_agg_func
 from libmoon.util.gradient import get_moo_Jacobian_batch
 
-
 # D:\pycharm_project\libmoon\libmoon\solver\gradient\methods\core\core_solver.py
 from libmoon.solver.gradient.methods.core.core_solver import EPOCore, PMGDACore
 import os
-os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
 
 class BasePSLSolver:
@@ -25,7 +24,7 @@ class BasePSLSolver:
         self.epoch = epoch
         self.model = SimplePSLModel(problem).to(self.device)
         self.use_es = use_es
-        self.optimizer = torch.optim.Adam( self.model.parameters(), lr=lr )
+        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
         self.solver_name = solver_name
         self.is_agg = True if self.solver_name.startswith('agg') else False
         self.agg = solver_name.split('_')[1] if self.is_agg else None
@@ -33,8 +32,8 @@ class BasePSLSolver:
 
     def solve(self):
         loss_history = []
-        for _ in tqdm( range(self.epoch) ):
-            prefs = torch.Tensor(np.random.dirichlet(np.ones( self.n_obj ),
+        for _ in tqdm(range(self.epoch)):
+            prefs = torch.Tensor(np.random.dirichlet(np.ones(self.n_obj),
                                                      self.batch_size)).to(self.device)
             # shape: (batch_size, n_obj)
             xs = self.model(prefs)
@@ -44,8 +43,6 @@ class BasePSLSolver:
             fs_detach = fs.detach()
             fs_var = self.problem.evaluate(xs_var)
             # shape: (batch_size, n_obj)
-
-
 
             # if self.use_es:
             #     # Part 1. Estimating term A.
@@ -96,5 +93,3 @@ class BasePSLSolver:
             self.optimizer.step()
 
         return self.model, loss_history
-
-

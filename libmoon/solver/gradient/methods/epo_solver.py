@@ -9,12 +9,12 @@ from torch.optim import SGD
 from numpy import array
 from pymoo.indicators.hv import HV
 import warnings
+
 warnings.filterwarnings("ignore")
 from libmoon.util.constant import solution_eps, get_hv_ref
 from libmoon.util.gradient import get_moo_Jacobian
 from libmoon.solver.gradient.methods.core.core_solver import EPOCore
 from libmoon.problem.synthetic.zdt import ZDT1
-
 
 
 class EPO_LP(object):
@@ -28,12 +28,12 @@ class EPO_LP(object):
         self.r = r
         self.eps = eps
         self.last_move = None
-        self.a = cp.Parameter(m)        # Adjustments
-        self.C = cp.Parameter((m, m))   # C: Gradient inner products, G^T G
-        self.Ca = cp.Parameter(m)       # d_bal^TG
-        self.rhs = cp.Parameter(m)      # RHS of constraints for balancing
-        self.alpha = cp.Variable(m)     # Variable to optimize
-        obj_bal = cp.Maximize(self.alpha @ self.Ca)   # objective for balance
+        self.a = cp.Parameter(m)  # Adjustments
+        self.C = cp.Parameter((m, m))  # C: Gradient inner products, G^T G
+        self.Ca = cp.Parameter(m)  # d_bal^TG
+        self.rhs = cp.Parameter(m)  # RHS of constraints for balancing
+        self.alpha = cp.Variable(m)  # Variable to optimize
+        obj_bal = cp.Maximize(self.alpha @ self.Ca)  # objective for balance
         constraints_bal = [self.alpha >= 0, cp.sum(self.alpha) == 1,  # Simplex
                            self.C @ self.alpha >= self.rhs]
         self.prob_bal = cp.Problem(obj_bal, constraints_bal)  # LP balance
@@ -45,9 +45,8 @@ class EPO_LP(object):
                            self.C @ self.alpha >= 0]
         self.prob_dom = cp.Problem(obj_dom, constraints_res)  # LP dominance
         self.prob_rel = cp.Problem(obj_dom, constraints_rel)  # LP dominance
-        self.gamma = 0     # Stores the latest Optimum value of the LP problem
-        self.mu_rl = 0     # Stores the latest non-uniformity
-
+        self.gamma = 0  # Stores the latest Optimum value of the LP problem
+        self.mu_rl = 0  # Stores the latest non-uniformity
 
     def get_alpha(self, l, G, r=None, C=False, relax=False):
         r = self.r if r is None else r
@@ -61,7 +60,7 @@ class EPO_LP(object):
             if len(np.where(J)[0]) > 0:
                 J_star_idx = np.where(rl == np.max(rl))[0]
                 self.rhs.value = self.Ca.value.copy()
-                self.rhs.value[J] = -np.inf     # Not efficient; but works.
+                self.rhs.value[J] = -np.inf  # Not efficient; but works.
                 self.rhs.value[J_star_idx] = 0
             else:
                 self.rhs.value = np.zeros_like(self.Ca.value)
@@ -76,6 +75,7 @@ class EPO_LP(object):
             # self.gamma = self.prob_dom.solve(verbose=False)
             self.last_move = "dom"
         return self.alpha.value
+
 
 def mu(rl, normed=False):
     # Modified by Xiaoyuan to handle negative issue.
@@ -95,8 +95,8 @@ def adjustments(l, r=1):
     rl = r * l
     l_hat = rl / rl.sum()
     mu_rl = mu(l_hat, normed=True)
-    eps = 1e-3   # clipping by eps is to avoid log(0), zxy Dec. 5.
-    a = r * ( np.log( np.clip(l_hat * m, eps, np.inf) ) - mu_rl)
+    eps = 1e-3  # clipping by eps is to avoid log(0), zxy Dec. 5.
+    a = r * (np.log(np.clip(l_hat * m, eps, np.inf)) - mu_rl)
     return rl, mu_rl, a
 
 
@@ -119,21 +119,22 @@ def solve_epo(grad_arr, losses, pref, epo_lp):
     n = G.shape[1]
     GG = G @ G.T
     alpha = epo_lp.get_alpha(losses_np, G=GG, C=True)
-    if alpha is None:   # A patch for the issue in cvxpy
+    if alpha is None:  # A patch for the issue in cvxpy
         alpha = pref / pref.sum()
     gw = alpha @ G
     return torch.Tensor(gw), alpha
-
 
 
 class EPOSolver(GradBaseSolver):
     def __init__(self, step_size, n_iter, tol, problem, prefs):
         self.problem = problem
         self.prefs = prefs
-        super().__init__(step_size, n_iter, tol)
         self.epo_core = EPOCore(n_var=problem.n_var, prefs=prefs)
+        super().__init__(step_size, n_iter, tol, self.epo_core)
+
     def solve(self, x):
-        return super().solve(self.problem, x, self.prefs, weight_solver_cls = self.epo_core)
+        # return super().solve(self.problem, x, self.prefs, weight_solver_cls=self.epo_core)
+        return super().solve(self.problem, x, self.prefs)
 
 
 if __name__ == '__main__':
@@ -147,8 +148,8 @@ if __name__ == '__main__':
     res = solver.solve(x=x0)
 
     from matplotlib import pyplot as plt
+
     y_arr = res['y']
     # plt.plot(y_arr)
     plt.scatter(y_arr[:, 0], y_arr[:, 1], color='black')
     plt.show()
-

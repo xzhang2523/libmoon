@@ -10,7 +10,7 @@ setup(
     version='0.2.2',
     author='Xiaoyuan Zhang et al.',
     author_email='xzhang2523-c@my.cityu.edu.hk',
-    description='Moon, Make MOO great again',
+    description='LibMOON: A Gradient-based MultiObjective OptimizatioN Library in PyTorch',
     packages=find_packages(
         # include=['solver.gradient.epo_solver',
         #          'solver.gradient',
@@ -31,7 +31,7 @@ setup(
                     'cvxopt==1.3.2',
                     'cvxpy==1.4.2',
                     'ffmpeg-python',
-                      'ffmpeg',
+                    'ffmpeg',
                     'scikit-learn'
                       ],
     long_description=long_description,

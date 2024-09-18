@@ -9,6 +9,7 @@ archive/
 .vscode/
 .idea/
 output/
+test/
 
 *.iml
 *.ipynb_checkpoints/

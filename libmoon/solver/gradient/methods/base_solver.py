@@ -8,6 +8,7 @@ from pymoo.indicators.hv import HV
 import numpy as np
 from libmoon.util.gradient import get_moo_Jacobian_batch
 
+
 class GradBaseSolver:
     def __init__(self, step_size, epoch, tol, core_solver):
         self.step_size = step_size
@@ -16,7 +17,7 @@ class GradBaseSolver:
         self.core_solver = core_solver
         self.is_agg = (self.core_solver.core_name == 'AggCore')
 
-    def solve(self, problem, x , prefs):
+    def solve(self, problem, x, prefs):
         '''
             :param problem:
             :param x:
@@ -38,7 +39,6 @@ class GradBaseSolver:
             y_detach = fs_var.detach()
             optimizer.zero_grad()
 
-
             if self.is_agg:
                 agg_name = self.core_solver.solver_name.split('_')[-1]
                 agg_func = get_agg_func(agg_name)
@@ -46,7 +46,9 @@ class GradBaseSolver:
                 torch.sum(agg_val).backward()
             else:
                 if self.core_solver.core_name in ['EPOCore', 'MGDAUBCore', 'PMGDACore', 'RandomCore']:
-                    alpha_array = torch.stack([self.core_solver.get_alpha(Jacobian_array[idx], y_detach[idx], idx) for idx in range( self.n_prob) ])
+                    alpha_array = torch.stack(
+                        [self.core_solver.get_alpha(Jacobian_array[idx], y_detach[idx], idx) for idx in
+                         range(self.n_prob)])
                 elif self.core_solver.core_name in ['PMTLCore', 'MOOSVGDCore', 'HVGradCore']:
                     # assert False, 'Unknown core_name'
                     if self.core_solver.core_name == 'HVGradCore':
@@ -62,7 +64,6 @@ class GradBaseSolver:
 
                 torch.sum(alpha_array * fs_var).backward()
 
-
             optimizer.step()
             if 'lbound' in dir(problem):
                 x.data = torch.clamp(x.data, torch.Tensor(problem.lbound) + solution_eps,
@@ -75,7 +76,6 @@ class GradBaseSolver:
         return res
 
 
-
 class GradAggSolver(GradBaseSolver):
     def __init__(self, problem, step_size, epoch, tol, agg):
         self.agg = agg
@@ -84,7 +84,7 @@ class GradAggSolver(GradBaseSolver):
 
     def solve(self, x, prefs):
         x = Variable(x, requires_grad=True)
-        ind = HV(ref_point = get_hv_ref(self.problem.problem_name))
+        ind = HV(ref_point=get_hv_ref(self.problem.problem_name))
         hv_arr = []
         y_arr = []
         x_arr = []
@@ -101,8 +101,8 @@ class GradAggSolver(GradBaseSolver):
             optimizer.step()
             y_arr.append(y.detach().numpy())
             if 'lbound' in dir(self.problem):
-                x.data = torch.clamp(x.data, torch.Tensor(self.problem.lbound) + solution_eps, torch.Tensor(self.problem.ubound)-solution_eps)
-
+                x.data = torch.clamp(x.data, torch.Tensor(self.problem.lbound) + solution_eps,
+                                     torch.Tensor(self.problem.ubound) - solution_eps)
 
         res['x'] = x.detach().numpy()
         res['y'] = y.detach().numpy()

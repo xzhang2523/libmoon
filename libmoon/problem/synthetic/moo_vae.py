@@ -6,9 +6,12 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
 import argparse
+import numpy as np
+from tqdm import tqdm
+
 
 class Encoder(nn.Module):
-    def __init__(self, input_dim=784, hidden_dim=400, z_dim=20):
+    def __init__(self, input_dim=784, hidden_dim=400, z_dim=30):
         super(Encoder, self).__init__()
         self.fc1 = nn.Linear(input_dim, hidden_dim)
         self.fc_mu = nn.Linear(hidden_dim, z_dim)
@@ -23,7 +26,7 @@ class Encoder(nn.Module):
 
 # Define the decoder part of the VAE
 class Decoder(nn.Module):
-    def __init__(self, z_dim=20, hidden_dim=400, output_dim=784):
+    def __init__(self, z_dim=30, hidden_dim=400, output_dim=784):
         super(Decoder, self).__init__()
         self.fc1 = nn.Linear(z_dim, hidden_dim)
         self.fc2 = nn.Linear(hidden_dim, output_dim)
@@ -38,7 +41,7 @@ class VAE(nn.Module):
     def __init__(self, z_dim=20):
         super(VAE, self).__init__()
         self.encoder = Encoder(z_dim=z_dim)
-        self.decoder = Decoder()
+        self.decoder = Decoder(z_dim=z_dim)
 
     def reparameterize(self, mu, logvar):
         std = torch.exp(0.5 * logvar)
@@ -70,25 +73,40 @@ def evaluate_vae(mu, logvar, vae_model):
     return predict
 
 
-# Training the VAE
-def train_vae(model, train_loader_1, train_loader_2, optimizer, epochs=10):
-    model.train()
-    loss_history = []
-    for epoch in range(epochs):
-        train_loss = 0
-        for batch_idx, (data, _) in enumerate(train_loader_1):
-            data = data.view(-1, 784)
-            optimizer.zero_grad()
-            recon_batch, mu, logvar = model(data)
-            loss = vae_loss(recon_batch, data, mu, logvar)
-            loss_history.append(loss.item())
-            loss.backward()
-            train_loss += loss.item()
-            optimizer.step()
+class VAETrainer:
+    # Training the VAE
+    def __init__(self, z_dim=20, lr=1e-3):
+        # pass
+        self.z_dim = z_dim
+        self.vae = VAE(z_dim=args.z_dim)
+        self.optimizer = optim.Adam(self.vae.parameters(), lr=lr)
 
-        print(f'Epoch {epoch + 1}, Loss: {train_loss / len(train_loader_1.dataset)}')
+    def train_vae(self, train_loader_1, train_loader_2, epochs=10, pref0=0.1):
+        self.vae.train()
+        loss_history = []
+        for epoch in tqdm(range(epochs)):
+            train_loss = 0
+            for batch_idx, ((data1, _), (data2, _)) in enumerate(zip(train_loader_1, train_loader_2)):
+                data_arr = [data1, data2]
+                self.optimizer.zero_grad()
+                loss_arr = []
+                for data in data_arr:
+                    data = data.view(-1, 784)
+                    recon_batch, mu, logvar = self.vae(data)
+                    loss_arr.append( vae_loss(recon_batch, data, mu, logvar) )
 
-    return mu, logvar, loss_history
+                loss = torch.stack(loss_arr) @ torch.Tensor([pref0, 1-pref0])
+                loss_history.append(loss.item())
+                loss.backward()
+                train_loss += loss.item()
+                self.optimizer.step()
+            print(f'Epoch {epoch + 1}, Loss: { np.round(train_loss / len(train_loader_1.dataset), 2) }')
+        return mu, logvar, loss_history
+
+    def evaluate_vae(self, mu, logvar):
+        hidden = self.vae.reparameterize(mu, logvar)
+        predict = self.vae.generate_img(hidden)
+        return predict
 
 
 
@@ -96,26 +114,30 @@ def train_vae(model, train_loader_1, train_loader_2, optimizer, epochs=10):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='VAE example')
     parser.add_argument('--batch-size', type=int, default=128)
-    parser.add_argument('--epochs', type=int, default=10)
-    parser.add_argument('--lr', type=float, default=1e-3)
-    args = parser.parse_args()
+    parser.add_argument('--epochs', type=int, default=20)
+    parser.add_argument('--z-dim', type=int, default=5)
+    parser.add_argument('--lr', type=float, default=1e-4)
+    parser.add_argument('--pref_0', type=float, default=1.0)
 
+    args = parser.parse_args()
     transform = transforms.Compose([
         transforms.ToTensor()
     ])
 
-    train_dataset_1 = datasets.MNIST(root='./data', train=True, transform=transform, download=True)
-    train_dataset_2 = datasets.FashionMNIST(root='./data', train=True, transform=transform, download=True)
+    train_dataset_1 = datasets.FashionMNIST(root='./data', train=True, transform=transform, download=True)
+    train_dataset_2 = datasets.MNIST(root='./data', train=True, transform=transform, download=True)
 
     train_loader_1 = DataLoader(train_dataset_1, batch_size=args.batch_size, shuffle=True)
     train_loader_2 = DataLoader(train_dataset_2, batch_size=args.batch_size, shuffle=True)
 
-    # Instantiate the VAE model and optimizer
-    vae = VAE()
-    optimizer = optim.Adam(vae.parameters(), lr=args.lr)
 
-    mu, logvar, loss_history = train_vae(vae, train_loader_1, train_loader_2, optimizer, epochs=args.epochs)
-    res = evaluate_vae(mu, logvar, vae)
+    # Instantiate the VAE model and optimizer
+
+    vae_trainer = VAETrainer(z_dim = args.z_dim, lr=args.lr)
+    mu, logvar, loss_history = vae_trainer.train_vae(train_loader_1, train_loader_2, epochs=args.epochs, pref0 = args.pref_0)
+    res = vae_trainer.evaluate_vae(mu, logvar)
+
+
     # plot 8 images
     fig, axes = plt.subplots(2, 4, figsize=(8, 8))  # 4 rows, 2 columns
 

@@ -17,12 +17,12 @@ class VirationalInference():
     def __init__(self):
         pass
 
-class DivergenceMacthing(BaseMOP):
+class MOOGaussian(BaseMOP):
     def __init__(self, n_var=1, n_obj=2):
         super().__init__(n_var=n_var, n_obj=n_obj, lbound=None, ubound=None)
         self.dist1 = torch.distributions.Normal(0, 1)
         self.dist2 = torch.distributions.Normal(1, 1)
-        self.problem_name = 'divergence'
+        self.problem_name = 'moogaussian'
 
     def _evaluate_torch(self, x):
         n_prob = len(x)
@@ -45,6 +45,8 @@ class DivergenceMacthing(BaseMOP):
             kl_div2 = torch.distributions.kl.kl_divergence(self.dist2, dist)
             div_arr.append([float(kl_div1.numpy()), float(kl_div2.numpy())])
         return np.array(div_arr)
+
+
 
 class MODM(BaseMOP):
     def __init__(self, n_var=5, n_obj=2, mu1=None, Sigma1=None,

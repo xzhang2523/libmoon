@@ -13,6 +13,8 @@ import argparse
 import os
 from libmoon.util import get_uniform_pref
 from torch import Tensor
+from matplotlib import gridspec
+
 
 def plot_psl_figure_3d(folder_name, eval_y_np):
     fig = plt.figure()
@@ -31,33 +33,100 @@ def plot_psl_figure_3d(folder_name, eval_y_np):
     plt.savefig(fig_pdf_name, bbox_inches='tight', pad_inches=0.4)
 
 
-def plot_psl_figure_2d(folder_name, eval_y_np, prefs, draw_fig, draw_pf, problem):
-    prefs_scale = prefs * 0.4
-    for pref, y in zip(prefs_scale, eval_y_np):
-        plt.scatter(pref[0], pref[1], color='blue', s=40)
-        plt.scatter(y[0], y[1], color='orange', s=40)
-        plt.plot([pref[0], y[0]], [pref[1], y[1]], color='tomato', linewidth=0.5, linestyle='--')
-    plt.plot(prefs_scale[:, 0], prefs_scale[:, 1], color='blue', linewidth=1, label='Preference')
-    plt.plot(eval_y_np[:, 0], eval_y_np[:, 1], color='orange', linewidth=1, label='Objectives')
-    plt.axis('equal')
+def plot_psl_figure_2d(folder_name, eval_y_np, prefs, draw_fig, draw_pf, problem, labels):
 
-    pf = problem.get_pf(n_pareto_points=1000)
-    if draw_pf == 'True':
-        plt.plot(pf[:, 0], pf[:, 1], color='red', linewidth=2, label='True PF')
+    if problem.problem_name == 'moogaussian':
+        gs = gridspec.GridSpec(3, 3)
+        ax1 = plt.subplot(gs[0, 1:])  # Span across the top row
+        ax1.set_xlim([-10, 10])  # Set x-axis limits explicitly
+        x = np.linspace(-10, 10, 500)
+        ax1.plot(x, np.exp(-x ** 2), 'r')
 
-    plt.xticks(fontsize=16)
-    plt.yticks(fontsize=16)
-    plt.xlabel('$f_1$', fontsize=FONT_SIZE)
-    plt.ylabel('$f_2$', fontsize=FONT_SIZE)
-    plt.legend(fontsize=FONT_SIZE, loc='upper right')
-    fig_name = os.path.join( folder_name, '{}.pdf'.format('res') )
-    plt.savefig(fig_name, bbox_inches='tight')
-    fig_name_svg = os.path.join(folder_name, '{}.svg'.format('res'))
-    plt.savefig(fig_name_svg, bbox_inches='tight')
-    print('Figure saved to {}'.format(fig_name))
-    print('Figure saved to {}'.format(fig_name_svg))
-    if draw_fig == 'True':
-        plt.show()
+        # Second subplot (left column, covering rows 1 and 2)
+        ax2 = plt.subplot(gs[1:, 0])  # Span across rows 1 and 2
+        x = np.linspace(-10, 10, 500)
+        ax2.plot(np.exp(-(x - 1) ** 2), x, 'r')
+
+        ax2.tick_params(axis='x', labelrotation=45)  # 旋转x轴刻度标签45度
+        ax2.tick_params(axis='y', labelrotation=90)  # 旋转y轴刻度标签90度
+
+        # plt.subplot(gs[1:, 1:], sharex=ax1, sharey=ax2)
+        plt.subplot(gs[1:, 1:])
+
+        if problem.problem_name == 'moogaussian':
+            prefs_scale = prefs * 0.1
+        else:
+            prefs_scale = prefs * 0.4
+        for pref, y in zip(prefs_scale, eval_y_np):
+            plt.scatter(pref[0], pref[1], color='blue', s=40)
+            plt.scatter(y[0], y[1], color='orange', s=40)
+            plt.plot([pref[0], y[0]], [pref[1], y[1]], color='tomato', linewidth=0.5, linestyle='--')
+        plt.plot(prefs_scale[:, 0], prefs_scale[:, 1], color='blue', linewidth=1, label='Preference')
+        plt.plot(eval_y_np[:, 0], eval_y_np[:, 1], color='orange', linewidth=1, label='Objectives')
+        plt.axis('equal')
+        pf = problem._get_pf(n_points=1000)
+        if draw_pf == 'True':
+            plt.plot(pf[:, 0], pf[:, 1], color='red', linewidth=2, label='True PF')
+        plt.xticks(fontsize=16)
+        plt.yticks(fontsize=16)
+        if labels == 'L':
+            plt.xlabel('$L_1$', fontsize=FONT_SIZE)
+            plt.ylabel('$L_2$', fontsize=FONT_SIZE)
+        else:
+            plt.xlabel('$f_1$', fontsize=FONT_SIZE)
+            plt.ylabel('$f_2$', fontsize=FONT_SIZE)
+
+        plt.axis('equal')
+        plt.tight_layout()
+
+        plt.legend(fontsize=FONT_SIZE-5, loc='upper right')
+        fig_name = os.path.join( folder_name, '{}.pdf'.format('res') )
+        plt.savefig(fig_name, bbox_inches='tight')
+        fig_name_svg = os.path.join(folder_name, '{}.svg'.format('res'))
+        plt.savefig(fig_name_svg, bbox_inches='tight')
+        print('Figure saved to {}'.format(fig_name))
+        print('Figure saved to {}'.format(fig_name_svg))
+        if draw_fig == 'True':
+            plt.show()
+
+    else:
+        if problem.problem_name == 'moogaussian':
+            prefs_scale = prefs * 0.1
+        else:
+            prefs_scale = prefs * 0.4
+        for pref, y in zip(prefs_scale, eval_y_np):
+            plt.scatter(pref[0], pref[1], color='blue', s=40)
+            plt.scatter(y[0], y[1], color='orange', s=40)
+            plt.plot([pref[0], y[0]], [pref[1], y[1]], color='tomato', linewidth=0.5, linestyle='--')
+        plt.plot(prefs_scale[:, 0], prefs_scale[:, 1], color='blue', linewidth=1, label='Preference')
+        plt.plot(eval_y_np[:, 0], eval_y_np[:, 1], color='orange', linewidth=1, label='Objectives')
+        plt.axis('equal')
+        pf = problem._get_pf(n_points=1000)
+        if draw_pf == 'True':
+            plt.plot(pf[:, 0], pf[:, 1], color='red', linewidth=2, label='True PF')
+        plt.xticks(fontsize=16)
+        plt.yticks(fontsize=16)
+        if labels == 'L':
+            plt.xlabel('$L_1$', fontsize=FONT_SIZE)
+            plt.ylabel('$L_2$', fontsize=FONT_SIZE)
+        else:
+            plt.xlabel('$f_1$', fontsize=FONT_SIZE)
+            plt.ylabel('$f_2$', fontsize=FONT_SIZE)
+
+        plt.legend(fontsize=FONT_SIZE, loc='upper right')
+
+        plt.axis('equal')
+        plt.tight_layout()
+
+        fig_name = os.path.join( folder_name, '{}.pdf'.format('res') )
+
+        plt.savefig(fig_name, bbox_inches='tight')
+        fig_name_svg = os.path.join(folder_name, '{}.svg'.format('res'))
+        plt.savefig(fig_name_svg, bbox_inches='tight')
+        print('Figure saved to {}'.format(fig_name))
+        print('Figure saved to {}'.format(fig_name_svg))
+        if draw_fig == 'True':
+            plt.show()
 
 def plot_psl_loss(folder_name, args):
     plt.figure()
@@ -83,18 +152,16 @@ def save_pickle(folder_name, res):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--solver-name', type=str, default='agg_ls')
-    parser.add_argument('--problem-name', type=str, default='VLMOP1')
+    parser.add_argument('--solver-name', type=str, default='agg_mtche')
+    parser.add_argument('--labels', type=str, default='L')
+    parser.add_argument('--problem-name', type=str, default='moogaussian')
     parser.add_argument('--device', type=str, default='gpu')
-
     parser.add_argument('--draw-fig', type=str, default='True')
     parser.add_argument('--draw-pf', type=str, default='True')
-
     parser.add_argument('--eval-num', type=int, default=20)
-    parser.add_argument('--epoch', type=int, default=1000)
+    parser.add_argument('--epoch', type=int, default=3000)
     parser.add_argument('--seed-idx', type=int, default=0)
     parser.add_argument('--lr', type=float, default=1e-3)
-
     args = parser.parse_args()
     np.random.seed(args.seed_idx)
 
@@ -117,7 +184,7 @@ if __name__ == '__main__':
     os.makedirs(folder_name, exist_ok=True)
 
     if problem.n_obj==2:
-        plot_psl_figure_2d(folder_name, eval_y, prefs, args.draw_fig, args.draw_pf, problem)
+        plot_psl_figure_2d(folder_name, eval_y, prefs, args.draw_fig, args.draw_pf, problem, args.labels)
     elif problem.n_obj==3:
         plot_psl_figure_3d(folder_name, eval_y_np=eval_y)
     else:

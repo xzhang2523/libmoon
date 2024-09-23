@@ -19,10 +19,11 @@ def plot_figure(folder_name, generated_samples, sample1, sample2, pref):
     plt.xticks(fontsize=20)
     plt.yticks(fontsize=20)
     plt.axis('equal')
-    plt.plot([0,4], [0,4], linewidth=2, color='black')
+    plt.plot([0, 4], [0, 4], linewidth=2, color='black')
     fig_name = os.path.join(folder_name, 'res_{:.2f}.pdf'.format(pref[0]))
     plt.savefig(fig_name, bbox_inches='tight')
     print('Save fig to {}'.format(fig_name))
+
 
 # Generator: Transforms random noise into samples resembling the target distribution
 class Generator(nn.Module):
@@ -38,6 +39,7 @@ class Generator(nn.Module):
 
     def forward(self, z):
         return self.model(z)
+
 
 # Discriminator: Classifies whether samples are real (from target Gaussian) or fake (from generator)
 class Discriminator(nn.Module):
@@ -55,12 +57,12 @@ class Discriminator(nn.Module):
     def forward(self, x):
         return self.model(x)
 
+
 # Function to sample from a target Gaussian distribution
 def sample_multiple_gaussian(batch_size, dim, mean=0, std=1):
     dist1 = torch.normal(mean=mean, std=std, size=(batch_size, dim))
-    dist2 = torch.normal(mean=mean+4, std=std, size=(batch_size, dim))
+    dist2 = torch.normal(mean=mean + 4, std=std, size=(batch_size, dim))
     return dist1, dist2
-
 
 
 class MOGANTrainer:
@@ -82,7 +84,8 @@ class MOGANTrainer:
 
         self.generator = Generator(args.input_dim, args.output_dim)
         self.discriminator_arr = [Discriminator(args.output_dim) for _ in range(n_obj)]
-        self.d_optimizer_arr = [optim.Adam(discriminator.parameters(), lr=args.lr) for discriminator in self.discriminator_arr]
+        self.d_optimizer_arr = [optim.Adam(discriminator.parameters(), lr=args.lr) for discriminator in
+                                self.discriminator_arr]
         self.g_optimizer = optim.Adam(self.generator.parameters(), lr=args.lr)
         self.criterion = nn.BCELoss()
 
@@ -90,7 +93,8 @@ class MOGANTrainer:
         d_loss_arr = []
         for epoch in range(self.num_epochs):
             for _ in range(1):  # Training discriminator more than generator improves stability
-                real_samples_1, real_samples_2 = sample_multiple_gaussian(self.batch_size, self.output_dim)  # Real samples from Gaussian distribution
+                real_samples_1, real_samples_2 = sample_multiple_gaussian(self.batch_size,
+                                                                          self.output_dim)  # Real samples from Gaussian distribution
                 real_samples_arr = [real_samples_1, real_samples_2]
                 z = torch.randn(self.batch_size, self.input_dim)  # Random noise
                 fake_samples = self.generator(z)  # Fake samples from generator
@@ -98,7 +102,8 @@ class MOGANTrainer:
                 for idx, discriminator in enumerate(self.discriminator_arr):
                     real_samples = real_samples_arr[idx]
                     d_real = discriminator(real_samples)
-                    d_fake = discriminator(fake_samples.detach())  # Detach to avoid backpropagating through the generator
+                    d_fake = discriminator(
+                        fake_samples.detach())  # Detach to avoid backpropagating through the generator
 
                     real_loss = self.criterion(d_real, torch.ones_like(d_real))
                     fake_loss = self.criterion(d_fake, torch.zeros_like(d_fake))
@@ -113,7 +118,7 @@ class MOGANTrainer:
                 fake_samples = self.generator(z)
 
                 g_loss_arr = []
-                for idx,discriminator in enumerate(self.discriminator_arr):
+                for idx, discriminator in enumerate(self.discriminator_arr):
                     d_fake = discriminator(fake_samples)
                     g_loss = self.criterion(d_fake, torch.ones_like(d_fake))
                     g_loss_arr.append(g_loss)
@@ -125,20 +130,22 @@ class MOGANTrainer:
                 self.g_optimizer.step()
                 # Logging
                 if (epoch + 1) % 100 == 0:
-                    print(f'Epoch [{epoch + 1}/{self.num_epochs}], d_loss: {d_loss.item():.4f}, g_loss: {g_loss.item():.4f}')
+                    print(
+                        f'Epoch [{epoch + 1}/{self.num_epochs}], d_loss: {d_loss.item():.4f}, g_loss: {g_loss.item():.4f}')
                 d_loss_arr.append(d_loss.item())
 
     def generate_samples(self, test_size):
         with torch.no_grad():
             z = torch.randn(test_size, self.input_dim)
             generated_samples = self.generator(z)
-            real_samples_1, real_samples_2 = sample_multiple_gaussian(self.batch_size, self.output_dim)  # Real samples from Gaussian distribution
+            real_samples_1, real_samples_2 = sample_multiple_gaussian(self.batch_size,
+                                                                      self.output_dim)  # Real samples from Gaussian distribution
         return generated_samples.numpy(), real_samples_1, real_samples_2
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='example script')
-    parser.add_argument('--input-dim', type=int, default=10)     # What does it mean?
+    parser.add_argument('--input-dim', type=int, default=10)  # What does it mean?
     parser.add_argument('--output-dim', type=int, default=2)
     parser.add_argument('--n-obj', type=int, default=2)
 
@@ -148,17 +155,17 @@ if __name__ == '__main__':
     parser.add_argument('--lr', type=float, default=5e-6)
     parser.add_argument('--pref0', type=float, default=0.2)
 
-
     # Hyperparameters
     args = parser.parse_args()
-    pref = np.array([args.pref0, 1-args.pref0])
+    pref = np.array([args.pref0, 1 - args.pref0])
     print('Preference: ', pref)
     # Model, optimizer, and loss function
 
     trainer = MOGANTrainer(lr=args.lr, num_epochs=args.num_epochs,
-                           n_obj=args.n_obj, pref=pref, batch_size=args.batch_size, input_dim=args.input_dim, output_dim=args.output_dim)
+                           n_obj=args.n_obj, pref=pref, batch_size=args.batch_size, input_dim=args.input_dim,
+                           output_dim=args.output_dim)
     trainer.train()
-    generate_samples, sample1, sample2  = trainer.generate_samples(args.test_size)
+    generate_samples, sample1, sample2 = trainer.generate_samples(args.test_size)
 
     folder_name = 'D:\\pycharm_project\\libmoon\\Output\\divergence'
     plot_figure(folder_name, generate_samples, sample1, sample2, pref)

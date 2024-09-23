@@ -193,4 +193,3 @@ if __name__ == '__main__':
     # trainer.
     samples = trainer.evaluate(test_size=args.test_size, eval_num=11)
     folder_name = 'D:\\pycharm_project\\libmoon\\Output\\divergence'
-

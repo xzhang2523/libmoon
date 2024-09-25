@@ -5,6 +5,7 @@ libmoon.egg-info/
 
 archive/
 libmoon/problem/mtl/mtl_data/FGNET
+libmoon/problem/mtl/mtl_data/quickdraw
 libmoon/Output
 .git/
 .vscode/

@@ -182,8 +182,6 @@ class PrefGANTrainer:
         imgs = load_quickdraw_imgs()
         real_samples_1, real_samples_2 = (torch.Tensor(np.array([f[0] for f in imgs])).view(-1, 28, 28),
                                           torch.Tensor(np.array([f[1] for f in imgs])).view(-1, 28, 28))
-        # real_samples_1, real_samples_2 = (torch.Tensor(np.array([f[0] for f in imgs])).view(-1, 28, 28),
-        #                                   torch.Tensor(np.array([f[0] for f in imgs])).view(-1, 28, 28))
         real_samples_arr = [[real_samples_1[i], real_samples_2[i]] for i in range(len(real_samples_1))]
         dataset = ImageDataset(real_samples_arr)
         data_loader = torch.utils.data.DataLoader(dataset, batch_size=self.batch_size, shuffle=True)

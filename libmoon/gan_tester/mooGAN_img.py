@@ -6,6 +6,8 @@ import argparse
 import os
 import numpy as np
 
+from PrefImageGan import load_quickdraw_imgs, ImageDataset
+
 
 def plot_figure(folder_name, generated_samples, sample1, sample2, pref):
     plt.scatter(generated_samples[:, 0], generated_samples[:, 1], label='Generated', s=50)
@@ -65,7 +67,7 @@ def sample_multiple_gaussian(batch_size, dim, mean=0, std=1):
     return dist1, dist2
 
 
-class MOGANTrainer:
+class MOImageGANTrainer:
     def __init__(self, lr, num_epochs, batch_size, n_obj, pref, input_dim, output_dim):
         '''
             :param lr, float: learning rate.
@@ -134,13 +136,17 @@ class MOGANTrainer:
                         f'Epoch [{epoch + 1}/{self.num_epochs}], d_loss: {d_loss.item():.4f}, g_loss: {g_loss.item():.4f}')
                 d_loss_arr.append(d_loss.item())
 
-    def generate_samples(self, test_size):
-        with torch.no_grad():
-            z = torch.randn(test_size, self.input_dim)
-            generated_samples = self.generator(z)
-            real_samples_1, real_samples_2 = sample_multiple_gaussian(self.batch_size,
-                                                                      self.output_dim)  # Real samples from Gaussian distribution
-        return generated_samples.numpy(), real_samples_1, real_samples_2
+    def load_dataset(self):
+        imgs = load_quickdraw_imgs()
+        real_samples_1, real_samples_2 = (torch.Tensor(np.array([f[0] for f in imgs])).view(-1, 28, 28),
+                                          torch.Tensor(np.array([f[1] for f in imgs])).view(-1, 28, 28))
+        real_samples_arr = [[real_samples_1[i], real_samples_2[i]] for i in range(len(real_samples_1))]
+        dataset = ImageDataset(real_samples_arr)
+        data_loader = torch.utils.data.DataLoader(dataset, batch_size=self.batch_size, shuffle=True)
+        return data_loader
+
+    def generate_images(self, test_size):
+        pass
 
 
 if __name__ == '__main__':
@@ -148,10 +154,9 @@ if __name__ == '__main__':
     parser.add_argument('--input-dim', type=int, default=10)  # What does it mean?
     parser.add_argument('--output-dim', type=int, default=2)
     parser.add_argument('--n-obj', type=int, default=2)
-
     parser.add_argument('--batch-size', type=int, default=64)
     parser.add_argument('--test-size', type=int, default=64)
-    parser.add_argument('--num-epochs', type=int, default=30000)
+    parser.add_argument('--num-epochs', type=int, default=10000)
     parser.add_argument('--lr', type=float, default=5e-6)
     parser.add_argument('--pref0', type=float, default=0.2)
 
@@ -161,11 +166,13 @@ if __name__ == '__main__':
     print('Preference: ', pref)
     # Model, optimizer, and loss function
 
-    trainer = MOGANTrainer(lr=args.lr, num_epochs=args.num_epochs,
-                           n_obj=args.n_obj, pref=pref, batch_size=args.batch_size, input_dim=args.input_dim,
-                           output_dim=args.output_dim)
+    trainer = MOImageGANTrainer(lr=args.lr, num_epochs=args.num_epochs,
+                                n_obj=args.n_obj, pref=pref, batch_size=args.batch_size, input_dim=args.input_dim,
+                                output_dim=args.output_dim)
+
     trainer.train()
     generate_samples, sample1, sample2 = trainer.generate_samples(args.test_size)
 
-    folder_name = 'D:\\pycharm_project\\libmoon\\Output\\divergence'
+    folder_name = '/mnt/d/pycharm/libmoon/libmoon/Output/divergence'
+    os.makedirs(folder_name, exist_ok=True)
     plot_figure(folder_name, generate_samples, sample1, sample2, pref)

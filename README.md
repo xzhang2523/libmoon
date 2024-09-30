@@ -19,7 +19,7 @@
 Star or fork us on GitHub — it motivates us a lot!
 
 # News
-- **[Sep 6 2024]** LibMOON paper is available [online](https://arxiv.org/abs/2409.02969). 
+- **[Sep 26 2024]** LibMOON paper is accepted to NeurIPS 2024. 
 
 - **[Aug 27 2024]** Added support for [LoRA-PSL](https://arxiv.org/pdf/2407.20734) (ICML 2024). Many thanks to [Weiyu Chen](https://scholar.google.com/citations?user=Zbg7LycAAAAJ&hl=zh-CN) for his contribution.
 
@@ -153,15 +153,13 @@ eval_y = problem.evaluate(model(Tensor(prefs).cuda()))
 ### 4.1 If you find our code useful, please cite our codebase:
 
 ```bibtex
-@misc{zhang2024libmoon,
+@article{zhang2024libmoon,
       title={LibMOON: A Gradient-based MultiObjective OptimizatioN Library in PyTorch}, 
-      author={Xiaoyuan Zhang and Liang Zhao and Yingying Yu and Xi Lin and Zhenkun Wang and Yifan Chen and Han Zhao and Qingfu Zhang},
+      author={Xiaoyuan Zhang and Liang Zhao and Yingying Yu and Xi Lin and Yifan Chen and Han Zhao and Qingfu Zhang},
       year={2024},
-      eprint={2409.02969},
-      archivePrefix={arXiv},
-      primaryClass={cs.MS},
-      url={https://arxiv.org/abs/2409.02969}, 
+      journal={Advances in Neural Information Processing Systems},
 }
+
 ```
 
 ## 4.2 Main Contributors

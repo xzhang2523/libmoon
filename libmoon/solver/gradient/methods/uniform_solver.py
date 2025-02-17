@@ -16,10 +16,8 @@ from libmoon.util.xy_util import pref2angle
 
 
 def train_pfl_model(folder_name, update_idx, pfl_model, pfl_optimizer, criterion, prefs, y):
-
     prefs_angle = pref2angle(prefs)
     # prefs_angle = prefs_angle.unsqueeze(1)
-
     loss_arr = []
     for _ in range(1000):
         y_hat = pfl_model(prefs_angle)

@@ -188,12 +188,12 @@ Xuehai Pan, Hongzong Li, Zhe Zhao, Meitong Liu, Weiduo Liao, Baijiong Lin, Weiyu
 - QQ group:
 
  <p align="center">
-  <img src="img/qq.jpg" alt="Moon" width="200">
+  <img src="img/qq_group.jpg" alt="Moon" width="200">
 </p>
 
 - Wechat group:
 <p align="center">
-  <img src="img/wechat.jpg" alt="Moon" width="200">
+  <img src="img/wechat_group.jpg" alt="Moon" width="200">
 </p>
 
 - Slack group: https://cityu-hiv5987.slack.com/archives/C07GU3N2H2S

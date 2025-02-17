@@ -1,5 +1,7 @@
 
 import numpy as np
+import torch
+
 
 def das_dennis(n_partitions, n_dim):
     if n_partitions == 0:
@@ -19,7 +21,6 @@ def das_dennis_recursion(ref_dirs, ref_dir, n_partitions, beta, depth):
             ref_dir[depth] = 1.0 * i / (1.0 * n_partitions)
             das_dennis_recursion(ref_dirs, np.copy(ref_dir), n_partitions, beta - i, depth + 1)
 
-
 def get_uniform_pref(n_prob, n_obj=2, clip_eps=0, mode='uniform', type='Tensor'):
     if n_obj == 2:
         # Just generate linear uniform preferences
@@ -37,6 +38,15 @@ def get_uniform_pref(n_prob, n_obj=2, clip_eps=0, mode='uniform', type='Tensor')
         return torch.Tensor(prefs)
     else:
         return prefs
+
+def get_x_init(n_prob, n_var, lbound=None, ubound=None):
+    if type(lbound)==type(None):
+        x_init = torch.rand(n_prob, n_var)
+    else:
+        x_init = torch.rand(n_prob, n_var) * (ubound - lbound) + lbound
+    return x_init
+
+
 
 
 def get_random_prefs(batch_size, n_obj, type='Tensor'):

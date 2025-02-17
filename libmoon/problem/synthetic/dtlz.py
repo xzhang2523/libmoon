@@ -1,8 +1,6 @@
 import numpy as np
 import torch
-
 from libmoon.problem.synthetic.mop import BaseMOP
-
 
 class DTLZ1(BaseMOP):
     def __init__(self, n_var=30, n_obj=3, lbound=np.zeros(30),
@@ -28,10 +26,8 @@ class DTLZ1(BaseMOP):
         x1 = x[:, 0]
         x2 = x[:, 1]
         xm = x[:, 2:]
-
         g = 100 * (self.n_var - 2 + np.sum(np.power(xm - 0.5, 2) -
                                               np.cos(20 * np.pi * (xm - 0.5)), axis=1))
-
         f1 = 0.5 * x1 * x2 * (1+g)
         f2 = 0.5 * x1 * (1 - x2) * (1+g)
         f3 = 0.5 * (1 - x1) * (1+g)
@@ -96,7 +92,6 @@ class DTLZ3(BaseMOP):
         f3 = np.sin(x[:, 0] * np.pi / 2) * (1 + g)
         return np.stack((f1, f2, f3), axis=1)
 
-
 class DTLZ4(BaseMOP):
     def __init__(self, n_var=30, n_obj=3, lbound=np.zeros(30),
                  ubound=np.ones(30)):
@@ -123,18 +118,10 @@ class DTLZ4(BaseMOP):
         f3 = np.sin(x[:, 0] ** self.alpha * np.pi / 2) * (1 + g)
         return np.stack((f1, f2, f3), axis=1 )
 
-# DTLZ5, DTLZ6.
-# degenerated.
-
-
-# DTLZ7 has disjoint Pareto front.
-
-
 
 if __name__ == '__main__':
     x = torch.rand(100, 30)
     problem = DTLZ4()
-
     y = problem.evaluate(x)
     print( y )
 

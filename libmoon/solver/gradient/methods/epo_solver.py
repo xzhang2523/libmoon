@@ -9,18 +9,16 @@ from torch.optim import SGD
 from numpy import array
 from pymoo.indicators.hv import HV
 import warnings
-
 warnings.filterwarnings("ignore")
 from libmoon.util.constant import solution_eps, get_hv_ref
 from libmoon.util.gradient import get_moo_Jacobian
-from libmoon.solver.gradient.methods.core.core_solver import EPOCore
 from libmoon.problem.synthetic.zdt import ZDT1
+from matplotlib import pyplot as plt
+
 
 
 class EPO_LP(object):
-    # Paper: https://proceedings.mlr.press/v119/mahapatra20a.html
-    # Paper: https://arxiv.org/abs/2010.06313
-
+    # Paper: https://proceedings.mlr.press/v119/mahapatra20a.html, https://arxiv.org/abs/2010.06313
     def __init__(self, m, n, r, eps=1e-4):
         cvxopt.glpk.options["msg_lev"] = "GLP_MSG_OFF"
         self.m = m
@@ -89,7 +87,6 @@ def mu(rl, normed=False):
     l_hat = l_hat[l_hat > eps]
     return np.sum(l_hat * np.log(l_hat * m))
 
-
 def adjustments(l, r=1):
     m = len(l)
     rl = r * l
@@ -98,7 +95,6 @@ def adjustments(l, r=1):
     eps = 1e-3  # clipping by eps is to avoid log(0), zxy Dec. 5.
     a = r * (np.log(np.clip(l_hat * m, eps, np.inf)) - mu_rl)
     return rl, mu_rl, a
-
 
 def solve_epo(grad_arr, losses, pref, epo_lp):
     '''
@@ -124,17 +120,33 @@ def solve_epo(grad_arr, losses, pref, epo_lp):
     gw = alpha @ G
     return torch.Tensor(gw), alpha
 
-
 class EPOSolver(GradBaseSolver):
-    def __init__(self, step_size, n_iter, tol, problem, prefs):
+    def __init__(self, problem, prefs, step_size=1e-3, n_epoch=500, tol=1e-3):
+        self.solver_name = 'EPO'
         self.problem = problem
         self.prefs = prefs
         self.epo_core = EPOCore(n_var=problem.n_var, prefs=prefs)
-        super().__init__(step_size, n_iter, tol, self.epo_core)
+        super().__init__(step_size, n_epoch, tol, self.epo_core)
+    def solve(self, x_init):
+        return super().solve(self.problem, x_init, self.prefs)
 
-    def solve(self, x):
-        # return super().solve(self.problem, x, self.prefs, weight_solver_cls=self.epo_core)
-        return super().solve(self.problem, x, self.prefs)
+class EPOCore():
+    def __init__(self, n_var, prefs):
+        '''
+            Input:
+            n_var: int, number of variables.
+            prefs: (n_prob, n_obj).
+        '''
+        self.core_name = 'EPOCore'
+        self.prefs = prefs
+        self.n_prob, self.n_obj = prefs.shape[0], prefs.shape[1]
+        self.n_var = n_var
+        prefs_np = prefs.cpu().numpy() if type(prefs) == torch.Tensor else prefs
+        self.epo_lp_arr = [EPO_LP(m=self.n_obj, n = self.n_var, r=1/pref) for pref in prefs_np]
+
+    def get_alpha(self, Jacobian, losses, idx):
+        _, alpha = solve_epo(Jacobian, losses, self.prefs[idx], self.epo_lp_arr[idx])
+        return torch.Tensor(alpha)
 
 
 if __name__ == '__main__':
@@ -146,10 +158,6 @@ if __name__ == '__main__':
     solver = EPOSolver(step_size=1e-2, n_iter=1000, tol=1e-3, problem=problem, prefs=prefs)
     x0 = torch.rand(n_prob, n_var)
     res = solver.solve(x=x0)
-
-    from matplotlib import pyplot as plt
-
     y_arr = res['y']
-    # plt.plot(y_arr)
     plt.scatter(y_arr[:, 0], y_arr[:, 1], color='black')
     plt.show()

@@ -1,24 +1,21 @@
 # This code is from
-# Multi-Task Learning as Multi-Objective Optimization
-# Ozan Sener, Vladlen Koltun
-# Neural Information Processing Systems (NeurIPS) 2018
+# Multi-Task Learning as Multi-Objective Optimization, Ozan Sener, Vladlen Koltun.
 # https://github.com/intel-isl/MultiObjectiveOptimization
-
 import numpy as np
 import torch
-
 class MinNormSolver:
     MAX_ITER = 250
     STOP_CRIT = 1e-5
 
     def _min_norm_element_from2(v1v1, v1v2, v2v2):
         """
-        Analytical solution for min_{c} |cx_1 + (1-c)x_2|_2^2
-        d is the distance (objective) optimzed
-        v1v1 = <x1,x1>
-        v1v2 = <x1,x2>
-        v2v2 = <x2,x2>
+            Analytical solution for min_{c} |cx_1 + (1-c)x_2|_2^2
+            d is the distance (objective) optimzed
+            v1v1 = <x1,x1>
+            v1v2 = <x1,x2>
+            v2v2 = <x2,x2>
         """
+
         if v1v2 >= v1v1:
             # Case: Fig 1, third column
             gamma = 0.999
@@ -82,10 +79,8 @@ class MinNormSolver:
         proj_grad = grad - (np.sum(grad) / n)
         tm1 = -1.0 * cur_val[proj_grad < 0] / proj_grad[proj_grad < 0]
         tm2 = (1.0 - cur_val[proj_grad > 0]) / (proj_grad[proj_grad > 0])
-
         # tm1 = np.array(tm1)
         # tm2 = np.array(tm2)
-
         # skippers = np.sum(tm1 < 1e-7) + np.sum(tm2 < 1e-7)
         t = 1
         if len(tm1[tm1 > 1e-7]) > 0:

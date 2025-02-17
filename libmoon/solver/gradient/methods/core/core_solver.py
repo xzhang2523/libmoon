@@ -17,18 +17,8 @@ from libmoon.util.constant import solution_eps, get_hv_ref
 from libmoon.util.gradient import get_moo_Jacobian
 from libmoon.problem.synthetic.zdt import ZDT1
 
-from libmoon.solver.gradient.methods.gradhv import HVMaxSolver
-# D:\pycharm_project\libmoon\libmoon\solver\gradient\methods\gradhv.py
-
-from libmoon.solver.gradient.methods.pmtl import get_d_paretomtl_init, get_d_paretomtl
-# D:\pycharm_project\libmoon\libmoon\solver\gradient\methods\pmtl.py
-
-from libmoon.solver.gradient.methods.moosvgd import get_svgd_alpha_array
-# D:\pycharm_project\libmoon\libmoon\solver\gradient\methods\moosvgd.py
-
-from libmoon.solver.gradient.methods.pmgda_solver import solve_pmgda, constraint, get_Jhf
-# D:\pycharm_project\libmoon\libmoon\solver\gradient\methods\pmgda_solver.py
-
+from libmoon.solver.gradient.methods.gradhv_solver import HVMaxSolver
+from libmoon.solver.gradient.methods.pmtl_solver import get_d_paretomtl_init, get_d_paretomtl
 class EPO_LP(object):
     # Paper: https://proceedings.mlr.press/v119/mahapatra20a.html
     # Paper: https://arxiv.org/abs/2010.06313
@@ -141,67 +131,11 @@ def solve_epo(Jacobian, losses, pref, epo_lp):
     return alpha
 
 
-class EPOCore():
-    def __init__(self, n_var, prefs):
-        '''
-            Input:
-            n_var: int, number of variables.
-            prefs: (n_prob, n_obj).
-        '''
-        self.core_name = 'EPOCore'
-        self.prefs = prefs
-        self.n_prob, self.n_obj = prefs.shape[0], prefs.shape[1]
-        self.n_var = n_var
-        prefs_np = prefs.cpu().numpy() if type(prefs) == torch.Tensor else prefs
-        self.epo_lp_arr = [EPO_LP(m=self.n_obj, n = self.n_var, r=1/pref) for pref in prefs_np]
-
-    def get_alpha(self, Jacobian, losses, idx):
-        alpha = solve_epo(Jacobian, losses, self.prefs[idx], self.epo_lp_arr[idx])
-        return torch.Tensor(alpha)
-
-
-import json
-class PMGDACore():
-    def __init__(self, n_var, prefs):
-        '''
-            Input:
-            n_var: int, number of variables.
-            prefs: (n_prob, n_obj).
-        '''
-        self.core_name = 'PMGDACore'
-        self.prefs = prefs
-        self.n_prob, self.n_obj = prefs.shape[0], prefs.shape[1]
-        self.n_var = n_var
-        prefs_np = prefs.cpu().numpy() if type(prefs) == torch.Tensor else prefs
-        self.config_name = 'D:\\pycharm_project\\libmoon\\libmoon\\config\\pmgda.json'
-        json_file = open(self.config_name, 'r')
-        self.config = json.load(json_file)
-        self.h_eps = self.config['h_eps']
-        self.sigma = self.config['sigma']
-
-
-    def get_alpha(self, Jacobian, losses, idx):
-        '''
-            Input:
-            Jacobian: (n_obj, n_var), torch.Tensor
-            losses: (n_obj,), torch.Tensor
-            idx: int
-        '''
-        # (1) get the constraint value
-        losses_var = Variable(losses, requires_grad=True)
-        h_var = constraint(losses_var, pref=self.prefs[idx])
-        h_val = h_var.detach().cpu().clone().numpy()
-        h_var.backward()
-        Jacobian_h_losses = losses_var.grad.detach().clone()
-        # shape: (n_obj)
-        alpha = solve_pmgda(Jacobian, Jacobian_h_losses, h_val, self.h_eps, self.sigma)
-        return torch.Tensor(alpha).to(Jacobian.device)
-
 '''
     MGDASolver. 
 '''
 class MGDAUBCore():
-    def __init__(self, n_var, prefs):
+    def __init__(self):
         self.core_name = 'MGDAUBCore'
 
     def get_alpha(self, Jacobian, losses, idx):
@@ -229,76 +163,6 @@ class AggCore():
         return None
 
 
-
-class MOOSVGDCore():
-    def __init__(self, n_var, prefs):
-        self.core_name = 'MOOSVGDCore'
-
-    def get_alpha_array(self, Jacobian_arr, losses_arr):
-        '''
-            Input:
-            Jacobian_arr: (n_prob, m, n)
-            losses_arr: (n_prob, m)
-            Return: (n_prob, m)
-        '''
-        alpha_array = get_svgd_alpha_array(Jacobian_arr, losses_arr, None)
-        return alpha_array
-
-
-class HVGradCore():
-    def __init__(self, n_obj, n_var, problem_name):
-        self.core_name = 'HVGradCore'
-        # problem = get_problem(problem_name=problem_name, n_var=n_var)
-        self.n_obj, self.n_var = n_obj, n_var
-        self.problem_name = problem_name
-
-    def get_alpha_array(self, losses):
-        '''
-            Input : losses: (n_prob, n_obj)
-            Return: (n_prob, n_obj)
-        '''
-        losses_np = losses.detach().numpy()
-        n_prob = losses_np.shape[0]
-        hv_maximizer = HVMaxSolver(n_prob, self.n_obj, get_hv_ref(self.problem_name))
-        weight = hv_maximizer.compute_weights(losses_np.T).T
-        return weight
-
-
-class PMTLCore():
-    def __init__(self, n_obj, n_var, total_epoch, warmup_epoch, prefs):
-        '''
-        Input:
-            problem: Problem
-            total_epoch: int
-            warmup_epoch: int
-            prefs: (n_prob, n_obj)
-        '''
-        self.core_name = 'PMTLCore'
-        self.n_obj, self.n_var = n_obj, n_var
-        self.total_epoch = total_epoch
-        self.warmup_epoch = warmup_epoch
-        self.prefs_np = prefs.numpy() if type(prefs) == torch.Tensor else prefs
-
-
-    def get_alpha_array(self, Jacobian_array, losses, epoch_idx):
-        '''
-            Input:Jacobian_array: (n_prob, n_obj, n_var)
-                    losses: (n_prob, n_obj)
-                    epoch_idx: int
-            Return: (n_prob, n_obj)
-        '''
-        if type(losses) == torch.Tensor:
-            losses_np = losses.detach().numpy()
-        else:
-            losses_np = losses
-        n_prob = losses_np.shape[0]
-        Jacobian_array_np = Jacobian_array.detach().numpy()
-        if epoch_idx < self.warmup_epoch:
-            weights = [get_d_paretomtl_init(Jacobian_array_np[i], losses_np[i], self.prefs_np, i) for i in range(n_prob)]
-        else:
-            weights = [get_d_paretomtl(Jacobian_array_np[i], losses_np[i], self.prefs_np, i) for i in range(n_prob)]
-        weights = torch.Tensor(np.array(weights)).to(Jacobian_array.device)
-        return weights
 
 
 

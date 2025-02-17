@@ -1,7 +1,3 @@
-'''
-    Copyright (c) Xiaoyuan Zhang, City University of Hong Kong
-    This script is to design the core mgda functions.
-'''
 import torch
 from numpy import array
 import numpy as np
@@ -11,7 +7,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 def solve_mgda_analy(grad_1, grad_2):
     '''
-        Noted that, solve_mgda_analy only support 2-objective case.
+        Solve_mgda_analy only support 2-objective case.
         grad_i.shape: (n,).
         This function support grad_i as both Tensor and numpy.
     '''

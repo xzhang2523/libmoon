@@ -1,4 +1,11 @@
 # It is used to test all synthetic problems.
+import os
+import sys
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+libmoon_dir = os.path.dirname(os.path.dirname(current_dir))
+# 将 libmoon 路径添加到 sys.path
+sys.path.append(libmoon_dir)
 
 from libmoon.solver.gradient.methods.base_solver import GradAggSolver
 from libmoon.solver.gradient.methods.epo_solver import EPOSolver
@@ -42,14 +49,11 @@ if __name__ == '__main__':
     fig, axes = plt.subplots(2, 1, figsize=(5, 10))
     axes[0].scatter(y[:, 0], y[:, 1])
     axes[0].set_title(solver.solver_name, fontsize=20)
-
     axes[0].set_xlabel('$f_1$', fontsize=20)
     axes[0].set_ylabel('$f_2$', fontsize=20)
-
     # Line plot in the second subplot (axes[1])
     axes[1].plot(res['hv_history'], linewidth=2)
     axes[1].set_title('HV History', fontsize=20)
-
     axes[1].set_xlabel('Epoch', fontsize=20)
     axes[1].set_ylabel('Hypervolume', fontsize=20)
     # Show the plot

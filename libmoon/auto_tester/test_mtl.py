@@ -12,11 +12,15 @@ from libmoon.solver.gradient.methods.epo_solver import EPOCore
 from libmoon.solver.gradient.methods.random_solver import RandomCore
 from libmoon.solver.gradient.methods.base_solver import AggCore
 from libmoon.solver.gradient.methods.core.core_mtl import GradBaseMTLSolver
+from libmoon.solver.gradient.methods.mgda_solver import MGDAUBCore
+from libmoon.solver.gradient.methods.pmgda_solver import PMGDACore
+from libmoon.solver.gradient.methods.moosvgd_solver import MOOSVGDCore
+from libmoon.solver.gradient.methods.gradhv_solver import GradHVCore
+from libmoon.solver.gradient.methods.pmtl_solver import PMTLCore
+
 
 # MGDAUBCore, RandomCore, AggCore, MOOSVGDCore, HVGradCore, PMTLCore)
 # from libmoon.solver.gradient.methods.core.core_solver import PMGDACore
-
-
 from libmoon.util.mtl import get_mtl_prefs
 import os
 from matplotlib import pyplot as plt

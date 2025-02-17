@@ -24,4 +24,4 @@ jobs:
         pip install -r requirements.txt  # 安装项目依赖
     - name: Run tests
       run: |
-        sudo libmoon/auto_tester/test_synthetic.sh
+        libmoon/auto_tester/test_synthetic.sh

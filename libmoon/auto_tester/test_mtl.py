@@ -1,4 +1,10 @@
+import os
 import sys
+current_dir = os.path.dirname(os.path.abspath(__file__))
+libmoon_dir = os.path.dirname(os.path.dirname(current_dir))
+# 将 libmoon 路径添加到 sys.path
+sys.path.append(libmoon_dir)
+
 import numpy as np
 import argparse
 import torch

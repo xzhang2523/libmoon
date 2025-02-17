@@ -7,9 +7,21 @@ from libmoon.util.prefs import get_uniform_pref
 from libmoon.util.constant import root_name
 from libmoon.util.mtl import get_dataset, model_from_dataset
 from libmoon.util.network import numel
-from libmoon.solver.gradient.methods.core.core_mtl import GradBaseMTLSolver, GradBasePSLMTLSolver
-from libmoon.solver.gradient.methods.core.core_solver import EPOCore, MGDAUBCore, RandomCore, AggCore, MOOSVGDCore, HVGradCore, PMTLCore
-from libmoon.solver.gradient.methods.core.core_solver import PMGDACore
+# It is used to test all synthetic problems. CI.
+import os
+import sys
+current_dir = os.path.dirname(os.path.abspath(__file__))
+libmoon_dir = os.path.dirname(os.path.dirname(current_dir))
+# 将 libmoon 路径添加到 sys.path
+sys.path.append(libmoon_dir)
+
+# from libmoon.solver.gradient.methods.base_solver import GradAggCore
+from libmoon.solver.gradient.methods.epo_solver import EPOCore
+from libmoon.solver.gradient.methods.mgda_solver import MGDAUBCore
+from libmoon.solver.gradient.methods.pmgda_solver import PMGDACore
+from libmoon.solver.gradient.methods.moosvgd_solver import MOOSVGDCore
+from libmoon.solver.gradient.methods.gradhv_solver import GradHVCore
+from libmoon.solver.gradient.methods.pmtl_solver import PMTLCore
 from libmoon.util.mtl import get_mtl_prefs
 import os
 from matplotlib import pyplot as plt
@@ -77,7 +89,7 @@ if __name__ == '__main__':
     elif args.solver_name == 'moosvgd':
         core_solver = MOOSVGDCore(n_var=num_param, prefs=prefs)
     elif args.solver_name == 'hvgrad':
-        core_solver = HVGradCore(n_obj=2, n_var=num_param, problem_name=args.problem_name)
+        core_solver = GradHVCore(n_obj=2, n_var=num_param, problem_name=args.problem_name)
     elif args.solver_name == 'pmtl':
         core_solver = PMTLCore(n_obj=2, n_var=num_param, total_epoch=args.epoch, warmup_epoch=args.epoch // 5, prefs=prefs)
     else:

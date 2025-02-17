@@ -5,6 +5,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 libmoon_dir = os.path.dirname(os.path.dirname(current_dir))
 # 将 libmoon 路径添加到 sys.path
 sys.path.append(libmoon_dir)
+
 from libmoon.solver.gradient.methods.base_solver import GradAggSolver
 from libmoon.solver.gradient.methods.epo_solver import EPOSolver
 from libmoon.solver.gradient.methods.mgda_solver import MGDAUBSolver
@@ -12,6 +13,7 @@ from libmoon.solver.gradient.methods.pmgda_solver import PMGDASolver
 from libmoon.solver.gradient.methods.moosvgd_solver import MOOSVGDSolver
 from libmoon.solver.gradient.methods.gradhv_solver import GradHVSolver
 from libmoon.solver.gradient.methods.pmtl_solver import PMTLSolver
+
 from libmoon.problem.synthetic.zdt import ZDT1
 from libmoon.problem.synthetic.vlmop import VLMOP1
 from libmoon.util import get_uniform_pref, get_x_init

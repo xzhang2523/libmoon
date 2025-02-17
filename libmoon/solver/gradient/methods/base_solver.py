@@ -8,6 +8,16 @@ from pymoo.indicators.hv import HV
 import numpy as np
 from libmoon.util.gradient import get_moo_Jacobian_batch
 
+class AggCore():
+    def __init__(self, n_var, prefs, solver_name):
+        self.core_name = 'AggCore'
+        self.solver_name = solver_name
+        self.agg_name = solver_name.split('_')[-1]
+
+    def get_alpha(self, Jacobian, losses, idx):
+        assert False, 'AggCore does not have get_alpha method.'
+        return None
+
 class GradBaseSolver:
     def __init__(self, step_size, epoch, tol, core_solver):
         self.step_size = step_size

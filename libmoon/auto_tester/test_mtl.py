@@ -9,6 +9,9 @@ from libmoon.util.network import numel
 from libmoon.solver.gradient.methods.core.core_mtl import GradBaseMTLSolver, GradBasePSLMTLSolver
 
 from libmoon.solver.gradient.methods.epo_solver import EPOCore
+from libmoon.solver.gradient.methods.random_solver import RandomCore
+from libmoon.solver.gradient.methods.base_solver import AggCore
+from libmoon.solver.gradient.methods.core.core_mtl import GradBaseMTLSolver
 
 # MGDAUBCore, RandomCore, AggCore, MOOSVGDCore, HVGradCore, PMTLCore)
 # from libmoon.solver.gradient.methods.core.core_solver import PMGDACore
@@ -81,7 +84,7 @@ if __name__ == '__main__':
     elif args.solver_name == 'moosvgd':
         core_solver = MOOSVGDCore(n_var=num_param, prefs=prefs)
     elif args.solver_name == 'hvgrad':
-        core_solver = HVGradCore(n_obj=2, n_var=num_param, problem_name=args.problem_name)
+        core_solver = GradHVCore(n_obj=2, n_var=num_param, problem_name=args.problem_name)
     elif args.solver_name == 'pmtl':
         core_solver = PMTLCore(n_obj=2, n_var=num_param, total_epoch=args.epoch, warmup_epoch=args.epoch // 5, prefs=prefs)
     else:

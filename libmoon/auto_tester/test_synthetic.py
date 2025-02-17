@@ -13,6 +13,8 @@ from libmoon.solver.gradient.methods.pmgda_solver import PMGDASolver
 from libmoon.solver.gradient.methods.moosvgd_solver import MOOSVGDSolver
 from libmoon.solver.gradient.methods.gradhv_solver import GradHVSolver
 from libmoon.solver.gradient.methods.pmtl_solver import PMTLSolver
+from libmoon.solver.gradient.methods.random_solver import RandomSolver
+
 
 from libmoon.problem.synthetic.zdt import ZDT1
 from libmoon.problem.synthetic.vlmop import VLMOP1
@@ -35,7 +37,8 @@ if __name__ == '__main__':
         'GradHV': GradHVSolver,
         'PMTL': PMTLSolver,
         'GradAgg': GradAggSolver,
-        'MGDAUB': MGDAUBSolver
+        'MGDAUB': MGDAUBSolver,
+        'Random': RandomSolver,
     }
 
     solver = solver_dict[parser.parse_args().solver_name]

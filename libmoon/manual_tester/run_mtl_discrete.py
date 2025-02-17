@@ -1,6 +1,5 @@
 import sys
 sys.path.append('D:\\pycharm_project\\libmoon\\')
-
 import numpy as np
 import argparse
 import torch
@@ -56,6 +55,7 @@ if __name__ == '__main__':
     parser.add_argument('--batch-size', type=int, default=128)
     parser.add_argument('--step-size', type=float, default=1e-4)
     args = parser.parse_args()
+
     np.random.seed(args.seed_idx)
     print('Running {} on {} with seed {}'.format(args.solver_name, args.problem_name, args.seed_idx))
     print('Using GPU') if torch.cuda.is_available() else print('Using CPU')

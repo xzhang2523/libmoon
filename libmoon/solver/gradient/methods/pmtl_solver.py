@@ -46,8 +46,6 @@ class PMTLCore():
         return weights
 
 
-
-
 def get_d_moomtl(grads):
     """
         calculate the gradient direction for MOO-MTL

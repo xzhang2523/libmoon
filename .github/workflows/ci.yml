@@ -1,0 +1,31 @@
+name: Python CI
+
+on:
+  push:
+    branches:
+      - main  # 监视推送到 main 分支
+  pull_request:
+    branches:
+      - main  # 监视 pull request 到 main 分支
+
+jobs:
+  test:
+    runs-on: ubuntu-latest  # 在最新版本的 Ubuntu 上运行
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2  # 检出代码
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'  # 设置 Python 版本
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt  # 安装项目依赖
+
+    - name: Run tests
+      run: |
+        pytest  # 运行测试脚本

@@ -1,3 +1,5 @@
+# It is used to test all synthetic problems.
+
 from libmoon.solver.gradient.methods.base_solver import GradAggSolver
 from libmoon.solver.gradient.methods.epo_solver import EPOSolver
 from libmoon.solver.gradient.methods.mgda_solver import MGDAUBSolver

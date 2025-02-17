@@ -28,4 +28,4 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest  # 运行测试脚本
+        python libmoon/auto_tester/test_synthetic.py

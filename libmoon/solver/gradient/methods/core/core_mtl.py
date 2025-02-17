@@ -175,9 +175,8 @@ class GradBaseMTLSolver:
                         alpha_array = torch.stack(
                             [self.core_solver.get_alpha(Jacobian_array[idx], loss_mat_detach[idx], idx) for idx in
                              range(self.n_prob)])
-                    elif self.core_solver.core_name in ['PMTLCore', 'MOOSVGDCore', 'HVGradCore']:
-                        # assert False, 'Unknown core_name'
-                        if self.core_solver.core_name == 'HVGradCore':
+                    elif self.core_solver.core_name in ['PMTLCore', 'MOOSVGDCore', 'GradHVCore']:
+                        if self.core_solver.core_name == 'GradHVCore':
                             alpha_array = self.core_solver.get_alpha_array(loss_mat_detach)
                         elif self.core_solver.core_name == 'PMTLCore':
                             alpha_array = self.core_solver.get_alpha_array(Jacobian_array, loss_mat_np, epoch_idx)

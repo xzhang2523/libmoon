@@ -86,7 +86,7 @@ if __name__ == '__main__':
     if args.solver_name == 'epo':
         core_solver = EPOCore(n_var=num_param, prefs=prefs)
     elif args.solver_name == 'mgdaub':
-        core_solver = MGDAUBCore(n_var=num_param, prefs=prefs)
+        core_solver = MGDAUBCore()
     elif args.solver_name == 'random':
         core_solver = RandomCore(n_var=num_param, prefs=prefs)
     elif args.solver_name == 'pmgda':

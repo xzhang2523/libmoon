@@ -67,11 +67,11 @@ class HVMaxSolver(object):
         return (dynamic_weights)
 
 class GradHVCore():
-    def __init__(self, n_obj, n_var, problem):
+    def __init__(self, n_obj, n_var, problem_name):
         self.core_name = 'GradHVCore'
         # problem = get_problem(problem_name=problem_name, n_var=n_var)
         self.n_obj, self.n_var = n_obj, n_var
-        self.problem_name = problem.problem_name
+        self.problem_name = problem_name
 
     def get_alpha_array(self, losses):
         '''
@@ -86,8 +86,9 @@ class GradHVCore():
 
 
 class GradHVSolver(GradBaseSolver):
-    def __init__(self, problem, prefs, step_size, n_epoch, tol):
+    def __init__(self, problem_name, prefs, step_size, n_epoch, tol, problem=None):
         self.problem = problem
+        self.problem_name = problem_name
         self.prefs = prefs
         self.solver_name = 'GradHV'
         self.core_solver = GradHVCore(n_obj=problem.n_obj, n_var=problem.n_var, problem=problem)

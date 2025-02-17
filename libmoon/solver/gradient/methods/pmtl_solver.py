@@ -10,7 +10,7 @@ from libmoon.solver.gradient.methods.core.mgda_core import solve_mgda
 
 
 class PMTLCore():
-    def __init__(self, n_obj, n_var, n_epoch, warmup_epoch, prefs):
+    def __init__(self, n_obj, n_var, n_epoch, prefs):
         '''
         Input:
             problem: Problem
@@ -21,7 +21,7 @@ class PMTLCore():
         self.core_name = 'PMTLCore'
         self.n_obj, self.n_var = n_obj, n_var
         self.n_epoch = n_epoch
-        self.warmup_epoch = warmup_epoch
+        self.warmup_epoch = n_epoch // 5
         self.prefs_np = prefs.numpy() if type(prefs) == torch.Tensor else prefs
 
 

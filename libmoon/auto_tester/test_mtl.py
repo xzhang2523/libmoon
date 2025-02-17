@@ -63,40 +63,37 @@ if __name__ == '__main__':
     parser.add_argument('--architecture', type=str, default='M1')
     # mgdaub random epo pmgda agg_ls agg_tche agg_pbi agg_cosmos, agg_softtche pmtl hvgrad moosvgd
     parser.add_argument('--problem-name', type=str, default='adult')
-    parser.add_argument('--solver-name', type=str, default='mgdaub')
+    parser.add_argument('--solver-name', type=str, default='GradAgg')
     parser.add_argument('--use-plt', type=str, default='True')
-
-    parser.add_argument('--epoch', type=int, default=6)
+    parser.add_argument('--epoch', type=int, default=2)
     parser.add_argument('--seed-idx', type=int, default=0)
     parser.add_argument('--n-prob', type=int, default=10)
     parser.add_argument('--batch-size', type=int, default=128)
     parser.add_argument('--step-size', type=float, default=1e-4)
     args = parser.parse_args()
-
     np.random.seed(args.seed_idx)
     print('Running {} on {} with seed {}'.format(args.solver_name, args.problem_name, args.seed_idx))
     print('Using GPU') if torch.cuda.is_available() else print('Using CPU')
-
     model = model_from_dataset(args.problem_name)
     num_param = numel(model)
     print('Number of parameters: {}'.format(num_param))
     prefs = get_mtl_prefs(problem_name=args.problem_name, n_prob=args.n_prob)
-    if args.solver_name == 'epo':
+    if args.solver_name == 'EPO':
         core_solver = EPOCore(n_var=num_param, prefs=prefs)
-    elif args.solver_name == 'mgdaub':
-        core_solver = MGDAUBCore(n_var=num_param, prefs=prefs)
-    elif args.solver_name == 'random':
+    elif args.solver_name == 'MGDAUB':
+        core_solver = MGDAUBCore()
+    elif args.solver_name == 'Random':
         core_solver = RandomCore(n_var=num_param, prefs=prefs)
-    elif args.solver_name == 'pmgda':
+    elif args.solver_name == 'PMGDA':
         core_solver = PMGDACore(n_var=num_param, prefs=prefs)
-    elif args.solver_name.startswith('agg'):
+    elif args.solver_name == 'GradAgg':
         core_solver = AggCore(n_var=num_param, prefs=prefs, solver_name=args.solver_name)
-    elif args.solver_name == 'moosvgd':
+    elif args.solver_name == 'MOOSVGD':
         core_solver = MOOSVGDCore(n_var=num_param, prefs=prefs)
-    elif args.solver_name == 'hvgrad':
+    elif args.solver_name == 'GradHV':
         core_solver = GradHVCore(n_obj=2, n_var=num_param, problem_name=args.problem_name)
-    elif args.solver_name == 'pmtl':
-        core_solver = PMTLCore(n_obj=2, n_var=num_param, total_epoch=args.epoch, warmup_epoch=args.epoch // 5, prefs=prefs)
+    elif args.solver_name == 'PMTL':
+        core_solver = PMTLCore(n_obj=2, n_var=num_param, n_epoch=args.epoch, prefs=prefs)
     else:
         assert False, 'Unknown solver'
 

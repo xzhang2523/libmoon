@@ -102,35 +102,6 @@ class MOOSVGDSolver(GradBaseSolver):
 
     def solve(self, x_init):
         return super().solve(self.problem, x_init, self.prefs)
-        # x = Variable(x, requires_grad=True)
-        # y_arr = []
-        # optimizer = SGD([x], lr=self.step_size)
-        # for epoch_idx in tqdm(range(self.n_epoch)):
-        #     y = problem.evaluate(x)
-        #     y_arr.append( y.detach().numpy() )
-        #     grad_arr = [0] * self.n_prob
-        #     for prob_idx in range(self.n_prob):
-        #         grad_arr[prob_idx] = [0] * self.problem.n_obj
-        #         for obj_idx in range(self.problem.n_obj):
-        #             y[prob_idx][obj_idx].backward(retain_graph=True)
-        #             grad_arr[prob_idx][obj_idx] = x.grad[prob_idx].clone()
-        #             x.grad.zero_()
-        #         grad_arr[prob_idx] = torch.stack(grad_arr[prob_idx])
-        #     grad_arr = torch.stack(grad_arr).detach()
-        #     gw = get_svgd_gradient(grad_arr, x, y)
-        #     optimizer.zero_grad()
-        #     x.grad = gw
-        #     optimizer.step()
-        #
-        #     if 'lbound' in dir(problem):
-        #         x.data = torch.clamp(x.data, torch.Tensor(problem.lbound) + solution_eps, torch.Tensor(problem.ubound) - solution_eps)
-        #
-        # res={}
-        # res['x'] = x.detach().numpy()
-        # res['y'] = y.detach().numpy()
-        # res['y_arr'] = y_arr
-        # res['hv_arr'] = [0]
-        # return res
 
 
 if __name__ == '__main__':

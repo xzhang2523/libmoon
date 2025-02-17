@@ -74,9 +74,8 @@ def pbi(f, lamb):
     lamb_ts = torch.Tensor(lamb)
     lamb0 = lamb_ts / torch.norm(lamb_ts)
     lamb0 = lamb0.double()
-
-    d1 = f.squeeze() @ lamb0
-    d2 = torch.norm(f.squeeze() - d1 * lamb0)
+    d1 = f.squeeze().double() @ lamb0
+    d2 = torch.norm(f.squeeze().double() - d1 * lamb0)
     return d1, d2
 
 def constraint(loss_arr, pref=Tensor([0, 1])):

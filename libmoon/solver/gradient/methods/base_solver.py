@@ -1,5 +1,5 @@
 from torch.autograd import Variable
-from torch.optim import SGD
+from torch.optim import SGD, Adam
 from torch import Tensor
 from libmoon.util.constant import get_agg_func, solution_eps, get_hv_ref
 import torch
@@ -35,7 +35,8 @@ class GradBaseSolver:
         '''
         self.n_prob, self.n_obj = prefs.shape[0], prefs.shape[1]
         xs_var = Variable(x, requires_grad=True)
-        optimizer = SGD([xs_var], lr=self.step_size)
+        optimizer = Adam([xs_var], lr=self.step_size)
+
         ind = HV(ref_point=get_hv_ref(problem.problem_name))
         hv_arr, y_arr = [], []
         for epoch_idx in tqdm(range(self.epoch)):

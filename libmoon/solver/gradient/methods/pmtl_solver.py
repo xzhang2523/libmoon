@@ -124,9 +124,9 @@ class PMTLSolver(GradBaseSolver):
         self.core_solver = PMTLCore(n_obj=problem.n_obj,
                                     n_var=problem.n_var,
                                     n_epoch=n_epoch,
-                                    warmup_epoch=n_epoch // 5,
                                     prefs=prefs)
 
+        self.warmup_epoch = n_epoch // 5
         super().__init__(step_size, n_epoch, tol, self.core_solver)
 
     def solve(self, x_init):

@@ -218,7 +218,7 @@ def get_Jhf(f_arr, pref, return_h=False):
 class PMGDASolver(GradBaseSolver):
     # The PGMDA paper: http://arxiv.org/abs/2402.09492.
 
-    def __init__(self, problem, prefs, step_size=1e-3, n_epoch=500, tol=1e-3, sigma=0.1, h_tol=1e-2):
+    def __init__(self, problem, prefs, step_size=1e-3, n_epoch=500, tol=1e-3, sigma=0.1, h_tol=1e-3):
         self.problem = problem
         self.sigma = sigma
         self.h_tol = h_tol

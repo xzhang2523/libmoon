@@ -27,7 +27,7 @@ class VLMOP1(BaseMOP):
         f2 = np.linalg.norm(x + 1 / np.sqrt(self.n_var), axis=1)**2 / 4
         return np.stack((f1, f2), axis=1)
 
-    def get_pf(self, n_pareto_points):
+    def get_pf(self, n_pareto_points=2000):
         x = torch.linspace(-1 / np.sqrt(self.n_var), 1 / np.sqrt(self.n_var), n_pareto_points)
         x = torch.tile(x.unsqueeze(1), (1, self.n_var))
         with torch.no_grad():

@@ -12,6 +12,8 @@ from libmoon.solver.gradient.methods.moosvgd_solver import MOOSVGDSolver
 from libmoon.solver.gradient.methods.gradhv_solver import GradHVSolver
 from libmoon.solver.gradient.methods.pmtl_solver import PMTLSolver
 from libmoon.solver.gradient.methods.random_solver import RandomSolver
+from libmoon.solver.gradient.methods.umod_solver import UMODSolver
+
 from libmoon.problem.synthetic.vlmop import VLMOP1
 from libmoon.util import get_uniform_pref, get_x_init
 from matplotlib import pyplot as plt
@@ -19,12 +21,11 @@ from time import time
 import argparse
 import numpy as np
 
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--n-epoch', type=int, default=10000)
     parser.add_argument('--step-size', type=float, default=1e-2)
-    parser.add_argument('--solver-name', type=str, default='GradAgg')
+    parser.add_argument('--solver-name', type=str, default='UMOD')
     parser.add_argument('--agg-name', type=str, default='LS')
 
     solver_dict = {
@@ -36,6 +37,7 @@ if __name__ == '__main__':
         'GradAgg': GradAggSolver,
         'MGDAUB': MGDAUBSolver,
         'Random': RandomSolver,
+        'UMOD': UMODSolver,
     }
 
     solver = solver_dict[parser.parse_args().solver_name]

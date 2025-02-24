@@ -36,6 +36,10 @@ def solve_mgda(Jacobian):
         Input Jacobian: (m,n).
         Output alpha: (m,)
     '''
+
+    # m : n_obj
+    # n : n_var
+
     m = Jacobian.shape[0]
     if m == 2:
         return solve_mgda_analy(Jacobian[0], Jacobian[1])
@@ -58,7 +62,7 @@ def solve_mgda(Jacobian):
         sol = solvers.qp(Q, p, G_cvx, h, A, b)
 
         res = np.array(sol['x']).squeeze()
-        alpha = res / sum(res)  # important
+        alpha = res / sum(res)  # important. Does res already satisfy sum=1?
         return alpha
 
 

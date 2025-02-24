@@ -38,26 +38,26 @@ def normalize_vec(x, problem ):
         return (x - ideal) / (nadir - ideal)
 
 def get_agg_func(agg, cosmos_hp=8.0):
-    if agg == 'ls':
+    if agg == 'LS':
         return ls
-    elif agg == 'aasf':
+    elif agg == 'AASF':
         return aasf
-    elif agg == 'pnorm':
+    elif agg == 'PNorm':
         return pnorm
-    elif agg == 'mtche':
+    elif agg == 'mTche':
         return mtche
-    elif agg == 'tche':
+    elif agg == 'Tche':
         return tche
-    elif agg == 'pbi':
+    elif agg == 'PBI':
         return pbi
-    elif agg == 'cosmos':
+    elif agg == 'COSMOS':
         cosmos_func = lambda f_arr, w, z=0: cosmos(f_arr, w, cosmos_hp, z)
         return cosmos_func
     elif agg == 'invagg':
         return invagg
-    elif agg == 'softtche':
+    elif agg == 'STche':
         return soft_tche
-    elif agg == 'softmtche':
+    elif agg == 'SmTche':
         return soft_mtche
     else:
         raise ValueError('Invalid agg function')

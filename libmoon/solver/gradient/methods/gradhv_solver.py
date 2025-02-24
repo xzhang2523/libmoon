@@ -86,12 +86,16 @@ class GradHVCore():
 
 
 class GradHVSolver(GradBaseSolver):
-    def __init__(self, problem_name, prefs, step_size, n_epoch, tol, problem=None):
+    def __init__(self, prefs, step_size, n_epoch, tol, problem=None,problem_name=None):
         self.problem = problem
-        self.problem_name = problem_name
+        if problem_name != None:
+            self.problem_name = problem_name
+        else:
+            self.problem_name = problem.problem_name
+
         self.prefs = prefs
         self.solver_name = 'GradHV'
-        self.core_solver = GradHVCore(n_obj=problem.n_obj, n_var=problem.n_var, problem=problem)
+        self.core_solver = GradHVCore(n_obj=problem.n_obj, n_var=problem.n_var, problem_name=self.problem_name)
         super().__init__(step_size, n_epoch, tol, self.core_solver)
 
 

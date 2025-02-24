@@ -10,6 +10,8 @@ from libmoon.util.network import numel
 # It is used to test all synthetic problems. CI.
 import os
 import sys
+import pickle
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 libmoon_dir = os.path.dirname(os.path.dirname(current_dir))
 # 将 libmoon 路径添加到 sys.path
@@ -22,12 +24,9 @@ from libmoon.solver.gradient.methods.pmgda_solver import PMGDACore
 from libmoon.solver.gradient.methods.moosvgd_solver import MOOSVGDCore
 from libmoon.solver.gradient.methods.gradhv_solver import GradHVCore
 from libmoon.solver.gradient.methods.pmtl_solver import PMTLCore
-
 from libmoon.solver.gradient.methods.random_solver import RandomCore
 from libmoon.solver.gradient.methods.base_solver import AggCore
 from libmoon.solver.gradient.methods.core.core_mtl import GradBaseMTLSolver
-
-
 
 from libmoon.util.mtl import get_mtl_prefs
 import os
@@ -53,12 +52,10 @@ def plot_fig_2d(folder_name, loss, prefs):
         plt.show()
 
 def save_pickle(folder_name):
-    import pickle
     pickle_name = os.path.join(folder_name, 'res.pickle')
     with open(pickle_name, 'wb') as f:
         pickle.dump(res, f)
     print('Save pickle to {}'.format(pickle_name))
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -74,7 +71,6 @@ if __name__ == '__main__':
     parser.add_argument('--batch-size', type=int, default=128)
     parser.add_argument('--step-size', type=float, default=1e-4)
     args = parser.parse_args()
-
     np.random.seed(args.seed_idx)
     print('Running {} on {} with seed {}'.format(args.solver_name, args.problem_name, args.seed_idx))
     print('Using GPU') if torch.cuda.is_available() else print('Using CPU')

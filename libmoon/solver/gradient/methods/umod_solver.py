@@ -11,96 +11,22 @@ import numpy as np
 from libmoon.model.simple import PFLModel
 import os
 from torch import nn
-from libmoon.util.xy_util import pref2angle
+from libmoon.util.prefs import pref2angle
 criterion = nn.MSELoss()
-
-
-def train_pfl_model(folder_name, update_idx, pfl_model, pfl_optimizer, criterion, prefs, y):
-    prefs_angle = pref2angle(prefs)
-    # prefs_angle = prefs_angle.unsqueeze(1)
-    loss_arr = []
-    for _ in range(1000):
-        y_hat = pfl_model(prefs_angle)
-        loss = criterion(y_hat, y)
-        loss_arr.append(loss.item())
-        pfl_optimizer.zero_grad()
-        loss.backward()
-        pfl_optimizer.step()
-    fig = plt.figure()
-    plt.plot(loss_arr)
-    plt.xlabel('Iteration')
-    plt.ylabel('PFL Loss')
-    fig_name = os.path.join(folder_name, 'loss_{}.pdf'.format(update_idx) )
-    plt.savefig(fig_name)
-    return pfl_model
 
 class UMODSolver(GradBaseSolver):
     '''
-        UniformSolver is a bilevel agg solver.
+        UniformSolver is a bi-level agg solver.
     '''
-    def __init__(self, problem, prefs, step_size, n_epoch, tol):
+    def __init__(self, problem, prefs, step_size, n_epoch, tol, folder_name):
         self.problem = problem
         self.prefs = prefs
         self.solver_name = 'UMOD'
         self.core_solver = AggCore(prefs, agg_name='mTche')
+        self.pref_adjust_epoch = 2000
+        self.pfl_train_epoch = 2000
+        self.folder_name = folder_name
         super().__init__(step_size, n_epoch, tol, self.core_solver)
 
     def solve(self, x_init):
         return super().solve(self.problem, x_init, self.prefs)
-
-        for _ in range(5):
-            for i in tqdm(range(self.max_iter)):
-                y = problem.evaluate(x)
-                hv_arr.append(ind.do(y.detach().numpy()))
-                agg_val = agg_func(y, prefs)
-                optimizer.zero_grad()
-                torch.sum(agg_val).backward()
-                optimizer.step()
-                y_arr.append( y.detach().numpy() )
-                if 'lbound' in dir(problem):
-                    x.data = torch.clamp(x.data, torch.Tensor(problem.lbound) + solution_eps, torch.Tensor(problem.ubound)-solution_eps)
-
-            # Training the PFL model on the solutions.
-            pfl_model = train_pfl_model(pfl_model, pfl_optimizer, criterion, y.detach(), prefs)
-            # Update the prefs using the PFL model.
-            prefs_var = Variable(prefs, requires_grad=True)
-            prefs_optimizer = SGD([prefs_var], lr=1e-4)
-
-            mms_arr = []
-            for _ in range(1000):
-                y_pred = pfl_model(prefs_var)
-                mms_val = compute_MMS(y_pred)
-
-                prefs_optimizer.zero_grad()
-                mms_val.backward()
-                prefs_optimizer.step()
-                prefs_var.data = torch.clamp(prefs_var.data, 0, 1)
-                prefs_var.data = prefs_var.data / torch.sum(prefs_var.data, axis=1, keepdim=True)
-                mms_arr.append(mms_val.item())
-
-            prefs = prefs_var.data
-            use_mms_plt = True
-            if use_mms_plt:
-                plt.plot(mms_arr)
-                plt.xlabel('Iteration')
-                plt.ylabel('MMS')
-                plt.title('MMS curve')
-                plt.show()
-                assert False
-
-            use_plt = False
-            if use_plt:
-                prefs_np = prefs.detach().numpy()
-                prefs_np_l2 = prefs_np / np.linalg.norm(prefs_np, axis=1, keepdims=True)
-                for pref in prefs_np_l2:
-                    plt.plot([0, pref[0]], [0, pref[1]], label='Preference', color='grey', linestyle='dashed')
-                y_np = y.detach().numpy()
-                plt.scatter(y_np[:,0], y_np[:,1], label='Solutions')
-                plt.show()
-                assert False
-
-        res['x'] = x.detach().numpy()
-        res['y'] = y.detach().numpy()
-        res['hv_arr'] = hv_arr
-        res['y_arr'] = y_arr
-        return res

@@ -106,7 +106,6 @@ def get_hv_ref(problem_name):
         'fmnist': array([3.0, 3.0]),
         'regression': array([8.0, 8.0]),
     }
-
     if problem_name in hv_ref_dict:
         return hv_ref_dict[problem_name]
     else:
@@ -215,19 +214,14 @@ def plot_fig_2d(folder_name, loss, prefs, use_plt='False', axis_equal=True, line
     plt.xticks(fontsize=plt_2d_tickle_size)
     plt.yticks(fontsize=plt_2d_tickle_size)
     for pref in prefs_l2:
-        plt.plot([0, rho * pref[0]], [0, rho * pref[1]], color='grey', linestyle='--', linewidth=2)
-
-
-
+        plt.plot([0, rho * pref[0]], [0, rho * pref[1]], color='grey',
+                 linestyle='--', linewidth=2)
     plt.scatter(loss[:, 0], loss[:, 1])
-
     file_name = os.path.join(folder_name, 'res.pdf')
     plt.savefig(file_name, dpi=1200, bbox_inches='tight')
     print('Save to {}'.format(file_name))
-
     if use_plt == 'True':
         plt.show()
-
 
 
 def save_pickle(folder_name, res):

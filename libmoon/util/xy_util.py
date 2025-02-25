@@ -32,19 +32,7 @@ def get_indicator(problem_name, mtd_name, num_seed, use_save=False):
 
 
 
-def pref2angle(pref):
-    if type(pref) == torch.Tensor:
-        angle = torch.arctan2(pref[:,1], pref[:,0])
-        angle = angle.unsqueeze(1)
-    else:
-        angle = np.arctan2(pref[:,0], pref[:,1])
-    return angle
 
-def angle2pref(angle):
-    if type(angle) == torch.Tensor:
-        return torch.squeeze(torch.stack([torch.cos(angle), torch.sin(angle)], dim=1))
-    else:
-        return np.stack([np.cos(angle), np.sin(angle)], axis=1)
 
 
 def random_everything(seed):

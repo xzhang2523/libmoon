@@ -19,7 +19,6 @@ def get_moo_Jacobian_batch(x_batch, y_batch, n_obj):
         grad_batch.append( torch.stack(grad_arr_idx) )
     return torch.stack(grad_batch)
 
-
 def get_moo_Jacobian(x, y, n_obj):
     grad_arr = [0] * n_obj
     for obj_idx in range(n_obj):
@@ -29,11 +28,8 @@ def get_moo_Jacobian(x, y, n_obj):
     grad_arr = torch.stack(grad_arr)
     return grad_arr
 
-
-
 def flatten_grads(grads_dict):
     return torch.cat( [v.view(-1) for _, v in grads_dict.items()] )
-
 
 def calc_gradients_mtl(data, batch, model, objectives):
     # store gradients and objective values
@@ -52,10 +48,6 @@ def calc_gradients_mtl(data, batch, model, objectives):
             if not_private and param.requires_grad and param.grad is not None:
                 gradients[i][name] = param.grad.data.detach().clone()
     return gradients
-'''
-    This file contains the utility functions for the gradient descent solver.
-'''
-import torch
 
 def get_grads_from_model(loss, model):
     G = [0,] * len(loss)
@@ -75,12 +67,5 @@ def get_flatten_grad(model):
     grad = torch.cat(grad)
     return grad
 
-
 def numel_params(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
-
-
-
-
-
-

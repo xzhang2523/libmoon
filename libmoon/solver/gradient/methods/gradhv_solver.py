@@ -86,7 +86,8 @@ class GradHVCore():
 
 
 class GradHVSolver(GradBaseSolver):
-    def __init__(self, prefs, step_size, n_epoch, tol, problem=None,problem_name=None):
+    def __init__(self, prefs, step_size, n_epoch, tol, problem=None,problem_name=None,folder_name=None):
+        self.folder_name = folder_name
         self.problem = problem
         if problem_name != None:
             self.problem_name = problem_name

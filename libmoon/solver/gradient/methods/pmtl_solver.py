@@ -121,11 +121,11 @@ def get_d_paretomtl_init(grads, value, weights, i):
 
 
 class PMTLSolver(GradBaseSolver):
-    def __init__(self, problem, prefs, step_size, n_epoch, tol):
+    def __init__(self, problem, prefs, step_size, n_epoch, tol, folder_name):
         self.solver_name = 'PMTL'
         self.problem = problem
         self.prefs = prefs
-
+        self.folder_name = folder_name
         self.core_solver = PMTLCore(n_obj=problem.n_obj,
                                     n_var=problem.n_var,
                                     n_epoch=n_epoch,

@@ -21,7 +21,6 @@ def compute_lmin(solutions):
         sp = np.min(mat)
     return sp
 
-
 def compute_soft_lmin(solutions):
     off_diag = adj_matrix(solutions)
     # Here gamma = 1
@@ -31,7 +30,6 @@ def compute_soft_lmin(solutions):
     else:
         sp = - np.log( np.sum( np.exp( -K * off_diag ) ) ) / K
     return sp
-
 
 def compute_sparsity( objs ):
     '''
@@ -96,8 +94,6 @@ def compute_inner_product(sols, prefs):
 
 def compute_span(sols):
     return np.min(np.max(sols, axis=0) - np.min(sols, axis=0))
-
-
 
 def compute_cross_angle(sols, prefs):
     arccos_value_arr = []

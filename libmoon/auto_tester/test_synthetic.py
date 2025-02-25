@@ -13,7 +13,6 @@ from libmoon.solver.gradient.methods.gradhv_solver import GradHVSolver
 from libmoon.solver.gradient.methods.pmtl_solver import PMTLSolver
 from libmoon.solver.gradient.methods.random_solver import RandomSolver
 from libmoon.solver.gradient.methods.umod_solver import UMODSolver
-
 from libmoon.problem.synthetic.vlmop import VLMOP1
 from libmoon.util import get_uniform_pref, get_x_init
 from matplotlib import pyplot as plt
@@ -25,8 +24,8 @@ import numpy as np
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--n-epoch', type=int, default=10000)
-    parser.add_argument('--step-size', type=float, default=1e-2)
-    parser.add_argument('--solver-name', type=str, default='UMOD')
+    parser.add_argument('--step-size', type=float, default=1e-3)
+    parser.add_argument('--solver-name', type=str, default='GradHV')
     parser.add_argument('--agg-name', type=str, default='LS')
 
     solver_dict = {
@@ -43,16 +42,19 @@ if __name__ == '__main__':
 
     solver = solver_dict[parser.parse_args().solver_name]
     args = parser.parse_args()
-    args.method_name = args.solver_name if args.solver_name != 'GradAgg'\
+    args.method_name = args.solver_name if args.solver_name != 'GradAgg' \
         else '{}_{}'.format(args.solver_name, args.agg_name)
-
     problem = VLMOP1(n_var=10)
+    root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    folder_name = os.path.join(root_path, 'Output', 'finite',
+                               problem.problem_name, args.solver_name)
+    os.makedirs(folder_name, exist_ok=True)
+
     n_probs = 10
     prefs = get_uniform_pref(n_probs, problem.n_obj, clip_eps=0.02)
     solver = solver_dict[args.solver_name](problem=problem, prefs=prefs, n_epoch=args.n_epoch,
-                                           step_size=args.step_size, tol=1e-3)
-    # if args.solver_name == 'GradAgg':
-        # solver.set_agg_name(args.agg_name)
+                                           step_size=args.step_size, tol=1e-3, folder_name=folder_name)
+
     x_init = get_x_init(n_probs, problem.n_var,
                         lbound=problem.lbound, ubound=problem.ubound)
     ts = time()
@@ -68,9 +70,6 @@ if __name__ == '__main__':
     plt.ylabel('$f_2$', fontsize=20)
     plt.xticks(fontsize=18)
     plt.yticks(fontsize=18)
-
-    root_path = os.path.dirname(os.path.dirname( os.path.abspath(__file__) ))
-    folder_name = os.path.join(root_path, 'Output', 'finite', problem.problem_name)
     os.makedirs(folder_name, exist_ok=True)
     prefs = prefs.numpy()
 
@@ -87,7 +86,6 @@ if __name__ == '__main__':
     print('Saved in {}'.format(fig_name))
 
     fig = plt.figure()
-    # Line plot in the second subplot (axes[1])
     plt.plot(res['hv_history'], linewidth=2)
     plt.title('HV History', fontsize=20)
     plt.xlabel('Epoch', fontsize=20)
@@ -99,3 +97,5 @@ if __name__ == '__main__':
     print('elapsed :{:.2f}'.format(ts / 5000) )
     fig_name = os.path.join(folder_name, 'HV_{}.pdf'.format(args.method_name) )
     plt.savefig(fig_name, bbox_inches='tight')
+    print('HV file Saved in {}'.format(fig_name))
+

@@ -21,6 +21,7 @@ from time import time
 import argparse
 import numpy as np
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--n-epoch', type=int, default=10000)

@@ -32,9 +32,6 @@ def pnorm(f_arr, w, z=0, rho=0.1, p=2):
         # return np.power(val, 1/p)
     return val
 
-
-
-
 def tche(f_arr, w, z=0):
     '''
         Tchebycheff scalarization function
@@ -56,10 +53,8 @@ def tche(f_arr, w, z=0):
     else:
         raise Exception('type not supported')
 
-
 def mtche(f_arr, w, z=0):
     return tche(f_arr, 1/w, z)
-
 
 def ls(f_arr, w, z=0):
     if type(f_arr) == Tensor:
@@ -91,8 +86,6 @@ def pbi(f_arr, w, coeff=1, z=0):
         d2 = np.linalg.norm(f_arr - np.outer(d1, w0), axis=1)
         return d1 + coeff * d2
 
-
-
 def cosmos(f_arr, w, coeff=10, z=0):
     if type(f_arr) == Tensor:
         w0 = w / torch.norm(w, dim=1).unsqueeze(1)
@@ -105,8 +98,6 @@ def cosmos(f_arr, w, coeff=10, z=0):
         d1 = np.sum(f_arr * w0, axis=1)
         d2 = d1 / np.linalg.norm(f_arr, axis=1)
         return d1 - coeff * d2
-
-
 
 
 

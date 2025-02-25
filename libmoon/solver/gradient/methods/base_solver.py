@@ -7,6 +7,7 @@ from tqdm import tqdm
 from pymoo.indicators.hv import HV
 import numpy as np
 from libmoon.util.gradient import get_moo_Jacobian_batch
+from libmoon.model.simple import PFLModel
 
 
 class AggCore():
@@ -14,7 +15,6 @@ class AggCore():
         self.core_name = 'AggCore'
         self.agg_name = agg_name
         self.prefs = prefs
-        # self.agg_name = 'ls'
 
     def get_alpha(self, Jacobian, losses):
         if self.agg_name == 'LS':
@@ -29,7 +29,6 @@ class GradBaseSolver:
         self.epoch = epoch
         self.tol = tol
         self.core_solver = core_solver
-
         self.is_agg = (self.core_solver.core_name == 'AggCore')
         self.agg_name = self.core_solver.agg_name
 
@@ -41,21 +40,27 @@ class GradBaseSolver:
                 is a dict with keys: x, y.
         '''
         # self.core_solver.core_name = 'GradHVCore'
+        if self.solver_name == 'UMOD':
+            pfl_model = PFLModel(n_obj=problem.n_obj)
+            pfl_optimizer = torch.optim.Adam(pfl_model.parameters(), lr=1e-3)
+
+
         self.n_prob, self.n_obj = prefs.shape[0], prefs.shape[1]
         xs_var = Variable(x, requires_grad=True)
         optimizer = Adam([xs_var], lr=self.step_size)
-
         ind = HV(ref_point=get_hv_ref(problem.problem_name))
         hv_arr, y_arr = [], []
+
         for epoch_idx in tqdm(range(self.epoch)):
             fs_var = problem.evaluate(xs_var)
             y_np = fs_var.detach().numpy()
             y_arr.append(y_np)
             hv_arr.append(ind.do(y_np))
+
             Jacobian_array = get_moo_Jacobian_batch(xs_var, fs_var, self.n_obj)
             y_detach = fs_var.detach()
             optimizer.zero_grad()
-            if self.solver_name == 'GradAgg':
+            if self.solver_name in ['GradAgg', 'UMOD']:
                 agg_func = get_agg_func(self.agg_name)
                 agg_val = agg_func(fs_var, torch.Tensor(prefs).to(fs_var.device))
                 torch.sum(agg_val).backward()
@@ -81,17 +86,55 @@ class GradBaseSolver:
             if 'lbound' in dir(problem):
                 x.data = torch.clamp(x.data, torch.Tensor(problem.lbound) + solution_eps,
                                      torch.Tensor(problem.ubound) - solution_eps)
+
+
+            if epoch_idx % 500 == 0:
+                print('Train')
+                print('Adjust')
+
+                mms_arr = []
+                for _ in range(1000):
+                    y_pred = pfl_model(prefs_var)
+                    mms_val = compute_MMS(y_pred)
+
+                    prefs_optimizer.zero_grad()
+                    mms_val.backward()
+                    prefs_optimizer.step()
+                    prefs_var.data = torch.clamp(prefs_var.data, 0, 1)
+                    prefs_var.data = prefs_var.data / torch.sum(prefs_var.data, axis=1, keepdim=True)
+                    mms_arr.append(mms_val.item())
+
+                prefs = prefs_var.data
+                use_mms_plt = True
+                if use_mms_plt:
+                    plt.plot(mms_arr)
+                    plt.xlabel('Iteration')
+                    plt.ylabel('MMS')
+                    plt.title('MMS curve')
+                    plt.show()
+                    assert False
+
+                use_plt = False
+                if use_plt:
+                    prefs_np = prefs.detach().numpy()
+                    prefs_np_l2 = prefs_np / np.linalg.norm(prefs_np, axis=1, keepdims=True)
+                    for pref in prefs_np_l2:
+                        plt.plot([0, pref[0]], [0, pref[1]], label='Preference', color='grey', linestyle='dashed')
+                    y_np = y.detach().numpy()
+                    plt.scatter(y_np[:, 0], y_np[:, 1], label='Solutions')
+                    plt.show()
+                    assert False
+
+
+
+
+
         res = {}
         res['x'] = x.detach().numpy()
         res['y'] = y_np
         res['hv_history'] = hv_arr
         res['y_history'] = y_arr
         return res
-
-
-
-
-
 
 class GradAggSolver(GradBaseSolver):
     def __init__(self, problem, prefs, step_size=1e-3, n_epoch=500, tol=1e-3, agg_name='LS'):

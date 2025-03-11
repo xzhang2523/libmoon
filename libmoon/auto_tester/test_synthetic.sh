@@ -2,7 +2,7 @@ nepoch=1
 
 for agg in STche
 do
-  python test_synthetic.py --solver-name GradAgg --agg-name $agg --n-epoch $nepoch
+  python auto_tester/test_synthetic.py --solver-name GradAgg --agg-name $agg --n-epoch $nepoch
 done
 
 for solver in UMOD

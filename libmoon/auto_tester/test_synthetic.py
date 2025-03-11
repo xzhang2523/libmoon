@@ -1,5 +1,4 @@
 # It is used to test all synthetic problems. CI.
-
 import os
 import sys
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -21,7 +20,6 @@ from matplotlib import pyplot as plt
 from time import time
 import argparse
 import numpy as np
-
 
 
 if __name__ == '__main__':
@@ -46,6 +44,7 @@ if __name__ == '__main__':
 
     solver = solver_dict[parser.parse_args().solver_name]
     args = parser.parse_args()
+
     args.method_name = args.solver_name if args.solver_name != 'GradAgg' \
         else '{}_{}'.format(args.solver_name, args.agg_name)
     problem = VLMOP1(n_var=10)
@@ -61,6 +60,7 @@ if __name__ == '__main__':
 
     x_init = get_x_init(n_probs, problem.n_var,
                         lbound=problem.lbound, ubound=problem.ubound)
+
     ts = time()
     res = solver.solve(x_init=x_init)
     ts = time() - ts

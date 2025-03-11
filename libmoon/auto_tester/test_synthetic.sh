@@ -16,5 +16,3 @@ do
 done
 
 echo over
-
-sleep 1000

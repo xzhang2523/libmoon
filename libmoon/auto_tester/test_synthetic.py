@@ -1,9 +1,11 @@
 # It is used to test all synthetic problems. CI.
+
 import os
 import sys
 current_dir = os.path.dirname(os.path.abspath(__file__))
 libmoon_dir = os.path.dirname(os.path.dirname(current_dir))
 sys.path.append(libmoon_dir)
+
 from libmoon.solver.gradient.methods.base_solver import GradAggSolver
 from libmoon.solver.gradient.methods.epo_solver import EPOSolver
 from libmoon.solver.gradient.methods.mgda_solver import MGDAUBSolver
@@ -21,7 +23,9 @@ import argparse
 import numpy as np
 
 
+
 if __name__ == '__main__':
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--n-epoch', type=int, default=10000)
     parser.add_argument('--step-size', type=float, default=1e-3)

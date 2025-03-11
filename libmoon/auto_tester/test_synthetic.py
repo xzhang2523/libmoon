@@ -21,9 +21,7 @@ from time import time
 import argparse
 import numpy as np
 
-
 if __name__ == '__main__':
-
     parser = argparse.ArgumentParser()
     parser.add_argument('--n-epoch', type=int, default=10000)
     parser.add_argument('--step-size', type=float, default=1e-3)
@@ -44,7 +42,6 @@ if __name__ == '__main__':
 
     solver = solver_dict[parser.parse_args().solver_name]
     args = parser.parse_args()
-
     args.method_name = args.solver_name if args.solver_name != 'GradAgg' \
         else '{}_{}'.format(args.solver_name, args.agg_name)
     problem = VLMOP1(n_var=10)
@@ -66,21 +63,17 @@ if __name__ == '__main__':
     ts = time() - ts
     y = res['y']
     fig = plt.figure()
-
     plt.scatter(y[:, 0], y[:, 1], s=100)
     rho_arr = np.linalg.norm(y, axis=1)
     plt.xlabel('$f_1$', fontsize=20)
     plt.ylabel('$f_2$', fontsize=20)
-
     plt.xlim([0,1])
     plt.ylim([0,1])
     plt.gca().set_aspect('equal', adjustable="box")
-
     plt.xticks(fontsize=18)
     plt.yticks(fontsize=18)
     os.makedirs(folder_name, exist_ok=True)
     prefs = prefs.numpy()
-
     prefs_norm = prefs / np.linalg.norm(prefs, axis=1, keepdims=True)
     rho_max = 1.2
     for pref in prefs_norm:
@@ -96,8 +89,6 @@ if __name__ == '__main__':
     plt.title('HV History', fontsize=20)
     plt.xlabel('Epoch', fontsize=20)
     plt.ylabel('Hypervolume', fontsize=20)
-
-
 
     plt.xticks(fontsize=15)
     plt.yticks(fontsize=15)

@@ -1,4 +1,7 @@
 from libmoon.solver.gradient.methods.base_solver import GradBaseSolver
+
+from libmoon.util.constant import root_name
+
 from torch.optim import SGD
 from tqdm import tqdm
 from pymoo.indicators.hv import HV
@@ -28,7 +31,8 @@ class PMGDACore():
         self.n_prob, self.n_obj = prefs.shape[0], prefs.shape[1]
         self.n_var = n_var
         prefs_np = prefs.cpu().numpy() if type(prefs) == torch.Tensor else prefs
-        self.config_name = 'D:\\pycharm_project\\libmoon\\libmoon\\config\\pmgda.json'
+        self.config_name = os.path.join(root_name, 'config', 'pmgda.json')
+
         json_file = open(self.config_name, 'r')
         self.config = json.load(json_file)
         self.h_eps = self.config['h_eps']
@@ -217,7 +221,6 @@ def get_Jhf(f_arr, pref, return_h=False):
 
 class PMGDASolver(GradBaseSolver):
     # The PGMDA paper: http://arxiv.org/abs/2402.09492.
-
     def __init__(self, problem, prefs, step_size=1e-3, n_epoch=500, tol=1e-3,
                  sigma=0.1, h_tol=1e-3, folder_name=None):
         self.folder_name=folder_name

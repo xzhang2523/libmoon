@@ -93,6 +93,7 @@ class GradBaseSolver:
         if self.solver_name == 'UMOD':
             self.pfl_model = PFLModel(n_obj=problem.n_obj)
             self.pfl_optimizer = torch.optim.Adam(self.pfl_model.parameters(), lr=1e-3)
+
         self.n_prob, self.n_obj = prefs.shape[0], prefs.shape[1]
         xs_var = Variable(x, requires_grad=True)
         optimizer = Adam([xs_var], lr=self.step_size)
@@ -100,7 +101,8 @@ class GradBaseSolver:
         hv_arr, y_arr = [], []
         # For UMOD solver, we need to store (pref, y) pairs.
         pref_y_pairs = []
-        for epoch_idx in tqdm(range(self.epoch)):
+
+        for epoch_idx in range(self.epoch):
             fs_var = problem.evaluate(xs_var)
             y_np = fs_var.detach().numpy()
             y_arr.append(y_np)
@@ -196,31 +198,3 @@ class GradAggSolver(GradBaseSolver):
 
     def solve(self, x_init):
         return super().solve(self.problem, x_init, self.prefs)
-        # x = x_init
-        # x = Variable(x, requires_grad=True)
-        # ind = HV(ref_point=get_hv_ref(self.problem.problem_name))
-        # hv_arr = []
-        # y_arr, x_arr = [], []
-        # prefs = Tensor(self.prefs)
-        # optimizer = SGD([x], lr=self.step_size)
-        # agg_func = get_agg_func(self.agg)
-        # res = {}
-        #
-        # for epoch_idx in tqdm(range(self.n_epoch)):
-        #     y = self.problem.evaluate(x)
-        #     hv_arr.append(ind.do(y.detach().numpy()))
-        #     agg_val = agg_func(y, prefs)
-        #     optimizer.zero_grad()
-        #     torch.sum(agg_val).backward()
-        #     optimizer.step()
-        #     y_arr.append(y.detach().numpy())
-        #
-        #     if 'lbound' in dir(self.problem):
-        #         x.data = torch.clamp(x.data, torch.Tensor(self.problem.lbound) + solution_eps,
-        #                              torch.Tensor(self.problem.ubound) - solution_eps)
-        # res['x'] = x.detach().numpy()
-        # res['y'] = y.detach().numpy()
-        # res['hv_history'] = np.array(hv_arr)
-        # res['y_history'] = np.array(y_arr)
-        # res['x_history'] = np.array(y_arr)
-        # return res

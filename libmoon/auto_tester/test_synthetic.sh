@@ -23,17 +23,6 @@ do
 done
 
 
-
-
 sleep 1000
 
-
-
-
-
-
-for solver in PMGDA EPO MOOSVGD GradHV PMTL GradAgg MGDAUB
-do
-  python libmoon/auto_tester/test_mtl.py --solver-name $solver
-done
 

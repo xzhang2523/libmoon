@@ -15,7 +15,4 @@ do
   python auto_tester/test_synthetic.py --solver-name $solver --agg-name STche --n-epoch $nepoch
 done
 
-
 sleep 1000
-
-

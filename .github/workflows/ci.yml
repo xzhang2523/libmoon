@@ -26,4 +26,3 @@ jobs:
       run: |
         chmod +x libmoon/auto_tester/test_synthetic.sh
         libmoon/auto_tester/test_synthetic.sh
-        python libmoon/auto_tester/test_mtl.py

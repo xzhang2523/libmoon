@@ -25,7 +25,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--n-epoch', type=int, default=10000)
     parser.add_argument('--step-size', type=float, default=1e-3)
-    parser.add_argument('--solver-name', type=str, default='GradHV')
+    parser.add_argument('--solver-name', type=str, default='PMGDA')
     parser.add_argument('--agg-name', type=str, default='LS')
 
     solver_dict = {
@@ -65,9 +65,13 @@ if __name__ == '__main__':
 
     plt.scatter(y[:, 0], y[:, 1], s=100)
     rho_arr = np.linalg.norm(y, axis=1)
-    plt.title(solver.solver_name, fontsize=20)
     plt.xlabel('$f_1$', fontsize=20)
     plt.ylabel('$f_2$', fontsize=20)
+
+    plt.xlim([0,1])
+    plt.ylim([0,1])
+    plt.gca().set_aspect('equal', adjustable="box")
+
     plt.xticks(fontsize=18)
     plt.yticks(fontsize=18)
     os.makedirs(folder_name, exist_ok=True)
@@ -78,8 +82,6 @@ if __name__ == '__main__':
     for pref in prefs_norm:
         plt.plot([0, pref[0] * rho_max ], [0, pref[1] * rho_max ],
                  color='k', linewidth=2, linestyle='--')
-
-    plt.axis('equal')
     plt.plot(problem.get_pf()[:,0], problem.get_pf()[:,1], color='r', linewidth=1, linestyle='--')
     fig_name = os.path.join(folder_name, '{}.pdf'.format(args.method_name) )
     plt.savefig(fig_name, bbox_inches='tight')
@@ -90,6 +92,8 @@ if __name__ == '__main__':
     plt.title('HV History', fontsize=20)
     plt.xlabel('Epoch', fontsize=20)
     plt.ylabel('Hypervolume', fontsize=20)
+
+
 
     plt.xticks(fontsize=15)
     plt.yticks(fontsize=15)

@@ -33,7 +33,6 @@ def umod_train_pfl_model(folder_name, update_idx, pfl_model, pfl_optimizer,
     plt.ylabel('PFL Loss')
     fig_name = os.path.join(folder_name, 'loss_{}.pdf'.format(update_idx) )
     plt.savefig(fig_name)
-    plt.show()
     print('Save to {}'.format(fig_name))
     return pfl_model
 
@@ -51,7 +50,6 @@ def umod_adjust_pref(prefs, pfl_model, n_adjust_epoch, main_epoch_idx, folder_na
         prefs_angle_var.data = torch.clamp(prefs_angle_var.data,
                                            0, np.pi/2)
         lmin_arr.append(lmin_val.item())
-
     fig = plt.figure()
     plt.plot(lmin_arr)
     plt.xlabel('Iteration')
@@ -165,29 +163,28 @@ class GradBaseSolver:
                     pref_test = get_uniform_pref(n_prob=100, dtype='Tensor')
                     y_test = self.pfl_model(pref2angle(pref_test))
                     y_test_np = y_test.detach().numpy()
-
                     for (pp, yy) in zip(prefs_np, y_np):
                         plt.plot([pp[0], yy[0]], [pp[1], yy[1]], color='grey', linestyle='dashed')
-
                     plt_umod = False
                     if plt_umod:
                         plt.scatter(y_test_np[:, 0], y_test_np[:, 1])
                         plt.scatter(prefs_new[:,0], prefs_new[:,1], label='New prefs')
                         plt.legend()
                         plt.show()
-
                     prefs = prefs_new
-
         res = {}
         res['x'] = x.detach().numpy()
         res['y'] = y_np
         res['hv_history'] = hv_arr
         res['y_history'] = y_arr
-
         return res
 
+
 class GradAggSolver(GradBaseSolver):
-    def __init__(self, problem, prefs, step_size=1e-3, n_epoch=500, tol=1e-3, agg_name='LS'):
+    def __init__(self, problem, prefs, step_size=1e-3, n_epoch=500, tol=1e-3,
+                 agg_name='LS', folder_name=None):
+
+        self.folder_name = folder_name
         self.step_size=step_size
         self.n_epoch = n_epoch
         self.tol=tol

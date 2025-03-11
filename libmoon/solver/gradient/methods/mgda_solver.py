@@ -9,11 +9,13 @@ from matplotlib import pyplot as plt
     2. Sener, Ozan, and Vladlen Koltun. "Multi-task learning as multimnist-objective optimization." Advances in neural information processing systems 31 (2018).
 '''
 class MGDAUBSolver(GradBaseSolver):
-    def __init__(self, problem, prefs, step_size=1e-3, n_epoch=500, tol=1e-3):
+    def __init__(self, problem, prefs, step_size=1e-3, n_epoch=500, tol=1e-3, folder_name=None):
+        self.folder_name = folder_name
         self.mgda_core = MGDAUBCore()
         self.problem = problem
         self.prefs = prefs
         self.solver_name = 'MGDA'
+
         super().__init__(step_size, n_epoch, tol, self.mgda_core)
 
     def solve(self, x_init):

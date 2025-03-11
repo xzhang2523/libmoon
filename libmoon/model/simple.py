@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 
+
 class SimplePSLModel(nn.Module):
     def __init__(self, problem):
         super().__init__()

@@ -121,7 +121,8 @@ def solve_epo(grad_arr, losses, pref, epo_lp):
     return torch.Tensor(gw), alpha
 
 class EPOSolver(GradBaseSolver):
-    def __init__(self, problem, prefs, step_size=1e-3, n_epoch=500, tol=1e-3):
+    def __init__(self, problem, prefs, step_size=1e-3, n_epoch=500, tol=1e-3, folder_name=None):
+        self.folder_name = folder_name
         self.solver_name = 'EPO'
         self.problem = problem
         self.prefs = prefs
@@ -129,6 +130,7 @@ class EPOSolver(GradBaseSolver):
         super().__init__(step_size, n_epoch, tol, self.epo_core)
     def solve(self, x_init):
         return super().solve(self.problem, x_init, self.prefs)
+
 
 class EPOCore():
     def __init__(self, n_var, prefs):

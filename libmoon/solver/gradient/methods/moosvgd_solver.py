@@ -91,7 +91,8 @@ class MOOSVGDCore():
         return alpha_array
 
 class MOOSVGDSolver(GradBaseSolver):
-    def __init__(self, problem, prefs=None, step_size=1e-3, n_epoch=500, tol=1e-3):
+    def __init__(self, problem, prefs=None, step_size=1e-3, n_epoch=500, tol=1e-3, folder_name=None):
+        self.folder_name = folder_name
         self.problem = problem
         self.n_prob = prefs.shape[0]
         self.core_solver = MOOSVGDCore(n_var=problem.n_var, prefs=prefs)

@@ -1,17 +1,5 @@
 from libmoon.solver.gradient.methods.base_solver import GradBaseSolver, AggCore
-from torch.autograd import Variable
-from torch.optim import SGD
-from torch import Tensor
-from libmoon.util.constant import get_agg_func, solution_eps, get_hv_ref
-import torch
-from tqdm import tqdm
-from pymoo.indicators.hv import HV
-from matplotlib import pyplot as plt
-import numpy as np
-from libmoon.model.simple import PFLModel
-import os
 from torch import nn
-from libmoon.util.prefs import pref2angle
 criterion = nn.MSELoss()
 
 class UMODSolver(GradBaseSolver):

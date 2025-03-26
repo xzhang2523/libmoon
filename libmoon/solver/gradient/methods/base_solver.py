@@ -12,6 +12,7 @@ import os
 from libmoon.metrics.metrics import compute_lmin
 from torch import Tensor
 criterion = torch.nn.MSELoss()
+from tqdm import tqdm
 
 def umod_train_pfl_model(folder_name, update_idx, pfl_model, pfl_optimizer,
                     criterion, prefs, y, pfl_epoch=2000):
@@ -94,15 +95,19 @@ class GradBaseSolver:
             self.pfl_optimizer = torch.optim.Adam(self.pfl_model.parameters(), lr=1e-3)
 
         self.n_prob, self.n_obj = prefs.shape[0], prefs.shape[1]
-
         xs_var = Variable(x, requires_grad=True)
         optimizer = Adam([xs_var], lr=self.step_size)
-        ind = HV( ref_point=get_hv_ref(problem.problem_name) )
+        ind = HV(ref_point=get_hv_ref(problem.problem_name))
         hv_arr, y_arr = [], []
+
         # For UMOD solver, we need to store (pref, y) pairs.
         pref_y_pairs = []
+        if self.verbose:
+            iteration_container = tqdm(range(self.epoch))
+        else:
+            iteration_container = range(self.epoch)
 
-        for epoch_idx in range(self.epoch):
+        for epoch_idx in iteration_container:
             fs_var = problem.evaluate(xs_var)
             y_np = fs_var.detach().numpy()
             y_arr.append(y_np)
@@ -134,9 +139,18 @@ class GradBaseSolver:
                 torch.sum(alpha_array * fs_var).backward()
 
             optimizer.step()
+
+
+
             if 'lbound' in dir(problem):
                 x.data = torch.clamp(x.data, torch.Tensor(problem.lbound) + solution_eps,
                                      torch.Tensor(problem.ubound) - solution_eps)
+
+            if problem.problem_name in ['MOKL']:
+                x.data = torch.clamp(x.data, min=0)
+                x.data = x.data / torch.sum(x.data, dim=1, keepdim=True)
+            # print('x.data', x.data)
+            # assert False
 
             if self.solver_name == 'UMOD':
                 if epoch_idx % self.pfl_train_epoch == 0 and epoch_idx != 0:

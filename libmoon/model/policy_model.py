@@ -1,9 +1,7 @@
 import torch
 from torch import nn
-
 import torch
 import torch.nn as nn
-
 
 class Policy(nn.Module):
     def __init__(self, state_space, action_space):
@@ -27,7 +25,6 @@ class Policy(nn.Module):
 
         # Convert logits to probabilities using a softmax function
         probabilities = torch.softmax(logits, dim=-1)
-
         if stochastic:
             # Sample an action according to the action probabilities
             action = torch.multinomial(probabilities, num_samples=1)

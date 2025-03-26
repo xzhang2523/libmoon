@@ -1,3 +1,0 @@
-Methods descriptions
-====================
-

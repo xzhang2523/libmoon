@@ -12,24 +12,30 @@ class MOKL(BaseMOP):
         self.n_var = len(self.mu_arr[0])
         self.problem_name = "MOKL"
 
-    def _evaluate_torch(self, prefs: torch.Tensor):
+
+    def _evaluate_torch(self, prefs_arr: torch.Tensor):
         # prefs are the coefficients.
-        mu_arr_arr = [p * mu for p, mu in zip(prefs, self.mu_arr)]
-        Sigma_arr_arr = [p * Sigma for p, Sigma in zip(prefs, self.Sigma_arr)]
-        mu = torch.sum( torch.stack(mu_arr_arr), axis=0)
-        Sigma = torch.sum( torch.stack(Sigma_arr_arr), axis=0)
+        f_arr_all = []
+        for prefs in prefs_arr:
+            Sigma_inverse_arr_arr = [p * torch.inverse(Sigma_) for p, Sigma_ in zip(prefs, self.Sigma_arr)]
+            Sigma = torch.inverse(torch.sum( torch.stack(Sigma_inverse_arr_arr), axis=0))
 
-        f_arr = []
-        for obj_idx in range(self.n_obj):
-            mu_i = self.mu_arr[obj_idx]
-            Sigma_i = self.Sigma_arr[obj_idx]
+            mu_arr_arr = [p * torch.inverse(Sigma_) @ mu
+                          for p, mu, Sigma_ in zip(prefs, self.mu_arr, self.Sigma_arr)]
+            mu = Sigma @ torch.sum( torch.stack(mu_arr_arr), axis=0)
+            f_arr = []
 
-            term1 = torch.log(torch.det(Sigma_i)) - torch.log(torch.det(Sigma_i))
-            term2 = (mu - mu_i) @ torch.inverse(Sigma_i) @ (mu - mu_i)
-            term3 = torch.trace(torch.inverse(Sigma_i) @ Sigma)
-            fi = 0.5 * (term1 + term2 + term3 - self.n_var)
-            f_arr.append(fi)
-        return torch.stack(f_arr)
+            for obj_idx in range(self.n_obj):
+                mu_i = self.mu_arr[obj_idx]
+                Sigma_i = self.Sigma_arr[obj_idx]
+                term1 = torch.log(torch.det(Sigma_i)) - torch.log(torch.det(Sigma))
+                term2 = (mu - mu_i) @ torch.inverse(Sigma_i) @ (mu - mu_i)
+                term3 = torch.trace(torch.inverse(Sigma_i) @ Sigma)
+                fi = 0.5 * (term1 + term2 + term3 - self.n_var)
+                f_arr.append(fi)
+            f_arr = torch.stack(f_arr)
+            f_arr_all.append(f_arr)
+        return torch.stack(f_arr_all)
 
 
 if __name__ == '__main__':

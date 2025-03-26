@@ -6,10 +6,8 @@
     Computation, 28(2): 432-444, 2024.
 '''
 
-
 import numpy as np
 import torch 
-
 from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting
 from pymoo.util.ref_dirs import get_reference_directions
 from libmoon.solver.mobo.utils.lhs import lhs

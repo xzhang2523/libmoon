@@ -6,14 +6,12 @@ import argparse
 import os
 import numpy as np
 
-
 def plot_figure(folder_name, generated_samples, sample1, sample2, pref):
     plt.scatter(generated_samples[:, 0], generated_samples[:, 1], label='Generated', s=50)
     plt.scatter(sample1[:, 0], sample1[:, 1], label='Sample 1', s=25, alpha=0.5)
     plt.scatter(sample2[:, 0], sample2[:, 1], label='Sample 2', s=25, alpha=0.5)
     if abs(pref[0]) < 1e-6:
         plt.legend(fontsize=20, loc='lower right')
-
     plt.xlabel('$X_1$', fontsize=25)
     plt.ylabel('$X_2$', fontsize=25)
     plt.xticks(fontsize=20)

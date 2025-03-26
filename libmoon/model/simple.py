@@ -1,7 +1,6 @@
 import torch
 from torch import nn
 
-
 class SimplePSLModel(nn.Module):
     def __init__(self, problem):
         super().__init__()
@@ -43,8 +42,6 @@ class SimplePSLModel(nn.Module):
             return mid * torch.Tensor(self.problem.ubound - self.problem.lbound).to(mid.device)  + torch.Tensor(self.problem.lbound).to(mid.device)
         else:
             return mid
-
-
 
 
 class PFLModel(nn.Module):

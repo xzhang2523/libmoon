@@ -4,6 +4,7 @@ from torch import Tensor
 from libmoon.problem.synthetic.mop import BaseMOP
 from numpy import array
 
+
 class RE21(BaseMOP):
     def __init__(self, n_var=4, n_obj=2, lbound=np.zeros(4), ubound=np.ones(4)):
         self.problem_name = 'RE21'
@@ -25,7 +26,6 @@ class RE21(BaseMOP):
 
     def _evaluate_numpy(self, x):
         n_sub = len(x)
-
         x1 = x[:,0]
         x2 = x[:,1]
         x3 = x[:,2]

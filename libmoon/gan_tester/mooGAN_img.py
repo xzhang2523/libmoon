@@ -105,11 +105,9 @@ class MOImageGANTrainer:
                     d_real = discriminator(real_samples)
                     d_fake = discriminator(
                         fake_samples.detach())  # Detach to avoid backpropagating through the generator
-
                     real_loss = self.criterion(d_real, torch.ones_like(d_real))
                     fake_loss = self.criterion(d_fake, torch.zeros_like(d_fake))
                     d_loss = (real_loss + fake_loss) / 2
-
                     self.d_optimizer_arr[idx].zero_grad()
                     d_loss.backward()
                     self.d_optimizer_arr[idx].step()
@@ -117,13 +115,11 @@ class MOImageGANTrainer:
                 # Generator training
                 z = torch.randn(self.batch_size, self.input_dim)
                 fake_samples = self.generator(z)
-
                 g_loss_arr = []
                 for idx, discriminator in enumerate(self.discriminator_arr):
                     d_fake = discriminator(fake_samples)
                     g_loss = self.criterion(d_fake, torch.ones_like(d_fake))
                     g_loss_arr.append(g_loss)
-
                 g_loss_arr = torch.stack(g_loss_arr)
                 self.g_optimizer.zero_grad()
                 scalar_loss = torch.dot(g_loss_arr, torch.Tensor(self.pref))

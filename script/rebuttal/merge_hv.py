@@ -5,6 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy import array
 from libmoon.util.constant import beautiful_dict
+from libmoon.util.constant import root_name
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -14,10 +16,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     mtd_arr = ['dirhvego', 'psldirhvei', 'pslmobo']
-    # mtd_arr = ['dirhvego', 'psldirhvei']
-
-    # mtd_arr = ['dirhvego', ]
-
 
     tmp_name = 'D:\\pycharm_project\\libmoon\\Output\\mobo\\{}\\{}\\seed_{}\\res.pickle'
     for mtd in mtd_arr:

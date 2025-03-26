@@ -6,6 +6,7 @@ import argparse
 import os
 import numpy as np
 
+
 def plot_figure(folder_name, generated_samples, sample1, sample2, pref):
     plt.scatter(generated_samples[:, 0], generated_samples[:, 1], label='Generated', s=50)
     plt.scatter(sample1[:, 0], sample1[:, 1], label='Sample 1', s=25, alpha=0.5)
@@ -21,7 +22,6 @@ def plot_figure(folder_name, generated_samples, sample1, sample2, pref):
     fig_name = os.path.join(folder_name, 'res_{:.2f}.pdf'.format(pref[0]))
     plt.savefig(fig_name, bbox_inches='tight')
     print('Save fig to {}'.format(fig_name))
-
 
 # Generator: Transforms random noise into samples resembling the target distribution
 class Generator(nn.Module):

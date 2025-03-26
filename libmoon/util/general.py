@@ -2,6 +2,7 @@ from libmoon.util.constant import max_indicators
 import numpy as np
 import torch
 
+
 def set_indicators_rank(Indicators, indicator_dict_dict_saved, mtd_arr):
     for indicator in Indicators:
         mtd_val = [ indicator_dict_dict_saved[mtd][indicator] for mtd in mtd_arr ]
@@ -13,8 +14,8 @@ def set_indicators_rank(Indicators, indicator_dict_dict_saved, mtd_arr):
         for idx, mtd in enumerate(mtd_arr):
             indicator_dict_dict_saved[mtd]['{}_rank'.format(indicator)] = arg_sort.tolist().index(idx)
 
-def get_indicator(problem_name, mtd_name, num_seed, use_save=False):
 
+def get_indicator(problem_name, mtd_name, num_seed, use_save=False):
     indicator_dict_seed = []
     for seed_idx in range(1, num_seed+1):
         # from xy_util import save_indicators

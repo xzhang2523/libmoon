@@ -22,6 +22,7 @@ def kernel_functional_rbf(losses, bandwidth=5e-6):
     # A = 5e-6  # Noted, this bandwith parameter is important.
     kernel_matrix = torch.exp(-pairwise_distance / bandwidth*h)  # 5e-6 for zdt1,2,3, zxy, Dec 5, 2023
     return kernel_matrix
+
 def median(tensor):
     """
         torch.median() acts differently from np.median(). We want to simulate numpy implementation.

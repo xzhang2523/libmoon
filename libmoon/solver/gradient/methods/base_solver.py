@@ -3,7 +3,6 @@ from torch.autograd import Variable
 from torch.optim import SGD, Adam
 from libmoon.util.constant import get_agg_func, solution_eps, get_hv_ref
 import torch
-from tqdm import tqdm
 from pymoo.indicators.hv import HV
 import numpy as np
 from libmoon.util.gradient import get_moo_Jacobian_batch
@@ -95,6 +94,7 @@ class GradBaseSolver:
             self.pfl_optimizer = torch.optim.Adam(self.pfl_model.parameters(), lr=1e-3)
 
         self.n_prob, self.n_obj = prefs.shape[0], prefs.shape[1]
+
         xs_var = Variable(x, requires_grad=True)
         optimizer = Adam([xs_var], lr=self.step_size)
         ind = HV( ref_point=get_hv_ref(problem.problem_name) )

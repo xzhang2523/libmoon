@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 
+
 class BaseMOP():
     def __init__(self,
                  n_var: int,
@@ -9,17 +10,13 @@ class BaseMOP():
                  ubound: np.ndarray=None,
                  n_cons: int=0,
                  ) -> None:
-
         self.n_var = n_var
         self.n_obj = n_obj
         self.n_cons = n_cons
-
         if type(lbound) != type(None):
             self.lbound = lbound
-
         if type(ubound) != type(None):
             self.ubound = ubound
-
     @property
     def get_number_variable(self) -> int:
         return self.n_var

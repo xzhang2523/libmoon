@@ -63,13 +63,10 @@ class MODM(BaseMOP):
         if mu2 is None:
             mu2 = torch.ones(n_var)
             Sigma2 = torch.eye(n_var)
-
         self.mu1 = mu1
         self.Sigma1 = Sigma1
-
         self.mu2 = mu2
         self.Sigma2 = Sigma2
-
         self.dist1 = torch.distributions.MultivariateNormal(self.mu1, self.Sigma1)
         self.dist2 = torch.distributions.MultivariateNormal(self.mu2, self.Sigma2)
         self.problem_name = 'modm'
@@ -202,15 +199,5 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='example script')
     parser.add_argument('--n-var', type=int, default=5)
     parser.add_argument('--n-prob', type=int, default=10)
-
-    # args = parser.parse_args()
-    # problem = MODM(n_var=args.n_var)
-    # x = torch.rand(args.n_prob, args.n_var)
-    # obj = problem.evaluate(x)
-    # pf = problem._get_pf()
-    # plt.scatter(pf[:,0], pf[:,1])
-    # plt.show()
-    # print()
-
     problem = MOOVAE()
     obj = problem.evaluate(torch.rand(10, 5))

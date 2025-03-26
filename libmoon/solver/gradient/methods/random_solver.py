@@ -5,14 +5,12 @@ import numpy as np
 from libmoon.problem.synthetic.zdt import ZDT1
 from libmoon.solver.gradient.methods.core.core_solver import RandomCore
 
-
 class CoreRandom:
     def __init__(self, args):
         self.args = args
 
     def get_weight(self):
         return Tensor(np.random.rand(10, 2))
-
 
 class RandomSolver(GradBaseSolver):
     def __init__(self, step_size, n_iter, tol, problem, prefs):
@@ -25,7 +23,6 @@ class RandomSolver(GradBaseSolver):
 
     def solve(self, x):
         return super().solve(self.problem, x, self.prefs, self.solver_cls)
-
 
 if __name__ == '__main__':
     problem = ZDT1(n_var=10)

@@ -2,6 +2,7 @@ import numpy as np
 import torch
 from libmoon.problem.synthetic.mop import BaseMOP
 
+
 class DTLZ1(BaseMOP):
     def __init__(self, n_var=30, n_obj=3, lbound=np.zeros(30),
                  ubound=np.ones(30)):

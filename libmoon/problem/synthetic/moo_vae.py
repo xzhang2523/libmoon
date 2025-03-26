@@ -94,7 +94,6 @@ class VAETrainer:
                     data = data.view(-1, 784)
                     recon_batch, mu, logvar = self.vae(data)
                     loss_arr.append( vae_loss(recon_batch, data, mu, logvar) )
-
                 loss = torch.stack(loss_arr) @ torch.Tensor([pref0, 1-pref0])
                 loss_history.append(loss.item())
                 loss.backward()
@@ -109,8 +108,6 @@ class VAETrainer:
         return predict
 
 
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='VAE example')
     parser.add_argument('--batch-size', type=int, default=128)
@@ -123,24 +120,16 @@ if __name__ == '__main__':
     transform = transforms.Compose([
         transforms.ToTensor()
     ])
-
     train_dataset_1 = datasets.FashionMNIST(root='./data', train=True, transform=transform, download=True)
     train_dataset_2 = datasets.MNIST(root='./data', train=True, transform=transform, download=True)
-
     train_loader_1 = DataLoader(train_dataset_1, batch_size=args.batch_size, shuffle=True)
     train_loader_2 = DataLoader(train_dataset_2, batch_size=args.batch_size, shuffle=True)
-
-
     # Instantiate the VAE model and optimizer
-
     vae_trainer = VAETrainer(z_dim = args.z_dim, lr=args.lr)
     mu, logvar, loss_history = vae_trainer.train_vae(train_loader_1, train_loader_2, epochs=args.epochs, pref0 = args.pref_0)
     res = vae_trainer.evaluate_vae(mu, logvar)
-
-
     # plot 8 images
     fig, axes = plt.subplots(2, 4, figsize=(8, 8))  # 4 rows, 2 columns
-
     # Plot the first 8 images
     for i in range(8):
         img = res[i].view(28, 28).detach().numpy()  # Assuming each image is 28x28

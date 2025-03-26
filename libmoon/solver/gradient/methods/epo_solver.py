@@ -128,6 +128,7 @@ class EPOSolver(GradBaseSolver):
         self.prefs = prefs
         self.epo_core = EPOCore(n_var=problem.n_var, prefs=prefs)
         super().__init__(step_size, n_epoch, tol, self.epo_core)
+
     def solve(self, x_init):
         return super().solve(self.problem, x_init, self.prefs)
 

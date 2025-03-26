@@ -1,7 +1,5 @@
 import torch
 import numpy as np
-from libmoon.util.problems import get_problem
-
 
 def synthetic_init(problem, prefs):
 

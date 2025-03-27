@@ -12,6 +12,9 @@ import argparse
 import numpy as np
 from tqdm import tqdm
 
+from libmoon.util.constant import root_name
+
+
 # 创建文件夹
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -86,19 +89,15 @@ if not os.path.exists('./img_VAE'):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--batch-size', type=int, default=64)
-    # parser.add_argument('--dataset-name', type=str, default='mnist')
     parser.add_argument('--data-name1', type=str, default='alarm')
     parser.add_argument('--data-name2', type=str, default='circle')
-
     parser.add_argument('--n-epochs', type=int, default=100)
     parser.add_argument('--z-dimension', type=int, default=2)
     parser.add_argument('--lr', type=float, default=3e-4)
     parser.add_argument('--pref0', type=float, default=0.0)
     args = parser.parse_args()
-    # batch_size = 64
-    # num_epoch = 15
-    # z_dimension = 2
-    # 图形啊处理过程
+    # batch_size = 64, # num_epoch = 15, # z_dimension = 2
+
     img_transform = transforms.Compose([
         transforms.ToTensor(),
     ])
@@ -109,12 +108,12 @@ if __name__ == '__main__':
         # data loader 数据载入
         dataloader = torch.utils.data.DataLoader(dataset=mnist, batch_size=args.batch_size, shuffle=True)
     else:
-        path1 = 'D:\\pycharm_project\\libmoon\\libmoon\\moogan\\data\\full_numpy_bitmap_{}.npy'.format(args.data_name1)
+        path1 = os.path.join(root_name, 'libmoon', 'moogan', 'data', 'full_numpy_bitmap_{}.npy'.format(args.data_name1))
         img1_data = np.load(path1)
         img1_data = img1_data.reshape(-1, 1, 28, 28)
         img1_data = img1_data / 255
 
-        path2 = 'D:\\pycharm_project\\libmoon\\libmoon\\moogan\\data\\full_numpy_bitmap_{}.npy'.format(args.data_name2)
+        path2 = os.path.join(root_name, 'libmoon', 'moogan', 'data', 'full_numpy_bitmap_{}.npy'.format(args.data_name2))
         img2_data = np.load(path2)
         img2_data = img2_data.reshape(-1, 1, 28, 28)
         img2_data = img2_data / 255
@@ -139,7 +138,6 @@ if __name__ == '__main__':
             num_img = img.size(0)
             # view()函数作用把img变成[batch_size,channel_size,784]
             img = img.view(num_img, 1, 28, 28).to(device)  # 将图片展开为28*28=784
-
             x, mean1, logstd1 = vae(img)  # 将真实图片放入判别器中
             loss = loss_function(x, img, mean1, logstd1)
             vae_optimizer.zero_grad()  # 在反向传播之前，先将梯度归 0.

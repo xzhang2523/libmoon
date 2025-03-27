@@ -2,6 +2,15 @@ from libmoon.util.constant import max_indicators
 import numpy as np
 import torch
 
+from torch.utils.data import Dataset
+from torch.utils.data import DataLoader
+import os
+import cv2
+
+# Read an image
+# image = cv2.imread("image.jpg")
+
+
 
 def set_indicators_rank(Indicators, indicator_dict_dict_saved, mtd_arr):
     for indicator in Indicators:
@@ -32,8 +41,22 @@ def get_indicator(problem_name, mtd_name, num_seed, use_save=False):
     return mean_indicator_dict, std_indicator_dict
 
 
+class FolderDataset(Dataset):
+    def __init__(self, folder_name):
+        self.folder_name = folder_name
+        file_names = [f for f in os.listdir(self.folder_name) if os.path.isfile(os.path.join(self.folder_name, f))]
+        image_array = []
+        for idx, file_name in enumerate(file_names):
+            file_path = os.path.join(self.folder_name, file_name)
+            image = cv2.imread(file_path)
+            image_array.append(image)
+        self.image_array = image_array
 
+    def __getitem__(self, idx):
+        return self.image_array[idx]
 
+    def __len__(self):
+        return len(self.image_array)
 
 
 def random_everything(seed):

@@ -4,20 +4,17 @@ from torchvision import transforms
 from torchvision import datasets
 from torchvision.utils import save_image
 import torch.nn.functional as F
-import matplotlib.pyplot as plt
 import os
 from torchvision.utils import make_grid
 import argparse
 import numpy as np
 from tqdm import tqdm
 from libmoon.util.constant import root_name
-
 from modm_func import mokl
+from libmoon.util.general import FolderDataset
+from torch.utils.data import DataLoader
 
-
-# 创建文件夹
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
 
 def to_img(x):
     img = make_grid(x, nrow=8, normalize=True).detach()
@@ -62,7 +59,6 @@ class VAE(nn.Module):
         out1, out2 = self.encoder(x), self.encoder(x)
         mean = self.encoder_fc1(out1.view(out1.shape[0], -1))
         logstd = self.encoder_fc2(out2.view(out2.shape[0], -1))
-
         z = self.noise_reparameterize(mean, logstd)
         out3 = self.decoder_fc(z)
         out3 = out3.view(out3.shape[0], 32, 7, 7)
@@ -85,6 +81,11 @@ if __name__ == '__main__':
     parser.add_argument('--batch-size', type=int, default=64)
     parser.add_argument('--data-name1', type=str, default='alarm')
     parser.add_argument('--data-name2', type=str, default='circle')
+    parser.add_argument('--data-type', type=str, default='domainnet')
+    parser.add_argument('--domain-set-data', type=str, default='airplane')
+    parser.add_argument('--domain1', type=str, default='clipart')
+    parser.add_argument('--domain2', type=str, default='infograph')
+
     parser.add_argument('--n-epochs', type=int, default=100)
     parser.add_argument('--z-dimension', type=int, default=2)
     parser.add_argument('--lr', type=float, default=3e-4)
@@ -94,25 +95,42 @@ if __name__ == '__main__':
     img_transform = transforms.Compose([
         transforms.ToTensor(),
     ])
-    if args.data_name1 == 'mnist':
+    if args.data_type == 'mnist':
         # mnist dataset mnist数据集下载
         mnist = datasets.MNIST(root='./data/', train=True, transform=img_transform, download=True)
         # data loader 数据载入
         dataloader = torch.utils.data.DataLoader(dataset=mnist, batch_size=args.batch_size, shuffle=True)
+    elif args.data_type == 'domainnet':
+        # F:\code\libmoon\libmoon\moogan\data\domainnet
+        path1 = os.path.join(
+            root_name, 'libmoon', 'moogan', 'data', 'domainnet', args.domain1, args.domain_set_data
+        )
+        path2 = os.path.join(
+            root_name, 'libmoon', 'moogan', 'data', 'domainnet', args.domain2, args.domain_set_data
+        )
+
+        dataset1 = FolderDataset(path1)
+        dataset2 = FolderDataset(path2)
+
+
+        dataloader1 = DataLoader(dataset1, batch_size=args.batch_size, shuffle=True)
+        dataloader2 = DataLoader(dataset2, batch_size=args.batch_size, shuffle=True)
     else:
-        path1 = os.path.join(root_name, 'libmoon', 'moogan', 'data', 'quick_draw','full_numpy_bitmap_{}.npy'.format(args.data_name1))
+        path1 = os.path.join(root_name, 'libmoon', 'moogan', 'data', 'quick_draw',
+                             'full_numpy_bitmap_{}.npy'.format(args.data_name1))
         img1_data = np.load(path1)
         img1_data = img1_data.reshape(-1, 1, 28, 28)
         img1_data = img1_data / 255
-        path2 = os.path.join(root_name, 'libmoon', 'moogan', 'data', 'quick_draw', 'full_numpy_bitmap_{}.npy'.format(args.data_name2))
+        path2 = os.path.join(root_name, 'libmoon', 'moogan', 'data', 'quick_draw',
+                             'full_numpy_bitmap_{}.npy'.format(args.data_name2))
         img2_data = np.load(path2)
         img2_data = img2_data.reshape(-1, 1, 28, 28)
         img2_data = img2_data / 255
         img1_data = torch.from_numpy(img1_data).to(torch.float).to(device)
         img2_data = torch.from_numpy(img2_data).to(torch.float).to(device)
         print('img1_data size: ', len(img1_data))
-        dataloader = dataloader1 = torch.utils.data.DataLoader(img1_data, batch_size=args.batch_size, shuffle=True)
-        dataloader2 = torch.utils.data.DataLoader(img2_data, batch_size=args.batch_size, shuffle=True)
+        dataloader1 = DataLoader(img1_data, batch_size=args.batch_size, shuffle=True)
+        dataloader2 = DataLoader(img2_data, batch_size=args.batch_size, shuffle=True)
 
     vae = VAE().to(device)
     num1 = numel(vae.encoder)
@@ -120,14 +138,13 @@ if __name__ == '__main__':
     print()
     vae_optimizer = torch.optim.Adam(vae.parameters(), lr=args.lr,
                                      betas=(0.9, 0.999), eps=1e-08, weight_decay=0)
-    ###########################进入训练##判别器的判断过程#####################
+
     for epoch in range(args.n_epochs):  # 进行多个epoch的训练
-        for i, (img, img2) in tqdm(enumerate(zip(dataloader, dataloader2))):
-            num_img = img.size(0)
-            # view()函数作用把img变成[batch_size,channel_size,784]
-            img = img.view(num_img, 1, 28, 28).to(device)  # 将图片展开为28*28=784
-            x, mean1, logstd1 = vae(img)  # 将真实图片放入判别器中
-            loss = loss_function(x, img, mean1, logstd1)
+        for i, (img1, img2) in tqdm(enumerate(zip(dataloader1, dataloader2))):
+            num_img = img1.size(0)
+            img1 = img1.view(num_img, 1, 28, 28).to(device)  # 将图片展开为28*28=784
+            x, mean1, logstd1 = vae(img1)  # 将真实图片放入判别器中
+            loss = loss_function(x, img1, mean1, logstd1)
             vae_optimizer.zero_grad()  # 在反向传播之前，先将梯度归 0.
             loss.backward()  # 将误差反向传播
             vae_optimizer.step()  # 更新参数

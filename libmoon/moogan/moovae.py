@@ -131,8 +131,6 @@ if __name__ == '__main__':
     num1 = numel(vae.encoder)
     num2 = numel(vae.decoder)
     print()
-
-    # vae.load_state_dict(torch.load('./VAE_z2.pth'))
     vae_optimizer = torch.optim.Adam(vae.parameters(), lr=args.lr,
                                      betas=(0.9, 0.999), eps=1e-08, weight_decay=0)
     ###########################进入训练##判别器的判断过程#####################

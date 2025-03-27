@@ -1,4 +1,3 @@
-# coding=utf-8
 import torch.autograd
 import torch.nn as nn
 from torchvision import transforms
@@ -11,8 +10,9 @@ from torchvision.utils import make_grid
 import argparse
 import numpy as np
 from tqdm import tqdm
-
 from libmoon.util.constant import root_name
+
+from modm_func import mokl
 
 
 # 创建文件夹
@@ -20,10 +20,7 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 
 def to_img(x):
-    # out = 0.5 * (x+0.5)
     img = make_grid(x, nrow=8, normalize=True).detach()
-    # out = x.clamp(0, 1)  # Clamp函数可以将随机变化的数值限制在一个给定的区间[min, max]内：
-    # out = out.view(-1, 1, 28, 28)  # view()函数作用是将一个多行的Tensor,拼接成一行
     return img
 
 def numel(model):
@@ -72,7 +69,6 @@ class VAE(nn.Module):
         out3 = self.decoder(out3)
         return out3, mean, logstd
 
-
 def loss_function(recon_x, x, mean, std):
     BCE = F.binary_cross_entropy(recon_x, x, reduction='sum')
     # 因为var是标准差的自然对数，先求自然对数然后平方转换成方差
@@ -80,10 +76,8 @@ def loss_function(recon_x, x, mean, std):
     KLD = -0.5 * torch.sum(1 + torch.log(var) - torch.pow(mean, 2) - var)
     return BCE + KLD
 
-
 if not os.path.exists('./img_VAE'):
     os.mkdir('./img_VAE')
-
 
 
 if __name__ == '__main__':
@@ -97,36 +91,30 @@ if __name__ == '__main__':
     parser.add_argument('--pref0', type=float, default=0.0)
     args = parser.parse_args()
     # batch_size = 64, # num_epoch = 15, # z_dimension = 2
-
     img_transform = transforms.Compose([
         transforms.ToTensor(),
     ])
-
     if args.data_name1 == 'mnist':
         # mnist dataset mnist数据集下载
         mnist = datasets.MNIST(root='./data/', train=True, transform=img_transform, download=True)
         # data loader 数据载入
         dataloader = torch.utils.data.DataLoader(dataset=mnist, batch_size=args.batch_size, shuffle=True)
     else:
-        path1 = os.path.join(root_name, 'libmoon', 'moogan', 'data', 'full_numpy_bitmap_{}.npy'.format(args.data_name1))
+        path1 = os.path.join(root_name, 'libmoon', 'moogan', 'data', 'quick_draw','full_numpy_bitmap_{}.npy'.format(args.data_name1))
         img1_data = np.load(path1)
         img1_data = img1_data.reshape(-1, 1, 28, 28)
         img1_data = img1_data / 255
-
-        path2 = os.path.join(root_name, 'libmoon', 'moogan', 'data', 'full_numpy_bitmap_{}.npy'.format(args.data_name2))
+        path2 = os.path.join(root_name, 'libmoon', 'moogan', 'data', 'quick_draw', 'full_numpy_bitmap_{}.npy'.format(args.data_name2))
         img2_data = np.load(path2)
         img2_data = img2_data.reshape(-1, 1, 28, 28)
         img2_data = img2_data / 255
-
         img1_data = torch.from_numpy(img1_data).to(torch.float).to(device)
         img2_data = torch.from_numpy(img2_data).to(torch.float).to(device)
-
         print('img1_data size: ', len(img1_data))
         dataloader = dataloader1 = torch.utils.data.DataLoader(img1_data, batch_size=args.batch_size, shuffle=True)
         dataloader2 = torch.utils.data.DataLoader(img2_data, batch_size=args.batch_size, shuffle=True)
 
     vae = VAE().to(device)
-
     num1 = numel(vae.encoder)
     num2 = numel(vae.decoder)
     print()
@@ -150,39 +138,48 @@ if __name__ == '__main__':
             loss = loss_function(x, img2, mean2, logstd2)
             vae_optimizer.zero_grad()  # 在反向传播之前，先将梯度归0
             loss.backward()  # 将误差反向传播
-            vae_optimizer.step()  # 更新参数
-            # mu1.shape: (64,2), logstd1.shape: (64,2)
-            # try:
+            vae_optimizer.step()
+
             if (i + 1) % 100 == 0:
                 print('Epoch[{}/{}],vae_loss:{:.6f} '.format(
                     epoch, args.n_epochs, loss.item(),
                 ))
 
-            folder_name = os.path.join('D:\\pycharm_project\\libmoon\\libmoon\\moogan', 'img_VAE',
+            folder_name = os.path.join(root_name, 'libmoon', 'moogan', 'img_VAE',
                                        '{}_{}'.format(args.data_name1, args.data_name2))
             os.makedirs(folder_name, exist_ok=True)
 
             if epoch == 0:
                 real_images1 = make_grid(img[:25].cpu(), nrow=5, normalize=True).detach()
                 save_image(real_images1, os.path.join(folder_name, 'real_images1.pdf'))
-
                 real_images2 = make_grid(img2[:25].cpu(), nrow=5, normalize=True).detach()
                 save_image(real_images2, os.path.join(folder_name, 'real_images2.pdf'))
-            sample_size = 25
+            # sample_size = 25
             pref0_arr = np.linspace(0, 1, 5)
-            for pref0 in pref0_arr:
-                meanA = torch.mean(mean1)
-                meanB = torch.mean(mean2)
-                mean = pref0 * meanA + (1 - pref0) * meanB
-                stdA = torch.mean(torch.exp(logstd1))
-                stdB = torch.mean(torch.exp(logstd2))
-                std = pref0 * stdA + (1 - pref0) * stdB
-                sample = torch.randn(sample_size, args.z_dimension).to(device) * std + mean
-                output = vae.decoder_fc(sample)
-                output = vae.decoder(output.view(output.shape[0], 32, 7, 7))
-                fake_images = make_grid(output.cpu(), nrow=5, normalize=True).detach()
-                fig_name = os.path.join(folder_name, 'fake_images_{}_{:.2f}.pdf'.format(epoch + 16, pref0))
-                save_image(fake_images, fig_name)
+
+
+            if i == 0:
+                for pref0 in pref0_arr:
+                    # mean1 (mean2).shape: (64,2)
+                    # meanA = torch.mean(mean1)
+                    # meanB = torch.mean(mean2)
+                    Std1 = torch.exp(logstd1)
+                    Std2 = torch.exp(logstd2)
+                    mu, std = mokl(mean1, mean2, Std1, Std2, pref0)
+                    # mu.shape: 64*2
+                    # std.shape: 64*2*2
+                    std = torch.diagonal(std, dim1=1, dim2=2)
+                    # print(mu.shape)
+                    # print(std.shape)
+                    sample_size = len(mu)
+                    sample = torch.randn(sample_size, args.z_dimension).to(device) * std + mu
+                    output = vae.decoder_fc(sample)
+                    output = vae.decoder(output.view(output.shape[0], 32, 7, 7))
+                    fake_images = make_grid(output.cpu(), nrow=8, normalize=True).detach()
+                    fig_name = os.path.join(folder_name, 'fake_images_{}_{:.2f}.pdf'.format(epoch + 16, pref0))
+                    save_image(fake_images, fig_name)
+                    print('img saved in', fig_name)
+
 
     # 保存模型
     torch.save(vae.state_dict(), './VAE_z2.pth')

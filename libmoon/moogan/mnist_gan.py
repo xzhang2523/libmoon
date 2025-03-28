@@ -6,22 +6,19 @@ from torchvision import datasets, transforms
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
-
 def display_images(images, n_cols=4, figsize=(12, 6)):
     """
-    Utility function to display a collection of images in a grid
-
-    Parameters
-    ----------
-    images: Tensor
-            tensor of shape (batch_size, channel, height, width)
-            containing images to be displayed
-    n_cols: int
-            number of columns in the grid
-
-    Returns
-    -------
-    None
+        Utility function to display a collection of images in a grid
+        Parameters
+        ----------
+        images: Tensor
+                tensor of shape (batch_size, channel, height, width)
+                containing images to be displayed
+        n_cols: int
+                number of columns in the grid
+        Returns
+        -------
+        None
     """
     plt.style.use('ggplot')
     n_images = len(images)

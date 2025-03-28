@@ -17,5 +17,6 @@ def mokl(mu1, mu2, Std1, Std2, pref0):
     mu_output = torch.stack(mu_output)
     return mu_output, Sigma_output
 
+
 if __name__ == '__main__':
     print()
